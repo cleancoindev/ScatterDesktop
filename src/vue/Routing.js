@@ -2,6 +2,9 @@
 import Login from '../tp/views/Login/index';
 // import Login from '../views/Login';
 
+import Settings from '../tp/views/Settings/index';
+// import Settings from '../views/Settings';
+
 import PopOut from '../views/PopOut';
 
 import Apps from '../views/Apps';
@@ -18,7 +21,7 @@ import Contacts from '../views/Contacts';
 import Identities from '../views/Identities';
 import Locations from '../views/Locations';
 import Histories from '../views/Histories';
-import Settings from '../views/Settings';
+
 import RIDL from '../views/RIDL';
 import Purchase from '../views/Purchase';
 

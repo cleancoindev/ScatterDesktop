@@ -168,8 +168,11 @@
                 // item.icon
             },
 
-            tabChange() {
-
+            tabChange(item) {
+                this.$router.replace({
+                    name: item.url,
+                    params: item.params || {}
+                })
             },
 
             accountOptions() {
@@ -181,10 +184,12 @@
                 if (item.name === 'Marketplace') return 'sidebar-sidebar_items';
                 return `sidebar-sidebar_${item.name.toLowerCase()}`;
             },
+
             toggleSidebar() {
                 this[Actions.SET_SIDEBAR](!this.sidebarLocked);
                 window.localStorage.setItem('sidebar', this.sidebarLocked);
             },
+
             ...mapActions([
                 Actions.SET_SIDEBAR
             ])
