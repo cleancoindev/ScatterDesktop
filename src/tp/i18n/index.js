@@ -1,0 +1,14 @@
+import Vue from 'vue';
+import VueI18n from 'vue-i18n';
+import zh from './languages/zh';
+import en from './languages/en';
+
+Vue.use(VueI18n);
+
+export default new VueI18n({
+    locale: 'zh',
+    messages: {
+        zh,
+        en
+    }
+});

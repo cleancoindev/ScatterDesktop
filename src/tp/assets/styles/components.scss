@@ -1,0 +1,53 @@
+@charset "UTF-8";
+
+.tp-button {
+  position: relative;
+  width: 100%;
+  padding: 10px 15px;
+  background: linear-gradient(90deg, rgba(42, 173, 255, 1) 0%, rgba(55, 116, 250, 1) 100%);
+  border-radius: 6px;
+  opacity: 0.3;
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  color: #fff;
+  cursor: pointer;
+
+  &.on {
+    opacity: 0.9;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &.del {
+    background: #FA6464;
+    opacity: 0.9;
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+
+.tp-input {
+  outline: none!important;
+  box-shadow: none;
+  border: 0;
+  border-bottom: 1px solid #E5E6F2;
+  padding: 15px 0;
+  width: 100%;
+  font-size: 16px;
+}
+
+.tp-password-input {
+  background: #F5F8FA;
+  height: 40px;
+  border-radius: 6px;
+  width: 100%;
+  outline: none;
+  box-shadow: none;
+  border: 0;
+  padding: 0 1em;
+}

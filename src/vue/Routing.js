@@ -1,6 +1,9 @@
 // TODO: These should be uncommented for releases
+import Login from '../tp/views/Login/index';
+// import Login from '../views/Login';
+
 import PopOut from '../views/PopOut';
-import Login from '../views/Login';
+
 import Apps from '../views/Apps';
 import App from '../views/App';
 import Assets from '../views/Assets';
@@ -18,6 +21,12 @@ import Histories from '../views/Histories';
 import Settings from '../views/Settings';
 import RIDL from '../views/RIDL';
 import Purchase from '../views/Purchase';
+
+// import TPLogin from '../tp/views/Login/index'
+import DApp from '../tp/views/DApp/'
+import Asset from '../tp/views/DApp/'
+// import Wallet from '../tp/views/DApp/'
+// import DApp from '../tp/views/DApp/'
 
 // TODO: These should be commented out for testing.
 // const PopOut  = () => import('../views/PopOut');
@@ -47,7 +56,7 @@ export const RouteNames = {
 
 	LOGIN:'login',
 	HOME:'home',
-	WALLET:'wallet',
+	// WALLET:'wallet',
 	ITEMS:'items',
 	NETWORKS:'networks',
 	ASSETS:'assets',
@@ -65,6 +74,13 @@ export const RouteNames = {
 
 	APP:'app',
 	ACCOUNT:'account',
+
+	DAPP: 'DApp',
+	CHAT: 'chat',
+	ASSET: 'asset',
+	WALLET: 'wallet',
+
+	// TP_LOGIN: 'TPLogin',
 };
 
 const RouteViews = {
@@ -89,6 +105,12 @@ const RouteViews = {
 	[RouteNames.APP]:App,
 	[RouteNames.ACCOUNT]:Account,
 	[RouteNames.POP_OUT]:PopOut,
+
+	// TP
+	// [RouteNames.TP_LOGIN]:TPLogin,
+	[RouteNames.DAPP]:DApp,
+	[RouteNames.ASSETS]:Asset,
+	// [RouteNames.TP_LOGIN]:TPLogin,
 };
 
 const RoutePaths = {

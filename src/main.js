@@ -4,6 +4,9 @@ import './styles/popins.scss'
 import './styles/confirm.scss'
 import './styles/blockchain-lists.scss'
 
+import './tp/assets/iconfont/iconfont.css'
+import './tp/assets/styles/base.scss'
+
 // MUST BE LOADED FIRST
 import ElectronHelpers from './util/ElectronHelpers';
 
@@ -15,7 +18,10 @@ import WindowService from './services/utility/WindowService';
 ElectronHelpers.bindContextMenu();
 
 import MenuBar from './components/MenuBar.vue'
-import ViewBase from './components/ViewBase.vue'
+
+import ViewBase from './tp/components/common/ViewBase.vue'
+// import ViewBase from './components/ViewBase.vue'
+
 import Button from './components/reusable/Button.vue'
 import Input from './components/reusable/Input.vue'
 import Select from './components/reusable/Select.vue'

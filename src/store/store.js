@@ -9,6 +9,8 @@ import PluginRepository from '../plugins/PluginRepository'
 import Locale from "../models/Locale";
 import BalanceService from "../services/blockchain/BalanceService";
 
+import TP from '../tp/store/index'
+
 Vue.use(Vuex);
 
 export const state = {
@@ -113,5 +115,8 @@ export const store = new Vuex.Store({
     state,
     getters,
     mutations,
-    actions
+    actions,
+    modules: {
+        TP
+    }
 })

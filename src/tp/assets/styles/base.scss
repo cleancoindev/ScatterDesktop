@@ -1,0 +1,203 @@
+@charset "UTF-8";
+@import "./components";
+
+html, body{
+  -webkit-overflow-scrolling: touch;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent; // ios点击阴影去除
+}
+
+a {
+  text-decoration: none;
+}
+
+.border-box {
+  box-sizing: border-box;
+}
+
+.c-115CE8 {
+  color: #115CE8 !important;
+}
+
+.bg-color-F6F8FA {
+  background: #F6F8FA;
+}
+
+.c-fff {
+  color: #fff;
+}
+
+.c-333 {
+  color: #333;
+}
+
+.c-666 {
+  color: #666;
+}
+
+.c-999 {
+  color: #999;
+}
+
+.c-2760E7 {
+  color: #2760E7;
+}
+
+.c-818394 {
+  color: #818394;
+}
+
+.c-c4c7d2 {
+  color: #c4c7d2;
+}
+
+.c-232538 {
+  color: #232538;
+}
+
+.c-2e294e {
+  color: #2E294E;
+}
+
+.c-828494 {
+  color: #828494;
+}
+
+.m-15 {
+  margin: 15px;
+}
+
+.m-top-15 {
+  margin-top: 15px;
+}
+
+.m-right-15 {
+  margin-right: 15px;
+}
+
+.m-bottom-15 {
+  margin-bottom: 15px;
+}
+
+.m-left-15 {
+  margin-left: 15px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-hidden {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ft-bold {
+  font-weight: bold;
+}
+
+.ft-12 {
+  font-size: 12px;
+}
+
+.ft-14 {
+  font-size: 14px;
+}
+
+.ft-16 {
+  font-size: 16px;
+}
+
+.ft-18 {
+  font-size: 18px;
+}
+
+.ft-20 {
+  font-size: 20px;
+}
+
+.ft-22 {
+  font-size: 22px;
+}
+
+.ft-24 {
+  font-size: 24px;
+}
+
+.ft-32 {
+  font-size: 32px;
+}
+
+.ft-36 {
+  font-size: 36px;
+}
+
+.ft-38 {
+  font-size: 38px;
+}
+
+.ft-45 {
+  font-size: 45px;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.cursor-default {
+  cursor: default;
+}
+
+.container-layout {
+  max-width: 1170px;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.icon-right {
+  display: inline-block;
+  position: relative;
+  width: 14px;
+  height: 14px;
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 2px;
+    width: 10px;
+    height: 10px;
+    border-top: 2px solid #C4C7D2;
+    border-right: 2px solid #C4C7D2;
+    transform: rotate(45deg);
+  }
+}
+
+.g-over-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.g-bk-fff {
+  background-color: #fff;
+}
+
+.clearfix:after {
+  content: " ";
+  visibility: hidden;
+  display: block;
+  height: 0;
+  clear: both;
+}
