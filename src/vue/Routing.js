@@ -26,8 +26,9 @@ import RIDL from '../views/RIDL';
 import Purchase from '../views/Purchase';
 
 // import TPLogin from '../tp/views/Login/index'
-import DApp from '../tp/views/DApp/'
-import Asset from '../tp/views/DApp/'
+import DApp from '../tp/views/DApp/index'
+import Asset from '../tp/views/DApp/index'
+import Chat from '../tp/views/IM/index'
 // import Wallet from '../tp/views/DApp/'
 // import DApp from '../tp/views/DApp/'
 
@@ -113,6 +114,7 @@ const RouteViews = {
 	// [RouteNames.TP_LOGIN]:TPLogin,
 	[RouteNames.DAPP]:DApp,
 	[RouteNames.ASSETS]:Asset,
+	[RouteNames.CHAT]:Chat,
 	// [RouteNames.TP_LOGIN]:TPLogin,
 };
 

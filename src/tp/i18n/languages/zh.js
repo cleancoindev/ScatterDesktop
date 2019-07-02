@@ -14,9 +14,17 @@ export default {
             SECURITY: '安全',
             GENERAL: '常规',
 
+            SEARCH: '搜索',
+            CANCEL: '取消',
             CONFIRM: '确认',
             LOGIN: '登录',
-            CHAT: '聊天'
+            CHAT: '聊天',
+
+
+
+            KEY_ADD: '添加账号',
+            KEY_SEARCH: '搜索账号',
+
         },
 
         LOGIN: {

@@ -83,7 +83,10 @@
     import EosCreateAccount from "./popins/fullscreen/EosCreateAccount";
     import AddCustomNetwork from "./popins/fullscreen/AddCustomNetwork";
     import AddNewContact from "./popins/fullscreen/AddNewContact";
-    import ImportKeypair from "./popins/fullscreen/ImportKeypair";
+
+    // import ImportKeypair from "./popins/fullscreen/ImportKeypair";
+
+
     import GenerateKeypair from "./popins/fullscreen/GenerateKeypair";
     import RemoveKeypair from "./popins/fullscreen/RemoveKeypair";
     import SelectAccount from "./popins/overlay/SelectAccount";
@@ -143,7 +146,8 @@
 		    EosCreateAccount,
 		    UnlinkAccount,
 		    RemoveKeypair,
-		    ImportKeypair,
+            ImportKeypair: () => import('../tp/views/Keypair/ImportKeypair'),
+		    // ImportKeypair,
 		    GenerateKeypair,
 		    CheckHardware,
 		    EnableWhitelist,

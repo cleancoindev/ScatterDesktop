@@ -5,15 +5,16 @@
             <section ref="account" style="padding: 0 10px;">
                 <section class="account text-center">
                     <h4 class="ft-16 c-fff pointer" @click="accountOptions">
-<!--                        {{ accountInfo.name }}-->
-                        22222
-                        <span>
-                        <img style="height: 12px" src="../../assets/images/common/array.png" alt="">
-                    </span>
+                        {{ currentAccount.sendable ? currentAccount.sendable() : $t('TP.COMMON.KEY_ADD') }}
+
+                        <span v-show="currentAccount.sendable">
+                            <img style="height: 12px" src="../../assets/images/common/array.png" alt="">
+                        </span>
                     </h4>
                 </section>
             </section>
 
+<!--            {{tpAccounts}}-->
             <!-- tab 列表 -->
             <section class="tab-wrap">
                 <section class="tab-list p-10" v-for="(item, index) in tabList" :key="index">
@@ -31,52 +32,53 @@
 
         <!-- 账号列表 -->
         <section ref="accountWrap" class="account-wrap" :class="{'show': accountState}">
-<!--            <section class="account-search-wrap c-fff text-center ft-20">-->
-<!--                <div class="account-search">-->
-<!--                    <i class="TP-Iconfont tp-icon-searchx ft-18"></i>-->
-<!--                    <input type="search" v-model="searchAccount"/>-->
-<!--                </div>-->
+            <section class="account-search-wrap c-fff text-center ft-20">
+                <div class="account-search">
+                    <i class="TP-Font tp-font-search ft-18"></i>
+                    <input type="search" v-model="terms"/>
+                </div>
 
-<!--            </section>-->
+            </section>
 
             <!-- 原始账号数据 -->
-<!--            <section class="account-main" v-if="!searchAccount">-->
-<!--                <section class="account-list c-fff text-center ft-20 pointer"-->
-<!--                         v-for="(item, index) in accountList"-->
-<!--                         :key="index"-->
-<!--                         @click="handleCommand(item)">-->
-<!--                    <span>-->
+            <section class="account-main" v-if="!terms">
+                <section class="account-list c-fff text-center ft-20 pointer"
+                         v-for="(account, index) in tpAccounts"
+                         :key="index"
+                         @click="handleCommand(account)">
+                    <span>
 <!--                        <i class="platform-icon" :style="{backgroundImage: `url(${item.networks.icon_url})`}"></i>-->
-<!--                        <span>{{item.name}}</span>-->
-<!--                    </span>-->
-<!--                    <span class="check" :class="{'account-check': item.name === accountInfo.name}"></span>-->
-<!--                </section>-->
-<!--            </section>-->
+                        <span>{{account.sendable()}}</span>
+                    </span>
+                    <span class="check" :class="{'account-check': account.sendable() === currentAccount.sendable()}"></span>
+                </section>
+            </section>
 
             <!-- 搜索账号过滤数据 -->
-<!--            <section class="account-main" v-if="searchAccount">-->
-<!--                <section class="account-list c-fff text-center ft-20 pointer"-->
-<!--                         v-for="(item, index) in searchAccountList"-->
-<!--                         :key="index"-->
-<!--                         @click="handleCommand(item)">-->
-<!--                    <span>-->
+            <section class="account-main" v-if="terms">
+                <section class="account-list c-fff text-center ft-20 pointer"
+                         v-for="(account, index) in tpAccounts"
+                         :key="index"
+                         @click="handleCommand(account)">
+                    <span>
 <!--                        <i class="platform-icon" :style="{backgroundImage: `url(${item.networks.icon_url})`}"></i>-->
-<!--                        <span>{{item.name}}</span>-->
-<!--                    </span>-->
-<!--                    <span class="check" :class="{'account-check': item.name === accountInfo.name}"></span>-->
-<!--                </section>-->
-<!--            </section>-->
+                        <span>{{account.sendable()}}</span>
+                    </span>
+                    <span class="check" :class="{'account-check': account.sendable() === currentAccount.sendable()}"></span>
+                </section>
+            </section>
 
 
 
             <!-- 添加账号 -->
-<!--            <section class="account-add">-->
-<!--                <button class="tp-button on" style="padding: 15px 0;" @click="addAccount">-->
-<!--                    {{$t($langKeys.DASHBOARD.KEYS.AddKeysButton)}}-->
-<!--                </button>-->
-<!--            </section>-->
-<!--        </section>-->
+            <section class="account-add">
+                <button class="tp-button on" style="padding: 15px 0;" @click="addAccount">
+                    {{$t('TP.COMMON.KEY_ADD')}}
+                </button>
+            </section>
+        </section>
     </section>
+
 <!--    <section class="sidebar-container" :class="{'locked':!sidebarLocked}">-->
 <!--        <section class="placeholder"></section>-->
 <!--        <section class="sidebar">-->
@@ -94,18 +96,21 @@
 <!--                <i class="icon-lock"></i>-->
 <!--            </figure>-->
 <!--        </section>-->
-    </section>
+<!--    </section>-->
 </template>
 
 <script>
     import { mapGetters, mapState, mapActions } from 'vuex';
     import * as Actions from '../../../store/constants';
     import { RouteNames } from '../../../vue/Routing';
+    import PopupService from "../../../services/utility/PopupService";
+    import { Popup} from '../../../models/popups/Popup';
 
     export default {
         data() {
             return {
-                accountState: false
+                accountState: false,
+                terms: ''
             };
         },
         computed: {
@@ -115,6 +120,9 @@
             ]),
             ...mapGetters([
                 'accounts',
+                'tpAccounts',
+                'keypairs',
+                'currentAccount'
             ]),
 
             tabList() {
@@ -131,41 +139,20 @@
                     }
                 ];
             },
-
-            items() {
-                return [
-                    {
-                        name: null,
-                        items: [
-                            this.accounts.length ? { name: 'Apps', route: RouteNames.HOME } : null,
-                            { name: 'Wallet', route: RouteNames.WALLET },
-                            this.accounts.length ? { name: 'Assets', route: RouteNames.ASSETS } : null,
-                            // this.accounts.length ? {name:'Marketplace', route:RouteNames.ITEMS} : null,
-                            { name: 'Identities', route: RouteNames.IDENTITIES },
-                            { name: 'Locations', route: RouteNames.LOCATIONS },
-                            this.accounts.length ? { name: 'Reputation', route: RouteNames.RIDL } : null,
-                            this.features.creditCards ? { name: 'Purchase', route: RouteNames.PURCHASE } : null,
-                        ].filter(x => !!x)
-                    },
-                    {
-                        name: 'Administrative',
-                        items: [
-                            { name: 'Contacts', route: RouteNames.CONTACTS },
-                            this.history.length ? { name: 'History', route: RouteNames.HISTORIES } : null,
-                            { name: 'Networks', route: RouteNames.NETWORKS },
-                            { name: 'Settings', route: RouteNames.SETTINGS },
-                        ].filter(x => !!x)
-                    }
-                ];
-            }
         },
         mounted() {
-            this[Actions.SET_SIDEBAR](window.localStorage.getItem('sidebar') === 'true');
+            document.addEventListener('click', e => {
+                // 点击除弹出层外的空白区域
+                if (
+                    (this.$refs.account && !this.$refs.account.contains(e.target)) &&
+                    (this.$refs.accountWrap && !this.$refs.accountWrap.contains(e.target))
+                ) this.accountState = false
+            }, false)
+
         },
         methods: {
             isActive(name) {
                 return this.$route.name === name
-                // item.icon
             },
 
             tabChange(item) {
@@ -176,23 +163,23 @@
             },
 
             accountOptions() {
-
+                if (this.currentAccount.sendable ) {
+                    this.accountState = !this.accountState
+                } else {
+                    this.addAccount()
+                }
             },
 
-            itemIcon(item) {
-                if (item.name === 'Reputation') return 'sidebar-sidebar_ridl';
-                if (item.name === 'Marketplace') return 'sidebar-sidebar_items';
-                return `sidebar-sidebar_${item.name.toLowerCase()}`;
+            handleCommand(account) {
+                this.$store.commit('CURRENT_ACCOUNT', account)
             },
 
-            toggleSidebar() {
-                this[Actions.SET_SIDEBAR](!this.sidebarLocked);
-                window.localStorage.setItem('sidebar', this.sidebarLocked);
-            },
+            addAccount() {
+                PopupService.push(Popup.importKeypair({}, keypair => {}));
+            }
 
-            ...mapActions([
-                Actions.SET_SIDEBAR
-            ])
+        },
+        watch: {
         }
     };
 </script>
@@ -229,7 +216,7 @@
         top: 0;
         left: -120px;
         width: 280px;
-        height: 100vh;
+        height: 100%;
         overflow: auto;
         background: #1C1E2F;
         opacity: 0;

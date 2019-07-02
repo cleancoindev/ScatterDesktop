@@ -14,7 +14,7 @@
                 <Sidebar v-if="unlocked && onboarded" />
                 <section class="view-pane">
 <!--                    <QuickActions v-if="showQuickActions" />-->
-                    <router-view class="router-view" :class="{'lowered':true, 'floated':unlocked}"></router-view>
+                    <router-view class="router-view"></router-view>
                 </section>
 
                 <Processes />
@@ -136,6 +136,7 @@
         background:$white;
         margin-top:40px;
         box-shadow:inset 0 0 0 1px $lightgrey;
+        position: relative;
     }
 
     .view-base {

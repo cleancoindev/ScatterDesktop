@@ -14,9 +14,17 @@ export default {
             SECURITY: 'Security',
             GENERAL: 'General',
 
+            SEARCH: 'Search',
+            CANCEL: 'Cancel',
+            OK: '',
             CONFIRM: 'Confirm',
             LOGIN: 'Login',
             CHAT: 'Chat',
+
+
+
+            KEY_ADD: 'Add Keys',
+            KEY_SEARCH: 'Search Keys'
         },
 
         LOGIN: {
@@ -50,6 +58,6 @@ export default {
             GROUP_NOTICE: 'Group Notice',
             GROUP_NO_NOTICE: 'No group announcement',
             GROUP_DELETE: 'Delete and Leave',
-        }
+        },
     }
 }

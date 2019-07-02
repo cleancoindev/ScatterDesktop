@@ -1,27 +1,47 @@
-import DApp from './modules/DApp'
+import DApp from './modules/DApp';
+import Account from './modules/Account'
+import Chat from './modules/Chat/index'
 
 const TP = {
     state: {
-        ...DApp.state,
+        chainIdObj: {
+            'aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906': 4,
+            'd5a3d18fbb3c084e3b1f3fa98c21014b5f3db536cc15d08f9f6479517c6a3d86': 6
+        },
         currentLanguage: 'zh-Hans',
+        ...Account.state,
+        ...DApp.state,
+        ...Chat.state,
+
+
     },
 
     getters: {
+        ...Account.getters,
         ...DApp.getters,
-        currentLanguage: state => state.currentLanguage
+        ...Chat.getters,
+        currentLanguage: state => state.currentLanguage,
     },
 
     mutations: {
-        ...DApp.mutations
+        ...Account.mutations,
+        ...DApp.mutations,
+        ...Chat.mutations,
     },
 
     actions: {
-        ...DApp.actions
+        ...Account.actions,
+        ...DApp.actions,
+        ...Chat.actions,
+        HAS_CHAIN({state}, chainId) {
+            return new Promise(resolve => {
+                console.log(state.chainIdObj[chainId]);
+                resolve(state.chainIdObj[chainId])
+            })
+        },
     },
 
-    modules: {
+    modules: {}
+};
 
-    }
-}
-
-export default TP
+export default TP;

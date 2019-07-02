@@ -89,13 +89,13 @@ const createScatterInstance = () => {
 	app.setAsDefaultProtocolClient('scatter');
 
 	const createMainWindow = (show, backgroundColor) => new BrowserWindow({
-		width: 1024,
-		height: 800,
+		width: 1000,
+		height: 720,
 		frame: false,
 		radii: [5,5,5,5],
 		icon,
 		resizable: true,
-		minWidth: 800,
+		minWidth: 1000,
 		minHeight:720,
 		titleBarStyle:'hiddenInset',
 		backgroundColor,
@@ -110,8 +110,8 @@ const createScatterInstance = () => {
 	mainWindow.loadURL(mainUrl(false));
 
 	mainWindow.once('ready-to-show', () => {
-		mainWindow.show(); 
-  		mainWindow.focus(); 
+		mainWindow.show();
+  		mainWindow.focus();
 	});
 
 	// mainWindow.openDevTools();

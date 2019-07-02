@@ -29,10 +29,14 @@
 
 					<section style="flex:1;">
 						<label>{{locale(langKeys.SETTINGS.NETWORKS.CUSTOM.ProtocolLabel)}}</label>
+<!--						<Select style="flex:1; margin-top:5px;" bordered="1"-->
+<!--						        :selected="network.protocol"-->
+<!--						        :options="['http', 'https']"-->
+<!--						        v-on:changed="x => network.protocol = x" />-->
+
 						<Select style="flex:1; margin-top:5px;" bordered="1"
-						        :selected="network.protocol"
-						        :options="['http', 'https']"
-						        v-on:changed="x => network.protocol = x" />
+								v-on:selected="x => network.protocol = x"
+								:options="['http', 'https']"/>
 					</section>
 
 					<Input style="flex:1; margin-bottom:0;"
@@ -146,10 +150,15 @@
 				token.blockchain = this.network.blockchain;
 				this.network.token = token;
 			},
+
+			isSelect(data) {
+				console.log(data);
+			}
 		},
 		watch:{
 			['network'](){
 				this.$emit('updated', this.network);
+				console.log(this.network.protocol);
 			},
 		}
 	}
