@@ -9,7 +9,7 @@
 
                 <h4 class="ft-24 c-c4c7d2">{{$t('TP.GENERIC.Password')}}</h4>
 
-                <h5 class="ft-16" v-if="isNewScatter">{{$t('TP.LOGIN.CANT_LOGIN_NOTICE_4')}}</h5>
+                <h5 class="ft-14" style="font-weight: normal" v-if="isNewScatter">{{$t('TP.LOGIN.CANT_LOGIN_NOTICE_4')}}</h5>
 
                 <!-- 密码 -->
                 <figure>

@@ -69,7 +69,7 @@
 	.menu-bar {
 		-webkit-app-region: drag;
 		-webkit-user-select: none !important;
-		background: $blue;
+		//background: $blue;
 		color:#fff;
 		height:$menuheight;
 		line-height: $menuheight;
@@ -80,9 +80,9 @@
 		top:0;
 		left:0;
 		right:0;
-		border-top:1px solid $darkerblue;
-		border-left:1px solid $darkerblue;
-		border-right:1px solid $darkerblue;
+		//border-top:1px solid $darkerblue;
+		//border-left:1px solid $darkerblue;
+		//border-right:1px solid $darkerblue;
 
 		.actions {
 			-webkit-app-region: drag;

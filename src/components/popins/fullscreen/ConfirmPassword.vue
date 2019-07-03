@@ -6,19 +6,20 @@
 				<Lock />
 				<br>
 				<br>
-				<figure class="title">{{locale(langKeys.POPINS.FULLSCREEN.CONFIRM_PASS.Title)}}</figure>
+				<figure class="title">{{$t('TP.PASSWORD.Label')}}</figure>
 
 				<br>
 				<Input  style="width:350px;" big="1"
 				        :text="password"
 				        v-on:enter="verify"
 				        v-on:changed="x => password = x"
-				        centered="1" placeholder="Enter you password"
+				        centered="1" :placeholder="$t('TP.PASSWORD.Placeholder')"
 				        type="password" />
 			</section>
 
 
-			<ActionBar :buttons-left="[{text:'Cancel', click:() => returnResult(false)}]" :buttons-right="[{text:'Confirm', red:true, click:() => verify()}]" />
+			<ActionBar :buttons-left="[{text: $t('TP.GENERIC.Cancel'), click:() => returnResult(false)}]"
+					   :buttons-right="[{text: $t('TP.GENERIC.Confirm'), blue:true, click:() => verify()}]" />
 		</section>
 	</section>
 </template>

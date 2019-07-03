@@ -10,7 +10,7 @@ import PopOut from '../views/PopOut';
 import Apps from '../views/Apps';
 import App from '../views/App';
 import Assets from '../views/Assets';
-import Wallet from '../views/Wallet';
+import Wallets from '../views/Wallet';
 import Account from '../views/Account';
 import Items from '../views/Items';
 import Transfer from '../views/Transfer';
@@ -29,7 +29,8 @@ import Purchase from '../views/Purchase';
 import DApp from '../tp/views/DApp/index'
 import Asset from '../tp/views/Asset/index'
 import Chat from '../tp/views/IM/index'
-// import Wallet from '../tp/views/DApp/'
+import Wallet from '../tp/views/Wallet/index'
+import ImportTextKey from '../tp/views/Keypair/ImportPrivateKey'
 // import DApp from '../tp/views/DApp/'
 
 // TODO: These should be commented out for testing.
@@ -60,7 +61,7 @@ export const RouteNames = {
 
 	LOGIN:'login',
 	HOME:'home',
-	// WALLET:'wallet',
+	WALLETS:'wallets',
 	ITEMS:'items',
 	NETWORKS:'networks',
 	ASSETS:'assets',
@@ -84,13 +85,15 @@ export const RouteNames = {
 	ASSET: 'asset',
 	WALLET: 'wallet',
 
+	IMPORT_TEXT_KEY: 'importTextKey'
+
 	// TP_LOGIN: 'TPLogin',
 };
 
 const RouteViews = {
 	[RouteNames.LOGIN]:Login,
 	[RouteNames.HOME]:Apps,
-	[RouteNames.WALLET]:Wallet,
+	[RouteNames.WALLETS]:Wallets,
 	[RouteNames.ITEMS]:Items,
 	[RouteNames.NETWORKS]:Networks,
 	[RouteNames.ASSETS]:Assets,
@@ -115,6 +118,8 @@ const RouteViews = {
 	[RouteNames.DAPP]:DApp,
 	[RouteNames.ASSET]:Asset,
 	[RouteNames.CHAT]:Chat,
+	[RouteNames.WALLET]:Wallet,
+	[RouteNames.IMPORT_TEXT_KEY]: ImportTextKey,
 	// [RouteNames.TP_LOGIN]:TPLogin,
 };
 

@@ -5,18 +5,18 @@ const Account = {
 
     getters: {
         tpAccounts: (state, getters) => {
-            const keypairs = getters.keypairs.map(keypair => {
-                return keypair.accounts(true)
-                .filter(x => x.sendable())
-                .sort((a, b) => {
-                    return b.totalFiatBalance() - a.totalFiatBalance();
+            if (Array.isArray(getters.keypairs)) {
+                const keypairs = getters.keypairs.map(keypair => {
+                    return keypair.accounts(true).filter(x => x.sendable())
                 });
-            });
 
-            return keypairs.reduce((a, b) => {
-                a.forEach(account => b.push(account));
-                return b;
-            }, []);
+                return keypairs.reduce((a, b) => {
+                    a.forEach(account => b.push(account));
+                    return b;
+                }, []);
+            }
+
+            return []
         },
         currentAccount: (state, getters) => {
             if (!state.currentAccount.sendable && getters.tpAccounts.length > 0) {

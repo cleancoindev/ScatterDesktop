@@ -17,12 +17,12 @@
                     </el-button>
 
                     <!-- 转账 -->
-                    <el-button class="btn-transfer"
-                               size="mini"
-                               round
-                               @click="$router.push({name: RouteNames.TRANSFER})">
-                        {{$t('TP.TRANSFER.Title')}}
-                    </el-button>
+<!--                    <el-button class="btn-transfer"-->
+<!--                               size="mini"-->
+<!--                               round-->
+<!--                               @click="$router.push({name: RouteNames.TRANSFER})">-->
+<!--                        {{$t('TP.TRANSFER.Title')}}-->
+<!--                    </el-button>-->
                 </section>
 
             </section>
@@ -77,8 +77,8 @@
 
 <script>
     import { mapGetters } from 'vuex';
-    import Token from '../../../models/Token';
     import TokenList from './TokenList'
+    import BalanceService from "../../../services/blockchain/BalanceService";
 
     export default {
         components: {
@@ -95,24 +95,11 @@
 
         computed: {
             ...mapGetters([
-                // 'assetInfo',
-                'accountInfo',
                 'tpAccounts',
                 'currentAccount'
             ]),
             tokens() {
                return this.currentAccount.tokens ? this.currentAccount.tokens() : []
-               // return this.currentAccount.tokens().filter(token => {
-               //      if (!this.terms.length) return true;
-               //      if (this.terms === '-') return this.change(token) && !this.change(token).plus && token.fiatBalance(false);
-               //      if (this.terms === '+') return this.change(token) && this.change(token).plus && token.fiatBalance(false);
-               //      if (this.terms.indexOf('::') > -1) return `${token.contract.toLowerCase()}::${token.symbol.toLowerCase()}` === this.terms;
-               //      if (isNaN(this.terms)) return token.symbol.toLowerCase().indexOf(this.terms) > -1 || token.contract.toLowerCase().indexOf(this.terms) > -1;
-               //      return token.amount >= parseFloat(this.terms);
-               //  }).sort((a, b) => {
-               //      if (this.terms === '+' || this.terms === '-') return this.change(b, true) - this.change(a, true);
-               //      return Token.sorter(a, b);
-               //  });
             }
         },
 
@@ -124,6 +111,7 @@
 
             // console.log(tokens);
             // })
+            this.lazyLoadBalances()
         },
 
         methods: {
@@ -134,33 +122,26 @@
                 });
             },
 
-            async getAsset() {
-                this.loadingBalances = true;
-                await this.$store.dispatch('GET_ASSET');
-                setTimeout(() => this.loadingBalances = false, 500);
+            async refreshTokens() {
+                this.lazyLoadBalances();
             },
 
-            async refreshTokens() {
-                this.getAsset();
+            async lazyLoadBalances(){
+                this.loadingBalances = true;
+                await BalanceService.loadBalancesFor(this.currentAccount);
+                setTimeout(() => this.loadingBalances = false, 500);
             },
         },
 
         watch: {
-            // accountInfo() {
-            //     this.getAsset();
-            // },
-            //
-            // searchTerms() {
-            //     this.searchTerms === ''
-            //         ? this.getAsset()
-            //         : this.$store.commit('FILTER_ASSET', this.searchTerms.toLowerCase());
-            // }
+            currentAccount() {
+                this.lazyLoadBalances();
+            },
         }
     };
 </script>
 
 <style scoped lang="scss" rel="stylesheet/scss">
-    /*@import "../../styles/variables";*/
 
     .btn-transfer {
         background: transparent;

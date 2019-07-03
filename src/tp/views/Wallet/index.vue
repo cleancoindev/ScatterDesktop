@@ -1,503 +1,464 @@
 <template>
-    <section class="login-wrap">
-        <section class="login-left">
-            <!-- left content -->
+    <section class="TP-wallets">
+        <!-- 账号列表 -->
+        <section class="accounts">
+            <section class="account-item" v-for="(account, index) in walletList" :key="index">
+
+                <section class="account-blockchain">
+                        <section class="blockchain-left">
+                            <figure class="network">
+                                {{blockchainName(account.blockchain())}} - <b>{{account.network().name}}</b>
+                            </figure>
+
+                            <section class="authorities">
+                                <figure class="authority"
+                                        v-for="(acc, index) in account.authorities()"
+                                        :key="index"
+                                        :class="{'red':acc.authority === 'owner'}">
+                                    {{acc.authority}}
+                                </figure>
+                            </section>
+                        </section>
+
+                        <section class="blockchain-right text-right">
+                            <figure class="authority export pointer" @click="exportPrivate(account)">
+                                {{$t('TP.GENERIC.Export')}}
+                            </figure>
+
+                            <figure class="authority delete pointer" @click="accountUnlink(account)">
+                                {{$t('TP.GENERIC.Delete')}}
+                            </figure>
+                        </section>
+                </section>
+
+                <figure class="account-name ft-20">
+                    {{account.sendable()}}
+                </figure>
+
+                <section class="account-resource">
+                    <section class="loading" v-if="!account.resource">
+                        <figure class="spinner icon-spin4 animate-spin"></figure>
+                    </section>
+
+                    <section class="resources" v-if="account.resource">
+                        <section class="moderation text-center" v-for="(resource, index) in account.resource" :key="index">
+                            <figure>
+                                <percentage :percentage="resource.percentage">
+                                    <figure class="name c-c4c7d2">
+                                        {{resource.name}}
+                                    </figure>
+                                </percentage>
+                            </figure>
+
+                            <figure class="ft-14">
+                                <span class="c-c4c7d2" v-if="resource.total">{{$t('TP.GENERIC.Mortgage')}}：</span>
+                                {{resource.total}}&emsp;
+                            </figure>
+
+                            <figure class="ft-14">
+                                <span class="c-c4c7d2">{{$t('TP.GENERIC.Available')}}：</span>
+                                {{resource.used}} {{resource.unit}} / {{resource.max}} {{resource.unit}}
+                            </figure>
+
+                        </section>
+                    </section>
+
+                </section>
+<!--                <AccountInfo :key="account.unique()"-->
+<!--                             :account="account"-->
+<!--                             @tokens="tokens => $emit('tokens', tokens)"-->
+<!--                             @delete="getAccountInfo"-->
+<!--                             @accountInfo="getExportAccountInfo"/>-->
+            </section>
+        </section>
+
+
+        <!-- 删除权限 -->
+        <!-- 遮罩层 -->
+        <section class="account-unlink" v-show="accountUnlinkState" @click="resetState"></section>
+        <section class="account-unlink-right text-center" :class="{'on': accountUnlinkState}">
+            <img style="width: 80px;margin-bottom: 20px" src="../../assets/images/common/delete.png" alt="">
+            <p class="ft-20 c-fff m-bottom-15">{{accountInfo.name}}</p>
+
+            <p class="ft-14 c-828494 m-bottom-15">{{$t('TP.POPINS.FULLSCREEN.UNLINK_ACCOUNT.SubDesc')}}</p>
+            <p class="ft-12 c-fff m-bottom-15 text-left">
+                {{$t('TP.POPINS.FULLSCREEN.UNLINK_ACCOUNT.AuthoritiesLabel')}}</p>
+
             <section>
-                <h3 class="ft-36 c-2e294e" style="">
-                    {{isNewScatter ? $t('TP.GENERIC.Setting') : $t('TP.GENERIC.Login')}}
-                </h3>
-
-                <h4 class="ft-24 c-c4c7d2">{{$t('TP.GENERIC.Password')}}</h4>
-
-                <h5 class="ft-16" v-if="isNewScatter">{{$t('TP.LOGIN.CANT_LOGIN_NOTICE_4')}}</h5>
-
-                <!-- 密码 -->
-                <figure>
-                    <input class="tp-input" type="password"
-                           :placeholder="isNewScatter ? $t('TP.LOGIN.SET_PASSWORD_DESC') : $t('TP.LOGIN.PASSWORD_DESC')"
-                           v-model="password"
-                           @keyup.enter="unlock"/>
+                <figure class="account-authorities pointer"
+                        v-for="(item, index) in accountInfo.authorities"
+                        :key="index"
+                        :class="{'active': hasSelector(item)}"
+                        @click="addOrRemoveAuthority(item)">
+                    {{item.title}}
                 </figure>
-
-                <!-- 密码确认 -->
-                <figure v-show="isNewScatter">
-                    <input class="login-input" type="password"
-                           :placeholder="$t('TP.LOGIN.CONFIRM_PASSWORD_DESC')"
-                           @keyup.enter="checkPassword"
-                           v-model="confirmation"/>
-                </figure>
-
-                <!-- 创建 -->
-                <figure v-show="isNewScatter">
-                    <button class="tp-button login-btn c-fff ft-24 pointer"
-                            :class="{'on': password.length > 0 && password === confirmation}"
-                            @click="checkPassword"
-                            v-loading="working"
-                            element-loading-spinner="el-icon-loading">
-                        {{$t('TP.GENERIC.Confirm')}}
-                    </button>
-                </figure>
-
-                <!--                {{password}}-->
-                <!-- 登录 -->
-                <figure v-show="!isNewScatter">
-                    <button class="tp-button loading login-btn c-fff ft-24"
-                            v-loading="working"
-                            element-loading-spinner="el-icon-loading"
-                            :class="{'on': password.length > 0}"
-                            @click="unlock">
-                        {{$t('TP.GENERIC.Login')}}
-                    </button>
-                </figure>
-
-                <!-- 忘记密码 -->
-                <figure v-show="!isNewScatter">
-                    <span class="ft-14 pointer" style="color: #2980FE;margin-top: 24px;display: inline-block"
-                          @click="forgetPwd">
-                        {{$t('TP.LOGIN.CANT_LOGIN')}}?
-                    </span>
-                </figure>
-
             </section>
 
-
-            <section class="change-language ft-16">
-                <span class="pointer" :class="{'active': currentLanguage === 'zh-Hans'}"
-                      @click="changeLanguage('zh-Hans')">中</span>
-                <span class="pointer" :class="{'active': currentLanguage === 'en'}"
-                      @click="changeLanguage('en')">EN</span>
+            <section style="margin-top: 50px;">
+                <button class="tp-button"
+                        :class="{'on': selectedAuthorities.length > 0}"
+                        @click="unlinkAccount">
+                    {{$t('TP.GENERIC.Confirm')}}
+                </button>
             </section>
-
         </section>
 
-        <!-- right logo -->
-        <section class="login-right text-center">
-            <img class="logo-img" src="../../assets/images/common/login.png" alt="">
-            <h3 class="ft-36 c-fff">TOKEN POCKET</h3>
-            <h5 class="ft-14">YOUR UNIVERSAL DIGITAL WALLET</h5>
-        </section>
-
-        <!--        <section class="entry" v-if="state === STATES.NEW_OR_LOGIN" :class="{'success':success}">-->
-        <!--            <figure class="login-bg">-->
-        <!--                <img src="../../../assets/login_bg.png" />-->
-        <!--            </figure>-->
-        <!--            <section class="meteors">-->
-        <!--                <section class="rotator">-->
-        <!--                    <figure class="shooting_star" v-for="i in new Array(20).keys()"></figure>-->
-        <!--                </section>-->
-        <!--            </section>-->
-
-        <!--            <section class="head">-->
-        <!--                <section class="details">-->
-        <!--                    <figure class="logo scatter-logologo"></figure>-->
-        <!--                    <figure class="version">meteoric</figure>-->
-        <!--                </section>-->
-        <!--            </section>-->
-
-        <!-------------------------->
-        <!------ NEW SCATTER ------->
-        <!-------------------------->
-        <!--            <section class="body">-->
-        <!--                <section v-if="isNewScatter">-->
-        <!--                    <LoginButton-->
-        <!--                            @click.native="state = STATES.CREATE_NEW"-->
-        <!--                            primary="1"-->
-        <!--                            title="I'm new to blockchain"-->
-        <!--                            description="We'll set you up with a new blockchain account" />-->
-        <!--                    <LoginButton-->
-        <!--                            @click.native="state = STATES.IMPORT_KEYS"-->
-        <!--                            title="I have my own private keys"-->
-        <!--                            description="Import your accounts manually" />-->
-        <!--                </section>-->
-
-        <!-------------------------->
-        <!---- EXISTING SCATTER ---->
-        <!-------------------------->
-        <!--                <section v-if="!isNewScatter">-->
-        <!--                    <Input class="welcome-password" :focus="true" big="1" for-login="1"-->
-        <!--                           placeholder="Enter your password"-->
-        <!--                           type="password" :disabled="opening || isLockedOut"-->
-        <!--                           :loader-on-dynamic="opening && !success"-->
-        <!--                           :text="password" v-on:enter="unlock" v-on:dynamic="unlock" v-on:changed="x => password = x"-->
-        <!--                           :dynamic-button="badPassword ? 'icon-cancel' : success ? 'icon-check' : isLockedOut ? '' : 'icon-right-open-big'" :hide-dynamic-button="!password.length" />-->
-
-        <!--                </section>-->
-        <!--            </section>-->
-
-        <!--            <section class="tail">-->
-        <!--                &lt;!&ndash;<section class="terms">&ndash;&gt;-->
-        <!--                &lt;!&ndash;Use of Scatter is limited to our <u>Terms of Use</u>.<br>&ndash;&gt;-->
-        <!--                &lt;!&ndash;Please make sure to also read our <u>Privacy Policy</u>.&ndash;&gt;-->
-        <!--                &lt;!&ndash;</section>&ndash;&gt;-->
-        <!--                <section class="actions">-->
-        <!--                    <section class="action" @click="destroy" v-if="!isNewScatter">-->
-        <!--                        <Reset class="logo" />-->
-        <!--                        <figure class="text">Reset</figure>-->
-        <!--                    </section>-->
-        <!--                    <section class="action" @click="importBackup" v-if="isNewScatter">-->
-        <!--                        <Restore class="logo" />-->
-        <!--                        <figure class="text">Restore</figure>-->
-        <!--                    </section>-->
-        <!--                    <section class="action" @click="goToSupport">-->
-        <!--                        <Support class="logo" />-->
-        <!--                        <figure class="text">Support</figure>-->
-        <!--                    </section>-->
-        <!--                </section>-->
-        <!--            </section>-->
-
-        <!--        </section>-->
-
-
-        <!-------------------------->
-        <!-- CREATING NEW SCATTER (No keys) -->
-        <!-------------------------->
-        <!--        <section class="onboard" v-if="state === STATES.CREATE_NEW">-->
-        <!--            <ProgressBubbles :total="steps" :index="step" />-->
-
-        <!--            <section class="panel">-->
-        <!--                <Terms v-if="step === 1" v-on:back="stepBack" v-on:next="stepForward" />-->
-        <!--                <SetPassword v-if="step === 2" v-on:back="stepBack" v-on:next="stepForward" />-->
-        <!--                &lt;!&ndash;<SelectBackupLocation v-if="step === 3" v-on:back="stepBack" v-on:next="stepForward" />&ndash;&gt;-->
-        <!--                <Welcome v-if="step === 3" />-->
-        <!--            </section>-->
-
-        <!--        </section>-->
-
-
-        <!-------------------------->
-        <!-- CREATING NEW SCATTER (Has keys) -->
-        <!--        &lt;!&ndash;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
-        <!--        <section class="onboard" v-if="state === STATES.IMPORT_KEYS">-->
-        <!--            <ProgressBubbles :total="steps" :index="step" />-->
-
-        <!--            <section class="panel">-->
-        <!--                <Terms v-if="step === 1" v-on:back="stepBack" v-on:next="stepForward" />-->
-        <!--                <SetPassword v-if="step === 2" v-on:back="stepBack" v-on:next="importKeypair" />-->
-        <!--                <Welcome v-if="step === 4" />-->
-        <!--            </section>-->
-
-        <!--        </section>-->
-
+<!--        <ExportPrivateKey v-if="isExport"-->
+<!--                          :export-account-info="exportAccountInfo"-->
+<!--                          @state="state => isExport = state"-->
+<!--        />-->
     </section>
 </template>
 
 <script>
-    import { mapActions, mapGetters, mapState } from 'vuex';
+    import { mapState, mapActions, mapGetters } from 'vuex';
+    import Percentage from '../../components/common/Progress';
+
+    import ResourceService from "../../../services/blockchain/ResourceService";
+    import Process from "../../../models/Process";
+    import _ from 'underscore';
+
+    // import ExportPrivateKey from './ExportPrivateKey';
+
+    import KeyPairService from '../../../services/secure/KeyPairService';
+    import AccountService from '../../../services/blockchain/AccountService';
+    import BalanceService from '../../../services/blockchain/BalanceService';
     import * as Actions from '../../../store/constants';
 
-    import ProgressBubbles from '../../../components/reusable/ProgressBubbles';
-    import ActionBar from '../../../components/reusable/ActionBar';
-    import LoginButton from '../../../components/login/LoginButton';
-    import Terms from '../../../components/login/Terms';
-    import SetPassword from '../../../components/login/SetPassword';
-    import SelectBackupLocation from '../../../components/login/SelectBackupLocation';
-    import Welcome from '../../../components/login/Welcome';
-    import PopupService from '../../../services/utility/PopupService';
-    import PasswordService from '../../../services/secure/PasswordService';
-    import StoreService from '../../../services/utility/StoreService';
-    import { Popup } from '../../../models/popups/Popup';
-
-    import SpaceBackground from '../../../components/backgrounds/SpaceBackground';
-    import Reset from '../../../components/svgs/login/Reset';
-    import Restore from '../../../components/svgs/login/Restore';
-    import Support from '../../../components/svgs/login/Support';
-    import ElectronHelpers from '../../../util/ElectronHelpers';
-    import BackupService from '../../../services/utility/BackupService';
-
-
-    import { RouteNames } from '../../../vue/Routing';
-
-    const STATES = {
-        NEW_OR_LOGIN: 'newOrLogin',
-        CREATE_NEW: 'createNew',
-        IMPORT_KEYS: 'importKeys',
-        IMPORT_BACKUP: 'importBackup',
+    const DASH_STATES = {
+        ADD_ACCOUNT: 'addAccount',
+        ACCOUNTS: 'accounts',
+        PUBLIC_KEYS: 'publicKeys'
     };
-
-
-    const lockoutTime = 1000 * 60 * 5;
-    const resetLockout = () => window.localStorage.removeItem('lockout');
-    const getLockout = () => JSON.parse(window.localStorage.getItem('lockout') || JSON.stringify({
-        tries: 0,
-        stamp: 0
-    }));
-    const setLockout = () => {
-        const lockout = getLockout();
-        lockout.tries++;
-        lockout.stamp = +new Date();
-        return window.localStorage.setItem('lockout', JSON.stringify(lockout));
-    };
-
 
     export default {
+        props: [
+            'keypair',
+            'accountList',
+        ],
         components: {
-            SpaceBackground,
-            Welcome,
-            SelectBackupLocation,
-            ActionBar,
-            ProgressBubbles,
-            LoginButton,
-            SetPassword,
-            Terms,
-
-            Reset,
-            Restore,
-            Support,
+            Percentage
+            // AccountInfo,
+            // ExportPrivateKey
         },
+
         data() {
             return {
-                state: STATES.NEW_OR_LOGIN,
-                STATES,
+                scrollerAtTop: true,
+                dashState: DASH_STATES.ACCOUNTS,
+                DASH_STATES,
 
-                step: 2,
-                password: '',
-                opening: false,
-                success: false,
-                badPassword: false,
+                searchTerms: '',
+                manualAccountNetwork: null,
 
-                currentLanguage: 'zh',
-                confirmation: '',
+                newAccountName: '',
+                accountUnlinkState: false,
+                accountInfo: {
+                    name: '',
+                    authorities: []
+                },
+                selectedAuthorities: [],
+
+
+                isExport: false,
+                exportAccountInfo: {},
             };
         },
-        created() {
-            // console.log(this.$i18n);
-        },
+
         computed: {
             ...mapState([
-                'scatter',
+                'resources'
             ]),
             ...mapGetters([
-                // 'currentLanguage'
+                'keypairs',
+                'accounts',
+                'networks',
+                'tpAccounts',
+                'currentAccount',
             ]),
-            isNewScatter() {
-                return !this.scatter;
+            usesResources(){
+                return ResourceService.usesResources(this.currentAccount);
             },
-            steps() {
-                switch (this.state) {
-                    case STATES.CREATE_NEW:
-                        return 3;
-                    case STATES.IMPORT_KEYS:
-                        return 4;
-                    case STATES.IMPORT_BACKUP:
-                        return 3;
-                }
+
+            walletList() {
+                return this.tpAccounts.map(account => {
+                    account.resource = this.resources[account.identifiable()] || [];
+                    return account;
+                })
             },
-            lockedTimeLeft() {
-                return (this.lockedOutTime - this.now) / 1000;
+
+            accountResources(){
+                return this.tpAccounts.map(account => {
+                    const resource = this.resources[account.identifiable()];
+                    return resource ? resource : null;
+                })
             },
-            isLockedOut() {
-                return this.lockedTimeLeft > 0 && this.lockedOutTime > 0;
-            }
+
         },
+
+        filters: {
+            // 权限
+            authorities(account) {
+                return account.authorities().map(x => x.authority);
+            },
+        },
+
+        mounted() {
+            this.tpAccounts.forEach(account => {
+                this.lazyLoadResources(account)
+            }, 200)
+        },
+
         methods: {
-            create() {
+            async lazyLoadResources(account){
+                const processKey = `resources:${account.unique()}`;
+                if(Process.isProcessRunning(processKey)) return;
+                const accounts = [account]
+                if(accounts.length){
+                    let process = Process.loadResources(processKey, false);
+                    const resources = await ResourceService.getResourcesFor(account);
+                    this[Actions.ADD_RESOURCES]({acc:account.identifiable(), res:resources});
+                    process.updateProgress(100);
+                }
+            },
+
+            exportPrivate() {
 
             },
 
-            forgetPwd() {
+            accountUnlink() {
 
             },
 
-            changeLanguage() {
+            getAccountInfo(account) {
+                this.accountInfo.account = account;
+                this.accountInfo.name = account.name;
+                this.accountInfo.authorities = account.authorities().map(x => ({
+                        id: x.authority,
+                        title: x.authority
+                    })
+                );
 
+                this.accountUnlinkState = true;
+                this.selectedAuthorities = [];
             },
 
-            // stepBack() {
-            //     if (this.step === 1) {
-            //         this.state = STATES.NEW_OR_LOGIN;
-            //         return;
-            //     }
-            //     this.step--;
-            // },
-            //
-            // stepForward() {
-            //     this.step++;
-            // },
-
-            // goToSupport() {
-            //     ElectronHelpers.openLinkInBrowser('https://support.get-scatter.com/');
-            // },
-
-            // importBackup() {
-            //     PopupService.push(Popup.importFullBackup({}, done => {
-            //     }));
-            // },
-
-            // importKeypair() {
-            // this.stepForward();
-            // PopupService.push(Popup.importKeypair({ forSignup: true }, keypair => {
-            //     this.stepForward();
-            // }));
-            // },
-
-            async go() {
-                const scatter = this.scatter.clone();
-                scatter.onboarded = true;
-                await this[Actions.SET_SCATTER](scatter);
-                this.$router.push({ name: RouteNames.HOME });
+            getExportAccountInfo(exportAccountInfo) {
+                this.exportAccountInfo = exportAccountInfo;
+                this.isExport = true;
             },
 
-            async checkPassword() {
-                if (!PasswordService.isValidPassword(this.password, this.confirmation)) return false;
-
-                StoreService.setWorking(true);
-                await this[Actions.CREATE_SCATTER](this.password);
-                StoreService.setWorking(false);
-
-                this.go();
+            async resetState() {
+                await this.$store.dispatch('GET_WALLET_LIST');
+                this.accountUnlinkState = false;
+                this.selectedAuthorities = [];
             },
 
-            async unlock(usingLocalStorage = false) {
-                if (!usingLocalStorage) {
-                    const lockout = getLockout();
-                    if (lockout.tries >= 5 && +new Date() < lockout.stamp + lockoutTime) {
-                        this.lockedOutTime = lockout.stamp + lockoutTime;
-                        return PopupService.push(Popup.snackbar(this.locale(this.langKeys.SNACKBARS.AUTH.LockedOut), 'attention-circled'));
-                    }
-                    if (this.opening) return;
-                    this.opening = true;
+            hasSelector(item) {
+                return this.selectedAuthorities.indexOf(item.id) !== -1;
+            },
+
+            addOrRemoveAuthority(item) {
+                const removing = !!this.selectedAuthorities.find(x => x === item.id);
+                this.selectedAuthorities = this.selectedAuthorities.filter(x => x !== item.id);
+                if (!removing) this.selectedAuthorities.push(item.id);
+            },
+
+            async unlinkAccount() {
+                // 获取当前key下账户数量
+                let account = this.accounts.filter(account => account.keypairUnique === this.accountInfo.account.keypairUnique);
+                // 移除keypair
+                if (account.length <= 1
+                    || (this.selectedAuthorities.length === this.accountInfo.authorities.length
+                        && account.length <= this.accountInfo.authorities.length)
+                ) {
+                    const keypair = this.keypairs.find(keypair => keypair.id === this.accountInfo.account.keypairUnique);
+                    await KeyPairService.removeKeyPair(keypair);
+                    await BalanceService.removeStaleBalances();
+
+                    await this.$store.dispatch('REMOVE_CURRENT_ACCOUNT');
+                    this.resetState();
+                } else {
+                    // 移除关联账号
+                    this.unlink();
+                }
+            },
+
+            async unlink() {
+                let accounts = [];
+                if (this.accountInfo.authorities.length) {
+                    accounts = this.accounts.filter(account => {
+                        return account.identifiable() === this.accountInfo.account.identifiable()
+                            && account.keypairUnique === this.accountInfo.account.keypairUnique
+                            && this.selectedAuthorities.includes(account.authority);
+                    });
+                } else {
+                    accounts = [this.account];
                 }
 
-                setTimeout(async () => {
-                    await this[Actions.SET_SEED](this.password);
-                    await this[Actions.LOAD_SCATTER](usingLocalStorage);
-                    if (typeof this.scatter === 'object' && !this.scatter.isEncrypted()) {
-                        resetLockout();
-                        setTimeout(() => {
-                            if (!this.scatter.onboarded) {
-                                PopupService.push(Popup.showTerms(async accepted => {
-                                    if (!accepted) {
-                                        await this[Actions.SET_SEED](null);
-                                        await this[Actions.LOAD_SCATTER](false);
-                                        this.opening = false;
-                                        return;
-                                    }
-
-                                    const clone = this.scatter.clone();
-                                    clone.onboarded = true;
-                                    await this[Actions.SET_SCATTER](clone);
-
-                                    if (!this.scatter.settings.backupLocation.length) {
-                                        await BackupService.setDefaultBackupLocation();
-                                    }
-
-                                    this.success = true;
-                                    this.$router.push({ name: this.RouteNames.HOME });
-                                }));
-                            } else {
-                                this.success = true;
-                                this.$router.push({ name: this.RouteNames.HOME });
-                            }
-                        }, 1000);
-                    } else {
-                        if (!usingLocalStorage) return this.unlock(true);
-                        this.opening = false;
-                        this.badPassword = true;
-                        PopupService.push(Popup.snackbarBadPassword());
-                        setLockout();
-                    }
-                }, 400);
+                await AccountService.removeAccounts(accounts);
+                this.resetState();
             },
 
-            destroy() {
-                PopupService.push(Popup.destroyScatter());
-            },
-
+            // 添加账号
+            // newKeypair() {
+            //     this.$router.push({
+            //         name: RouteNames.NEW_KEYPAIR
+            //     });
+            // },
 
             ...mapActions([
-                Actions.SET_SEED,
-                Actions.LOAD_SCATTER,
-                Actions.SET_SCATTER,
-                Actions.CREATE_SCATTER,
+                Actions.ADD_RESOURCES
             ])
-        },
-        watch: {
-            ['password']() {
-                this.badPassword = false;
-            }
         }
+
     };
 </script>
 
 <style scoped lang="scss" rel="stylesheet/scss">
+    @import "../../../styles/variables";
 
-    .login-wrap {
+    .btn {
+        font-size: 14px;
+        font-weight: bold;
+        border: 1px solid #232538;
+        color: #232538;
+        border-radius: 10px;
+        display: inline-block;
+        margin-right: 3px;
+        padding: 5px 15px;
+    }
+
+    .authority {
+        @extend .btn;
+
+        &.red {
+            margin-left: 15px;
+            border: 1px solid #2980FE;
+            color: #2980FE;
+        }
+
+        &.delete {
+            color: #fff;
+            background: #FA6464;
+            border-radius: 8px;
+            border-color: #FA6464;
+        }
+
+        &.export {
+            color: #fff;
+            background: #2980FE;
+            border-radius: 8px;
+            border-color: #2980FE;
+        }
+    }
+
+    .TP-wallets {
         width: 100%;
         height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        overflow: auto;
+        background: #F3F4F8 !important;
         position: relative;
 
-        .login-left {
-            flex: 1;
-            height: 100%;
-            padding: 0 50px;
-            position: relative;
+        padding: 24px 32px;
+        transition: top 0.4s ease, padding-top 0.2s ease;
 
-            h3 {
-                padding: 140px 0 120px 0;
-                margin: 0;
-            }
+        .accounts {
 
-            h4 {
-                margin: 0;
-                padding-bottom: 10px;
-            }
+            .account-item {
+                background: #fff;
+                flex: 1;
+                margin-bottom: 20px;
+                border-radius: 12px;
+                padding: 20px 25px;
 
-            .login-input {
-                outline: none;
-                border: 0;
-                border-bottom: 1px solid #E5E6F2;
-                padding: 15px 0;
-                width: 100%;
-                font-size: 16px;
-            }
+                .account-blockchain {
+                    display: flex;
+                    align-items: center;
 
-            .login-btn {
-                margin-top: 56px;
-                width: 250px;
-                height: 56px;
-                border-radius: 14px;
-            }
+                    .blockchain-left {
+                        flex: 2;
+                        display: flex;
+                        align-items: center;
 
-            .change-language {
-                position: absolute;
-                bottom: 25px;
-                left: 50%;
-                transform: translateX(-50%);
-
-                span {
-                    display: inline-block;
-                    color: #C4C7D2;
-                    padding: 0 24px;
-
-                    &:first-child {
-                        border-right: 1px solid #E5E6F2;
+                        .authorities {
+                            margin-left: 1em;
+                        }
                     }
 
-                    &.active {
-                        color: #2E294E;
+                    .blockchain-right {
+                        flex: 1;
+                    }
+                }
+
+                .account-resource {
+                    margin-top: 20px;
+
+                    .resources {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        .moderation {
+                            flex: 1;
+                        }
                     }
                 }
             }
         }
+    }
 
-        .login-right {
-            width: 620px;
-            height: 100%;
-            background: linear-gradient(180deg, rgba(81, 189, 255, 1) 0%, rgba(39, 97, 231, 1) 100%);
 
-            .logo-img {
-                width: 185px;
-                margin-top: 150px;
-                margin-bottom: 50px;
-            }
+    .account-unlink {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
 
-            h5 {
-                color: #86ADFF;
-                margin-top: 200px
+    .account-unlink-right {
+        position: fixed;
+        top: 0;
+        width: 280px;
+        height: 100vh;
+        background: #1C1E2F;
+        right: -280px;
+        transition: all 0.5s ease-in-out;
+        opacity: 0;
+        padding: 75px 17px;
+
+        &.on {
+            right: 0;
+            opacity: 1;
+        }
+
+        .account-authorities {
+            background: #2B2D3C;
+            border-radius: 6px;
+            padding: 8px 0;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s linear;
+
+            &.active {
+                position: relative;
+
+                &:after {
+                    position: absolute;
+                    top: -2px;
+                    bottom: -2px;
+                    left: -2px;
+                    right: -2px;
+                    background: linear-gradient(180deg, rgba(82, 182, 255, 1), rgba(41, 128, 254, 1));
+                    content: '';
+                    z-index: -1;
+                    border-radius: 6px;
+                }
             }
         }
     }
+
+
 </style>

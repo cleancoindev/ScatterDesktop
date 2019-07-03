@@ -19,6 +19,9 @@ export const SETTINGS_OPTIONS = {
     FIREWALL: { locked: true, name: 'Firewall' },
     PASSWORD: { locked: true, name: 'Password' },
     DESTROY: { locked: true, name: 'Destroy' },
+    ABOUTUS: {locked: false, name: 'About us'},
+    LANGUAGE: {locked: false, name: 'Language'},
+    // NETWORKS: {locked: false, name: 'Network'},
 };
 
 export default class Settings {

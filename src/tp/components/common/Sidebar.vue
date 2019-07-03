@@ -79,24 +79,6 @@
         </section>
     </section>
 
-<!--    <section class="sidebar-container" :class="{'locked':!sidebarLocked}">-->
-<!--        <section class="placeholder"></section>-->
-<!--        <section class="sidebar">-->
-<!--            <figure class="bar-bg"></figure>-->
-<!--            <figure class="category" v-for="category in items">-->
-<!--                <figure class="category-name" v-if="category.name">{{category.name}}</figure>-->
-<!--                <router-link :key="item.name" :to="{name:item.route}" class="item"-->
-<!--                             :class="{'active':$route.name === item.route}" v-for="(item, i) in category.items">-->
-<!--                    <i :class="itemIcon(item)"></i>-->
-<!--                    <span>{{item.name}}</span>-->
-<!--                </router-link>-->
-<!--            </figure>-->
-
-<!--            <figure class="lock-sidebar" @click="toggleSidebar">-->
-<!--                <i class="icon-lock"></i>-->
-<!--            </figure>-->
-<!--        </section>-->
-<!--    </section>-->
 </template>
 
 <script>
@@ -116,12 +98,14 @@
         computed: {
             ...mapState([
                 'history',
-                'sidebarLocked'
+                'sidebarLocked',
+                'scatter',
+                'workingScreen',
+                'processes'
             ]),
             ...mapGetters([
-                'accounts',
+                'unlocked',
                 'tpAccounts',
-                'keypairs',
                 'currentAccount'
             ]),
 
@@ -130,28 +114,34 @@
                     { title: 'DApp', icon: 'tp-font-dqpps', url: RouteNames.DAPP },
                     { title: this.$t('TP.GENERIC.Chat'), icon: 'tp-font-chat', url: RouteNames.CHAT },
                     { title: this.$t('TP.GENERIC.Asset'), icon: 'tp-font-asset', url: RouteNames.ASSET },
-                    // { title: this.$t('TP.GENERIC.Asset'), icon: 'tp-font-asset', url: RouteNames.ASSET },
                     { title: this.$t('TP.GENERIC.Wallet'), icon: 'tp-font-wallet', url: RouteNames.WALLET },
+                    // { title: this.$t('TP.GENERIC.Wallet'), icon: 'tp-font-wallet', url: RouteNames.WALLETS },
                     {
                         title: this.$t('TP.GENERIC.Setting'),
                         icon: 'tp-font-settings',
                         url: RouteNames.SETTINGS,
-                        // params: {panel: this.SETTINGS_OPTIONS.LANGUAGE}
                     }
                 ];
             },
         },
+
         mounted() {
-            document.addEventListener('click', e => {
+            window.addEventListener('click', this.accountClick, false)
+        },
+
+        beforeDestroy() {
+            window.removeEventListener('click', this.accountClick)
+        },
+
+        methods: {
+            accountClick(e) {
                 // 点击除弹出层外的空白区域
                 if (
                     (this.$refs.account && !this.$refs.account.contains(e.target)) &&
                     (this.$refs.accountWrap && !this.$refs.accountWrap.contains(e.target))
                 ) this.accountState = false
-            }, false)
+            },
 
-        },
-        methods: {
             isActive(name) {
                 return this.$route.name === name
             },
@@ -176,7 +166,8 @@
             },
 
             addAccount() {
-                PopupService.push(Popup.importKeypair({}, keypair => {}));
+                this.$router.push({name:this.RouteNames.IMPORT_TEXT_KEY})
+                // PopupService.push(Popup.importKeypair({}, keypair => {}));
             }
 
         },

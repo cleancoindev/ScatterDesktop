@@ -24,6 +24,8 @@ import i18n from '../tp/i18n/index';
 import 'element-ui/lib/theme-chalk/index.css'
 import ElementUI from 'element-ui'
 
+const PKG = require('../../package.json');
+
 Vue.config.productionTip = false;
 
 export let router;
@@ -58,6 +60,7 @@ export default class VueInitializer {
                         loadingReputation: false,
                         features,
                         // now:0,
+                        clientVersion: PKG.version
                     };
                 },
                 computed: {

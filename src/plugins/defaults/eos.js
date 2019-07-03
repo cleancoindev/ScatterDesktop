@@ -357,30 +357,48 @@ export default class EOS extends Plugin {
 		}
 
 		const actionText = localizedState(LANG_KEYS.GENERIC.Manage, null);
-		const resources = [{
-			name:'CPU',
-			available:data.cpu_limit.available,
-			max:data.cpu_limit.max,
-			percentage:(data.cpu_limit.used * 100) / data.cpu_limit.max,
-			actionable:true,
-			actionText,
-		},{
-			name:'NET',
-			available:data.net_limit.available,
-			max:data.net_limit.max,
-			percentage:(data.net_limit.used * 100) / data.net_limit.max,
-			actionable:true,
-			actionText,
-		},{
-			name:'RAM',
-			available:data.ram_usage,
-			max:data.ram_quota,
-			percentage:(data.ram_usage * 100) / data.ram_quota,
-			actionable:true,
-			actionText,
-		}];
 
-		if(refund) resources.push(refund);
+		const safeCount = (a, b) => {
+			const value = a / b;
+			return value ? (value * 100).toFixed(2) : 0;
+		};
+
+		const resources = [
+			{
+				name: 'CPU',
+				total: data.total_resources.cpu_weight,
+				available: data.cpu_limit.available,
+				used: (data.cpu_limit.used / 1000).toFixed(2),
+				max: (data.cpu_limit.max / 1000).toFixed(2),
+				percentage: safeCount(data.cpu_limit.available, data.cpu_limit.max),
+				unit: 'ms',
+				actionable: true,
+				actionText
+			},
+			{
+				name: 'NET',
+				total: data.total_resources.net_weight,
+				available: data.net_limit.available,
+				used: (data.net_limit.used / 1000).toFixed(2),
+				max: (data.net_limit.max / 1000).toFixed(2),
+				percentage: safeCount(data.net_limit.available, data.net_limit.max),
+				unit: 'KB',
+				actionable: true,
+				actionText
+			},
+			{
+				name: 'RAM',
+				available: data.ram_usage,
+				used: ((data.ram_quota - data.ram_usage) / 1000).toFixed(2),
+				max: (data.ram_quota / 1000).toFixed(2),
+				percentage: safeCount(data.ram_usage, data.ram_quota),
+				unit: 'KB',
+				actionable: true,
+				actionText
+			}
+		];
+
+		if (refund) resources.push(refund);
 
 		return resources;
 	}
