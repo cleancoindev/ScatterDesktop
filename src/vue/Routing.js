@@ -30,7 +30,7 @@ import DApp from '../tp/views/DApp/index'
 import Asset from '../tp/views/Asset/index'
 import Chat from '../tp/views/IM/index'
 import Wallet from '../tp/views/Wallet/index'
-import ImportTextKey from '../tp/views/Keypair/ImportPrivateKey'
+import ImportTextKey from '../tp/views/Keypair/ImportKeypair'
 // import DApp from '../tp/views/DApp/'
 
 // TODO: These should be commented out for testing.

@@ -146,8 +146,9 @@
                     flex-direction: column;
                     justify-content: center;
 
-                    h5 {
+                    h5, p {
                         margin: 0;
+                        font-weight: normal;
                     }
                 }
 

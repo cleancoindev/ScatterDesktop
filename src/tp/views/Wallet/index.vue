@@ -1,7 +1,7 @@
 <template>
     <section class="TP-wallets">
         <!-- 账号列表 -->
-        <section class="accounts">
+        <section class="accounts" v-if="walletList.length > 0">
             <section class="account-item" v-for="(account, index) in walletList" :key="index">
 
                 <section class="account-blockchain">
@@ -20,15 +20,15 @@
                             </section>
                         </section>
 
-                        <section class="blockchain-right text-right">
-                            <figure class="authority export pointer" @click="exportPrivate(account)">
-                                {{$t('TP.GENERIC.Export')}}
-                            </figure>
+<!--                        <section class="blockchain-right text-right">-->
+<!--                            <figure class="authority export pointer" @click="exportPrivate(account)">-->
+<!--                                {{$t('TP.GENERIC.Export')}}-->
+<!--                            </figure>-->
 
-                            <figure class="authority delete pointer" @click="accountUnlink(account)">
-                                {{$t('TP.GENERIC.Delete')}}
-                            </figure>
-                        </section>
+<!--                            <figure class="authority delete pointer" @click="accountUnlink(account)">-->
+<!--                                {{$t('TP.GENERIC.Delete')}}-->
+<!--                            </figure>-->
+<!--                        </section>-->
                 </section>
 
                 <figure class="account-name ft-20">
@@ -64,12 +64,11 @@
                     </section>
 
                 </section>
-<!--                <AccountInfo :key="account.unique()"-->
-<!--                             :account="account"-->
-<!--                             @tokens="tokens => $emit('tokens', tokens)"-->
-<!--                             @delete="getAccountInfo"-->
-<!--                             @accountInfo="getExportAccountInfo"/>-->
             </section>
+        </section>
+
+        <section v-if="walletList.length === 0">
+
         </section>
 
 

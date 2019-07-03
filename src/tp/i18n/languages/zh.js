@@ -85,15 +85,14 @@ export default {
 
             General: '通用',
             Language: '语言',
-            // Tokens: '代币',
             Explorers: '浏览器',
             PIN: 'PIN',
             Firewall: '防火墙',
             Networks: '网络',
-            // Password: '修改密码',
             Backup: '备份',
             Destroy: '重置',
             AboutUs: '关于',
+            All: '全部',
 
             Blockchains: '底层',
 

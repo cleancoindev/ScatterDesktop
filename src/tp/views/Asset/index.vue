@@ -1,9 +1,9 @@
 <template>
-    <section class="token-panel">
-        <section class="token-header">
-            <section class="token-header-top">
+    <section class="tokens-panel">
+        <section class="tokens-header">
+            <section class="tokens-header-top">
                 <section>
-                    <h3 class="c-fff">{{$t('TP.GENERIC.MyAsset')}}</h3>
+                    <h3 class="c-fff ft-22">{{$t('TP.GENERIC.MyAsset')}}</h3>
                 </section>
 
                 <section class="text-right">
@@ -27,16 +27,18 @@
 
             </section>
 
-            <section class="token-header-bottom">
+            <section class="tokens-header-bottom">
                 <section class="c-fff">
-                    <h3>{{assetInfo.unit}} {{assetInfo.total_asset || 0}}</h3>
+                    <h3>{{assetInfo.unit || '$'}} {{currentAccount.totalFiatBalance ? currentAccount.totalFiatBalance() : 0}}</h3>
                 </section>
 
+                <!-- 搜索token -->
                 <section class="text-right">
-                    <div class="token-search-wrap">
-                        <div class="token-search-bar">
+                    <div class="tokens-search-wrap">
+                        <div class="tokens-search-bar ">
                             <!--                            <svg-icon icon-class="search" :class-name="['c-fff']"></svg-icon>-->
                             <input type="search"
+                                   class="ft-16"
                                    :placeholder="$t('TP.GENERIC.Search')"
                                    v-model="terms"/>
                         </div>
@@ -46,7 +48,7 @@
             </section>
         </section>
 
-        <section class="token-content">
+        <section class="tokens-content">
             <TokenList :balances="tokens" :terms="terms"/>
 <!--            <section class="tokens" v-for="(token, index) in tokens" :key="index" @click="goTransfer(token)">-->
 <!--                <section class="tokens-list pointer">-->
@@ -105,7 +107,8 @@
 
         mounted() {
             // this.getAsset();
-            // console.log(this.currentAccount.tokens());
+            // console.log(this.currentAccount.tokenCount());
+            // console.log(this.currentAccount.totalFiatBalance());
 
             // const tokens =
 
@@ -149,12 +152,12 @@
         height: 30px;
     }
 
-    .token-header {
+    .tokens-header {
         padding: 35px 40px 40px 40px;
         background: linear-gradient(270deg, rgba(32, 72, 204, 1) 0%, rgba(22, 161, 248, 1) 100%);
 
-        .token-header-top,
-        .token-header-bottom {
+        .tokens-header-top,
+        .tokens-header-bottom {
             h3 {
                 margin: 0;
             }
@@ -167,15 +170,15 @@
             }
         }
 
-        .token-header-top {
+        .tokens-header-top {
             margin-bottom: 25px;
         }
 
 
-        .token-search-wrap {
+        .tokens-search-wrap {
             display: inline-block;
 
-            .token-search-bar {
+            .tokens-search-bar {
                 display: flex;
                 width: 300px;
                 height: 40px;
@@ -204,7 +207,7 @@
     }
 
 
-    .token-content {
+    .tokens-content {
         /*padding: 0 40px;*/
         height: calc(100vh - 170px - 40px);
         overflow: auto;

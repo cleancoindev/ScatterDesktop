@@ -32,10 +32,11 @@
 
         <!-- 账号列表 -->
         <section ref="accountWrap" class="account-wrap" :class="{'show': accountState}">
+            <!-- 搜索 -->
             <section class="account-search-wrap c-fff text-center ft-20">
                 <div class="account-search">
                     <i class="TP-Font tp-font-search ft-18"></i>
-                    <input type="search" v-model="terms"/>
+                    <input class="ft-20" type="search" v-model="terms"/>
                 </div>
 
             </section>
@@ -57,7 +58,7 @@
             <!-- 搜索账号过滤数据 -->
             <section class="account-main" v-if="terms">
                 <section class="account-list c-fff text-center ft-20 pointer"
-                         v-for="(account, index) in tpAccounts"
+                         v-for="(account, index) in searchAccountList"
                          :key="index"
                          @click="handleCommand(account)">
                     <span>
@@ -72,7 +73,7 @@
 
             <!-- 添加账号 -->
             <section class="account-add">
-                <button class="tp-button on" style="padding: 15px 0;" @click="addAccount">
+                <button class="tp-button on ft-14" style="padding: 15px 0;" @click="addAccount">
                     {{$t('TP.GENERIC.AddKeys')}}
                 </button>
             </section>
@@ -123,6 +124,10 @@
                     }
                 ];
             },
+
+            searchAccountList() {
+                return this.tpAccounts.filter(account => account.sendable().toLowerCase().indexOf(this.terms.toLowerCase()) !== -1);
+            }
         },
 
         mounted() {
@@ -229,7 +234,7 @@
                 margin: 15px;
                 background: rgba(43, 45, 60, 1);
                 border-radius: 8px;
-                text-align: left;
+                /*text-align: left;*/
                 font-family: 'Monaco';
 
                 .check {

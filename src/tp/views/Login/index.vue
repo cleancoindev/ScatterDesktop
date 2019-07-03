@@ -9,7 +9,8 @@
 
                 <h4 class="ft-24 c-c4c7d2">{{$t('TP.GENERIC.Password')}}</h4>
 
-                <h5 class="ft-14" style="font-weight: normal" v-if="isNewScatter">{{$t('TP.LOGIN.CANT_LOGIN_NOTICE_4')}}</h5>
+                <h5 class="ft-14" style="font-weight: normal" v-if="isNewScatter">
+                    {{$t('TP.LOGIN.CANT_LOGIN_NOTICE_4')}}</h5>
 
                 <!-- 密码 -->
                 <figure>
@@ -62,8 +63,8 @@
 
 
             <section class="change-language ft-16">
-                <span class="pointer" :class="{'active': currentLanguage === 'zh-Hans'}"
-                      @click="changeLanguage('zh-Hans')">中</span>
+                <span class="pointer" :class="{'active': currentLanguage === 'zh'}"
+                      @click="changeLanguage('zh')">中</span>
                 <span class="pointer" :class="{'active': currentLanguage === 'en'}"
                       @click="changeLanguage('en')">EN</span>
             </section>
@@ -76,6 +77,27 @@
             <h3 class="ft-36 c-fff">TOKEN POCKET</h3>
             <h5 class="ft-14">YOUR UNIVERSAL DIGITAL WALLET</h5>
         </section>
+
+        <!-- 忘记密码 -->
+        <el-dialog :visible.sync="dialogVisible" width="40%">
+            <h3 class="text-center c-333 ft-20">{{$t('TP.LOGIN.NOTICE')}}</h3>
+            <p class="c-333 ft-16" style="line-height: 1.5">{{$t('TP.LOGIN.CANT_LOGIN_DESC')}}</p>
+            <br>
+            <p class="c-333 ft-14" style="line-height: 1.5">{{$t('TP.LOGIN.NOTICE')}}：</p>
+            <p class="c-333 ft-14" style="line-height: 1.5">{{$t('TP.LOGIN.CANT_LOGIN_NOTICE_1')}}</p>
+            <p class="c-333 ft-14" style="line-height: 1.5">{{$t('TP.LOGIN.CANT_LOGIN_NOTICE_2')}}</p>
+            <p class="c-333 ft-14" style="line-height: 1.5">{{$t('TP.LOGIN.CANT_LOGIN_NOTICE_3')}}</p>
+            <br>
+            <br>
+
+            <div class="c-333 text-center">
+                <button class="tp-button on"
+                        style="width: 150px;border-radius: 20px"
+                        @click="destroy">{{$t('TP.GENERIC.Confirm')}}
+                </button>
+            </div>
+
+        </el-dialog>
 
         <!--        <section class="entry" v-if="state === STATES.NEW_OR_LOGIN" :class="{'success':success}">-->
         <!--            <figure class="login-bg">-->
@@ -257,6 +279,7 @@
 
                 currentLanguage: 'zh',
                 confirmation: '',
+                dialogVisible: false,
             };
         },
         created() {
@@ -295,11 +318,12 @@
             },
 
             forgetPwd() {
-
+                this.dialogVisible = true;
             },
 
-            changeLanguage() {
-
+            changeLanguage(lang) {
+                this.$i18n.locale = lang;
+                this.$store.dispatch('SET_CURRENT_LANGUAGE', lang);
             },
 
             // stepBack() {
@@ -399,8 +423,21 @@
                 }, 400);
             },
 
-            destroy() {
-                PopupService.push(Popup.destroyScatter());
+            // async destroy() {
+            //     await this.$store.dispatch('DESTROY_ACCOUNT');
+            //     this.$router.replace({name: 'login'});
+            //     this.password = '';
+            //     this.confirmPassword = '';
+            //     this.dialogVisible = false;
+            // },
+
+            async destroy() {
+                await this.$store.dispatch('DESTROY_ACCOUNT');
+                // ElectronHelpers.reload();
+                this.$router.replace({ name: 'login' });
+                this.password = '';
+                this.confirmation = '';
+                this.dialogVisible = false;
             },
 
 
@@ -499,5 +536,35 @@
                 margin-top: 200px
             }
         }
+    }
+
+    /deep/ .el-loading-spinner {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 100%;
+        margin-top: inherit;
+        text-align: center;
+
+    }
+
+    /deep/ .el-dialog__wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /deep/ .el-dialog__body {
+        padding: 10px 20px 20px;
+    }
+
+    /deep/ .el-dialog {
+        margin: 0 !important;
+        border-radius: 10px;
+    }
+
+    /deep/ .el-dialog__headerbtn {
+        left: 20px;
+        right: inherit;
     }
 </style>

@@ -95,9 +95,10 @@ export default class KeyPairService {
 	    return clone;
     }
 
-    static async saveKeyPair(keypair){
+    static async saveKeyPair(keypair, router){
         if(!keypair.name.length) keypair.name = `Key-${IdGenerator.text(8)}`;
-        if(!keypair.isUnique()) return PopupService.push(Popup.snackbar("Keypair already exists."));
+        // PopupService.push(Popup.snackbar("Keypair already exists."))
+        if(!keypair.isUnique()) return router.back();
         const scatter = StoreService.get().state.scatter.clone();
         scatter.keychain.keypairs.push(Keypair.fromJson(keypair));
         return StoreService.get().dispatch(Actions.SET_SCATTER, scatter);
@@ -179,5 +180,5 @@ export default class KeyPairService {
 		if(!keypair) throw new Error('Keypair doesnt exist on keychain');
 		return keypair.external !== null;
 	}
-    
+
 }

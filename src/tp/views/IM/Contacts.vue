@@ -1,9 +1,9 @@
 <template>
     <div class="Contacts">
         <section class="contacts-type cursor-default" @click="isShowList('teams')">
-            <i class="TP-Iconfont tp-icon-arrow" :class="{'active': groupType.teams}"></i>
+            <i class="TP-Font tp-font-arrow" :class="{'active': groupType.teams}"></i>
             <span class="c-333">{{$t('TP.IM.GROUP_CHAT')}}</span>
-            <span class="text-right ft-14 c-999">{{teamList.length}}</span>
+            <span class="text-right ft-14 c-999" style="display: flex;align-items: center;justify-content: flex-end;">{{teamList.length}}</span>
         </section>
 
         <!-- 群列表 -->
@@ -20,9 +20,9 @@
         </div>
 
         <section class="contacts-type cursor-default" @click="isShowList('follow')">
-            <i class="TP-Iconfont tp-icon-arrow" :class="{'active': groupType.follow}"></i>
+            <i class="TP-Font tp-font-arrow" :class="{'active': groupType.follow}"></i>
             <span class="c-333">{{$t('TP.IM.FOLLOWING')}}</span>
-            <span class="text-right ft-14 c-999">{{followList.length}}</span>
+            <span class="text-right ft-14 c-999" style="display: flex;align-items: center;justify-content: flex-end;">{{followList.length}}</span>
         </section>
 
         <!-- 关注列表 -->
@@ -103,12 +103,14 @@
         grid-template-columns: 20px calc(100% - 20px - 40px) 40px;
     }
 
-    .tp-icon-arrow {
+    .tp-font-arrow {
         transition: all .3s;
         font-weight: 300;
         text-align: center;
         width: 20px;
         height: 20px;
+        position: relative;
+        top: 3px;
         &.active {
             transform: rotate(90deg);
         }

@@ -85,15 +85,14 @@ export default {
 
             General: 'General',
             Language: 'Language',
-            // Tokens:'tokens',
             Explorers: 'Explorers',
             PIN: 'Pin',
             Firewall: 'Firewall',
             Networks: 'Networks',
-            // Password:'password',
             Backup: 'Backup',
             Destroy: 'Destroy',
             AboutUs: 'About Us',
+            All: 'All',
 
             Blockchains: 'Blockchains',
 

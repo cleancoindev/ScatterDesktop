@@ -11,12 +11,12 @@
 
             <footer>
                 <div class="text-center">
-                    <button class="tp-button on" style="width: 120px;" @click="goSession">
+                    <button class="tp-button on ft-16" style="width: 120px;" @click="goSession">
                         {{ $t('TP.IM.CHAT') }}
                     </button>
 
                     <!-- 取消关注 -->
-                    <p class="c-999 pointer" style="margin-top: 25px;" v-if="currentContactInfo.nick" @click="isFollowing = true">
+                    <p class="c-999 pointer ft-14" style="margin-top: 25px;" v-if="currentContactInfo.nick" @click="isFollowing = true">
                         {{ $t('TP.IM.UNFOLLOW') }}
                     </p>
                 </div>

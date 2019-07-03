@@ -9,7 +9,7 @@
 
             <el-row class="dapp-category">
         <span class="category-title c-999 ft-16 pointer"
-              v-for="(item, index) in categoryList" :key="index"
+              v-for="(item, index) in category" :key="index"
               :class="{'c-115CE8': categoryIndex === index}"
               @click="categoryChange(item, index)">
           {{item.title}}
@@ -76,7 +76,15 @@
             };
         },
         computed: {
-            ...mapGetters(['language'])
+            ...mapGetters(['language']),
+            category() {
+                const categoryList = [...this.categoryList];
+                categoryList.unshift({
+                    hid: -1,
+                    title: this.$t('TP.GENERIC.All')
+                });
+                return categoryList
+            }
         },
         watch: {
             async language() {

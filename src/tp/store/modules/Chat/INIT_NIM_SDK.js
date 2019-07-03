@@ -119,12 +119,12 @@ export default {
             return new Promise(async (resolve, reject) => {
                 try {
                     const blockchain_id = await dispatch('HAS_CHAIN', accountInfo.network().chainId);
-                    console.log(blockchain_id);
+                    // console.log(blockchain_id);
                     if (blockchain_id) {
                         // if (rootGetters.chainIdList.indexOf(accountInfo.keypair()))
                         const keypair = accountInfo.keypair();
                         keypair.decrypt(await ipcAsync('seed'));
-                        console.log(accountInfo.keypair().privateKey);
+                        // console.log(accountInfo.keypair().privateKey);
                         // const privateKey =  EosService.bufferToHexPrivate(accountInfo.keypair().privateKey);
                         const privateKey = ecc.PrivateKey.fromBuffer(new Buffer(keypair.privateKey)).toString();
                         const content = md5('TokenPocket_' + Math.round(Date.now() / 1000));

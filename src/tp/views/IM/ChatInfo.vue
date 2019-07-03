@@ -78,7 +78,7 @@
 
             <!-- 消息发送框 -->
             <div class="ChatEditor">
-                <textarea class="chat-message" @keydown="lineFeed" v-model="msgToSent"></textarea>
+                <textarea class="chat-message ft-16" @keydown="lineFeed" v-model="msgToSent"></textarea>
             </div>
 
 
@@ -92,10 +92,10 @@
 
                     <div class="chat-user-info_detail-wrap">
                         <div class="chat-user-info_detail-btn">
-                            <button class="TP-Iconfont tp-icon-followx pointer"
+                            <button class="TP-Font tp-font-follow pointer"
                                     @click="follow"
                                     v-show="isFollow === 0"></button>
-                            <button class="TP-Iconfont tp-icon-chat pointer" @click="goChat"></button>
+                            <button class="TP-Font tp-font-chat pointer" @click="goChat"></button>
                         </div>
                     </div>
                 </div>
@@ -135,7 +135,7 @@
                 <!-- 搜索群成员 -->
                 <section class="chat-team_people-search">
                     <div class="people-search">
-                        <i class="people-search-icon TP-Iconfont tp-icon-searchx"></i>
+                        <i class="people-search-icon TP-Font tp-font-search"></i>
                         <input class="people-search-input"
                                type="search"
                                :placeholder="$t('TP.GENERIC.Search')"
@@ -171,9 +171,9 @@
                     </div>
                 </section>
 
-                <section class="chat-team_people-out pointer ft-14" @click="outTeam">
-                    {{ $t('TP.IM.GROUP_DELETE') }}
-                </section>
+<!--                <section class="chat-team_people-out pointer ft-14" @click="outTeam">-->
+<!--                    {{ $t('TP.IM.GROUP_DELETE') }}-->
+<!--                </section>-->
             </section>
         </section>
 
@@ -328,21 +328,23 @@
             },
 
             async getUserInfo(type, data) {
-                const account = type === 'msg' ? data.from : data.account;
+                if (this.nim) {
+                    const account = type === 'msg' ? data.from : data.account;
 
-                await getIsFollow({
-                    imaccount_id: this.myInfo.account,
-                    target_imaccount_id: account
-                }).then(res => {
-                    if (res.result === 0) {
-                        this.isFollow = res.data;
-                    }
-                });
+                    await getIsFollow({
+                        imaccount_id: this.myInfo.account,
+                        target_imaccount_id: account
+                    }).then(res => {
+                        if (res.result === 0) {
+                            this.isFollow = res.data;
+                        }
+                    });
 
-                nimGetUser(this.nim, account).then(user => {
-                    this.chatUserInfo = user;
-                    this.chatUserDialog = true;
-                });
+                    nimGetUser(this.nim, account).then(user => {
+                        this.chatUserInfo = user;
+                        this.chatUserDialog = true;
+                    });
+                }
             },
 
             follow() {
@@ -468,7 +470,7 @@
 
     /* ChatList */
     .ChatList {
-        height: calc(100vh - 63px - 200px);
+        height: calc(100vh - 63px - 200px - 40px);
         overflow-y: auto;
         padding: 15px 0;
     }
@@ -645,10 +647,10 @@
 
     .chat-team_people-wrap {
         position: fixed;
-        top: 60px;
+        top: 100px;
         right: -200px;
         width: 200px;
-        height: calc(100vh - 60px);
+        height: calc(100vh - 60px - 40px);
         background: #FAFAFA;
         border-left: 1px solid #E6E6E6;
         transition: all 0.5s;
@@ -658,7 +660,7 @@
         }
 
         .chat-team_people-header {
-            height: 107px;
+            height: 127px;
             margin: 20px;
             border-bottom: 1px solid #E6E6E6;
 
@@ -680,7 +682,7 @@
 
                 .people-search-icon {
                     position: absolute;
-                    top: 5px;
+                    top: 11px;
                     left: 7px;
                     font-size: 14px;
                 }
@@ -703,7 +705,7 @@
 
 
         .chat-team_people-list {
-            height: calc(100vh - 298px);
+            height: calc(100vh - 298px - 64px);
             overflow-y: auto;
 
             .chat-team_people-item {

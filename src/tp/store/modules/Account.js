@@ -1,3 +1,6 @@
+import SocketService from "../../../services/utility/SocketService";
+import StorageService from "../../../services/utility/StorageService";
+
 const Account = {
     state: {
         currentAccount: {}
@@ -32,6 +35,15 @@ const Account = {
     },
 
     actions: {
+        async DESTROY_ACCOUNT({dispatch}) {
+            await SocketService.close();
+            dispatch('RESET_IM');
+            setTimeout(async () => {
+                await StorageService.removeScatter();
+                // Storage.REMOVE_STORAGE('ACCOUNT_INFO');
+                // location.reload();
+            }, 500);
+        },
     }
 }
 

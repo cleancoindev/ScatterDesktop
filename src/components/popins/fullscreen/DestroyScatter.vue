@@ -46,12 +46,8 @@
 				this[Actions.RELEASE_POPUP](this.popin);
 			},
 			async destroy(){
-				await SocketService.close();
-
-				setTimeout(async () => {
-					await StorageService.removeScatter();
-					ElectronHelpers.reload()
-				}, 500);
+				await this.$store.dispatch('DESTROY_ACCOUNT');
+				this.$router.replace({ name: 'login' });
 			},
 
 			...mapActions([

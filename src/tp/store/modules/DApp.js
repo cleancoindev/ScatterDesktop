@@ -58,7 +58,7 @@ const DApp = {
                 getBannerList( {
                     start: 0,
                     count: 10,
-                    lang: rootGetters.currentLanguage,
+                    lang: rootGetters.tpCurrentLanguage,
                     status: 0
                 }).then(res => {
                     if (res.result === 0) {
@@ -73,7 +73,7 @@ const DApp = {
         async GET_CATEGORY_LIST({ commit, rootGetters }, payload) {
             return new Promise((resolve, reject) => {
                 getCategoryList({
-                    lang: rootGetters.currentLanguage
+                    lang: rootGetters.tpCurrentLanguage
                 }).then(res => {
                     if (res.result === 0) {
                         res.data.sort((a, b) => {
@@ -81,12 +81,12 @@ const DApp = {
                         });
 
                         const categoryList = res.data.filter(data => data.category_type === 0);
-                        categoryList.unshift({
-                            hid: -1,
-                            title: '全部'
-                        });
+                        // categoryList.unshift({
+                        //     hid: -1,
+                        //     title: '全部'
+                        // });
                         commit('CATEGORY_LIST', categoryList);
-                        commit('CATEGORY_ID', categoryList[0].hid);
+                        commit('CATEGORY_ID', -1);
                         commit('DAPP_FORM', { type: 'reset' });
                     }
                     resolve(res);
@@ -99,7 +99,7 @@ const DApp = {
                 getDAppList({
                         key: form.key,
                         ...state.dappForm,
-                        lang: rootGetters.currentLanguage,
+                        lang: rootGetters.tpCurrentLanguage,
                         category_id: state.categoryId
                     }).then(res => {
                     if (res.result === 0) {

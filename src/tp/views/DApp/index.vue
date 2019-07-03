@@ -1,9 +1,9 @@
 <template>
-    <div class="dapp">
-        <div id="dapp" class="bg-color-F6F8FA">
+    <div class="dapp bg-color-F6F8FA">
+<!--        <div id="dapp" class="bg-color-F6F8FA">-->
             <DAppBanner :banner-list="bannerList"/>
             <DAppList :category-list="categoryList" :dapp-list="dappList"/>
-        </div>
+<!--        </div>-->
     </div>
 
 </template>
@@ -70,7 +70,7 @@
 </script>
 
 <style lang="scss" scoped>
-    #dapp {
+    .dapp {
         height: 100%;
         overflow-y: scroll;
     }

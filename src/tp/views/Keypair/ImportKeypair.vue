@@ -174,6 +174,7 @@
                 const key = this.privateKey.trim().replace(/\W/g, '').replace('0x', '');
                 const keypair = Keypair.placeholder();
                 keypair.privateKey = key;
+
                 if (!KeyPairService.isValidPrivateKey(keypair)) {
                     this.error = 'Invalid Private Key';
                     return reset();
@@ -207,11 +208,13 @@
             },
 
             async finishImporting(keypair) {
-                await KeyPairService.saveKeyPair(keypair);
+                await KeyPairService.saveKeyPair(keypair, this.$router);
                 await AccountService.importAllAccounts(keypair);
                 BalanceService.loadAllBalances(true);
                 this.setWorkingScreen(false);
-                this.returnResult(keypair);
+                // this.returnResult(keypair);
+
+                this.$router.back()
             },
 
             ...mapActions([

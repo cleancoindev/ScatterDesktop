@@ -20,7 +20,10 @@ const TP = {
         ...Account.getters,
         ...DApp.getters,
         ...Chat.getters,
-        currentLanguage: state => state.currentLanguage
+        currentLanguage: state => state.currentLanguage,
+        tpCurrentLanguage: (state, getters) => {
+            return getters.currentLanguage === 'zh' ? 'zh-Hans' : 'en'
+        }
     },
 
     mutations: {
