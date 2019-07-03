@@ -1,503 +1,257 @@
 <template>
-    <section class="login-wrap">
-        <section class="login-left">
-            <!-- left content -->
-            <section>
-                <h3 class="ft-36 c-2e294e" style="">
-                    {{isNewScatter ? $t('TP.COMMON.SETTING') : $t('TP.COMMON.LOGIN')}}
-                </h3>
+    <section class="token-panel">
+        <section class="token-header">
+            <section class="token-header-top">
+                <section>
+                    <h3 class="c-fff">{{$t('TP.GENERIC.MyAsset')}}</h3>
+                </section>
 
-                <h4 class="ft-24 c-c4c7d2">{{$t('TP.COMMON.PASSWORD')}}</h4>
+                <section class="text-right">
+                    <!-- 刷新 -->
+                    <el-button class="btn-transfer"
+                               size="mini"
+                               round
+                               @click="refreshTokens"
+                               :loading="loadingBalances">
+                        {{$t('TP.GENERIC.RefreshBalances')}}
+                    </el-button>
 
-                <h5 class="ft-16" v-if="isNewScatter">{{$t('TP.LOGIN.CANT_LOGIN_NOTICE_4')}}</h5>
-
-                <!-- 密码 -->
-                <figure>
-                    <input class="tp-input" type="password"
-                           :placeholder="isNewScatter ? $t('TP.LOGIN.SET_PASSWORD_DESC') : $t('TP.LOGIN.PASSWORD_DESC')"
-                           v-model="password"
-                           @keyup.enter="unlock"/>
-                </figure>
-
-                <!-- 密码确认 -->
-                <figure v-show="isNewScatter">
-                    <input class="login-input" type="password"
-                           :placeholder="$t('TP.LOGIN.CONFIRM_PASSWORD_DESC')"
-                           @keyup.enter="checkPassword"
-                           v-model="confirmation"/>
-                </figure>
-
-                <!-- 创建 -->
-                <figure v-show="isNewScatter">
-                    <button class="tp-button login-btn c-fff ft-24 pointer"
-                            :class="{'on': password.length > 0 && password === confirmation}"
-                            @click="checkPassword"
-                            v-loading="working"
-                            element-loading-spinner="el-icon-loading">
-                        {{$t('TP.COMMON.CONFIRM')}}
-                    </button>
-                </figure>
-
-                <!--                {{password}}-->
-                <!-- 登录 -->
-                <figure v-show="!isNewScatter">
-                    <button class="tp-button loading login-btn c-fff ft-24"
-                            v-loading="working"
-                            element-loading-spinner="el-icon-loading"
-                            :class="{'on': password.length > 0}"
-                            @click="unlock">
-                        {{$t('TP.COMMON.LOGIN')}}
-                    </button>
-                </figure>
-
-                <!-- 忘记密码 -->
-                <figure v-show="!isNewScatter">
-                    <span class="ft-14 pointer" style="color: #2980FE;margin-top: 24px;display: inline-block"
-                          @click="forgetPwd">
-                        {{$t('TP.LOGIN.CANT_LOGIN')}}?
-                    </span>
-                </figure>
+                    <!-- 转账 -->
+                    <el-button class="btn-transfer"
+                               size="mini"
+                               round
+                               @click="$router.push({name: RouteNames.TRANSFER})">
+                        {{$t('TP.TRANSFER.Title')}}
+                    </el-button>
+                </section>
 
             </section>
 
+            <section class="token-header-bottom">
+                <section class="c-fff">
+                    <h3>{{assetInfo.unit}} {{assetInfo.total_asset || 0}}</h3>
+                </section>
 
-            <section class="change-language ft-16">
-                <span class="pointer" :class="{'active': currentLanguage === 'zh-Hans'}"
-                      @click="changeLanguage('zh-Hans')">中</span>
-                <span class="pointer" :class="{'active': currentLanguage === 'en'}"
-                      @click="changeLanguage('en')">EN</span>
+                <section class="text-right">
+                    <div class="token-search-wrap">
+                        <div class="token-search-bar">
+                            <!--                            <svg-icon icon-class="search" :class-name="['c-fff']"></svg-icon>-->
+                            <input type="search"
+                                   :placeholder="$t('TP.GENERIC.Search')"
+                                   v-model="terms"/>
+                        </div>
+
+                    </div>
+                </section>
             </section>
+        </section>
+
+        <section class="token-content">
+            <TokenList :balances="tokens" :terms="terms"/>
+<!--            <section class="tokens" v-for="(token, index) in tokens" :key="index" @click="goTransfer(token)">-->
+<!--                <section class="tokens-list pointer">-->
+<!--                    <figure class="icon">-->
+<!--&lt;!&ndash;                        <img class="symbol-icon" :src="token.icon_url" alt="">&ndash;&gt;-->
+<!--                    </figure>-->
+
+<!--                    <section class="name">-->
+<!--                        <figure class="c-232538 ft-24">{{token.symbol}}</figure>-->
+<!--                    </section>-->
+
+<!--                    <section class="amount">-->
+<!--                        <figure class="c-232538 ft-24" style="margin-bottom: 19px">{{token.balance}}</figure>-->
+<!--                        <figure class="c-c4c7d2 ft-20">-->
+<!--                            ≈ {{token.amount}}-->
+<!--&lt;!&ndash;                            {{token.asset.toFixed(4)}}&ndash;&gt;-->
+<!--                        </figure>-->
+<!--                    </section>-->
+<!--                </section>-->
+
+<!--            </section>-->
 
         </section>
 
-        <!-- right logo -->
-        <section class="login-right text-center">
-            <img class="logo-img" src="../../assets/images/common/login.png" alt="">
-            <h3 class="ft-36 c-fff">TOKEN POCKET</h3>
-            <h5 class="ft-14">YOUR UNIVERSAL DIGITAL WALLET</h5>
-        </section>
-
-        <!--        <section class="entry" v-if="state === STATES.NEW_OR_LOGIN" :class="{'success':success}">-->
-        <!--            <figure class="login-bg">-->
-        <!--                <img src="../../../assets/login_bg.png" />-->
-        <!--            </figure>-->
-        <!--            <section class="meteors">-->
-        <!--                <section class="rotator">-->
-        <!--                    <figure class="shooting_star" v-for="i in new Array(20).keys()"></figure>-->
-        <!--                </section>-->
-        <!--            </section>-->
-
-        <!--            <section class="head">-->
-        <!--                <section class="details">-->
-        <!--                    <figure class="logo scatter-logologo"></figure>-->
-        <!--                    <figure class="version">meteoric</figure>-->
-        <!--                </section>-->
-        <!--            </section>-->
-
-        <!-------------------------->
-        <!------ NEW SCATTER ------->
-        <!-------------------------->
-        <!--            <section class="body">-->
-        <!--                <section v-if="isNewScatter">-->
-        <!--                    <LoginButton-->
-        <!--                            @click.native="state = STATES.CREATE_NEW"-->
-        <!--                            primary="1"-->
-        <!--                            title="I'm new to blockchain"-->
-        <!--                            description="We'll set you up with a new blockchain account" />-->
-        <!--                    <LoginButton-->
-        <!--                            @click.native="state = STATES.IMPORT_KEYS"-->
-        <!--                            title="I have my own private keys"-->
-        <!--                            description="Import your accounts manually" />-->
-        <!--                </section>-->
-
-        <!-------------------------->
-        <!---- EXISTING SCATTER ---->
-        <!-------------------------->
-        <!--                <section v-if="!isNewScatter">-->
-        <!--                    <Input class="welcome-password" :focus="true" big="1" for-login="1"-->
-        <!--                           placeholder="Enter your password"-->
-        <!--                           type="password" :disabled="opening || isLockedOut"-->
-        <!--                           :loader-on-dynamic="opening && !success"-->
-        <!--                           :text="password" v-on:enter="unlock" v-on:dynamic="unlock" v-on:changed="x => password = x"-->
-        <!--                           :dynamic-button="badPassword ? 'icon-cancel' : success ? 'icon-check' : isLockedOut ? '' : 'icon-right-open-big'" :hide-dynamic-button="!password.length" />-->
-
-        <!--                </section>-->
-        <!--            </section>-->
-
-        <!--            <section class="tail">-->
-        <!--                &lt;!&ndash;<section class="terms">&ndash;&gt;-->
-        <!--                &lt;!&ndash;Use of Scatter is limited to our <u>Terms of Use</u>.<br>&ndash;&gt;-->
-        <!--                &lt;!&ndash;Please make sure to also read our <u>Privacy Policy</u>.&ndash;&gt;-->
-        <!--                &lt;!&ndash;</section>&ndash;&gt;-->
-        <!--                <section class="actions">-->
-        <!--                    <section class="action" @click="destroy" v-if="!isNewScatter">-->
-        <!--                        <Reset class="logo" />-->
-        <!--                        <figure class="text">Reset</figure>-->
-        <!--                    </section>-->
-        <!--                    <section class="action" @click="importBackup" v-if="isNewScatter">-->
-        <!--                        <Restore class="logo" />-->
-        <!--                        <figure class="text">Restore</figure>-->
-        <!--                    </section>-->
-        <!--                    <section class="action" @click="goToSupport">-->
-        <!--                        <Support class="logo" />-->
-        <!--                        <figure class="text">Support</figure>-->
-        <!--                    </section>-->
-        <!--                </section>-->
-        <!--            </section>-->
-
-        <!--        </section>-->
-
-
-        <!-------------------------->
-        <!-- CREATING NEW SCATTER (No keys) -->
-        <!-------------------------->
-        <!--        <section class="onboard" v-if="state === STATES.CREATE_NEW">-->
-        <!--            <ProgressBubbles :total="steps" :index="step" />-->
-
-        <!--            <section class="panel">-->
-        <!--                <Terms v-if="step === 1" v-on:back="stepBack" v-on:next="stepForward" />-->
-        <!--                <SetPassword v-if="step === 2" v-on:back="stepBack" v-on:next="stepForward" />-->
-        <!--                &lt;!&ndash;<SelectBackupLocation v-if="step === 3" v-on:back="stepBack" v-on:next="stepForward" />&ndash;&gt;-->
-        <!--                <Welcome v-if="step === 3" />-->
-        <!--            </section>-->
-
-        <!--        </section>-->
-
-
-        <!-------------------------->
-        <!-- CREATING NEW SCATTER (Has keys) -->
-        <!--        &lt;!&ndash;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
-        <!--        <section class="onboard" v-if="state === STATES.IMPORT_KEYS">-->
-        <!--            <ProgressBubbles :total="steps" :index="step" />-->
-
-        <!--            <section class="panel">-->
-        <!--                <Terms v-if="step === 1" v-on:back="stepBack" v-on:next="stepForward" />-->
-        <!--                <SetPassword v-if="step === 2" v-on:back="stepBack" v-on:next="importKeypair" />-->
-        <!--                <Welcome v-if="step === 4" />-->
-        <!--            </section>-->
-
-        <!--        </section>-->
 
     </section>
 </template>
 
 <script>
-    import { mapActions, mapGetters, mapState } from 'vuex';
-    import * as Actions from '../../../store/constants';
-
-    import ProgressBubbles from '../../../components/reusable/ProgressBubbles';
-    import ActionBar from '../../../components/reusable/ActionBar';
-    import LoginButton from '../../../components/login/LoginButton';
-    import Terms from '../../../components/login/Terms';
-    import SetPassword from '../../../components/login/SetPassword';
-    import SelectBackupLocation from '../../../components/login/SelectBackupLocation';
-    import Welcome from '../../../components/login/Welcome';
-    import PopupService from '../../../services/utility/PopupService';
-    import PasswordService from '../../../services/secure/PasswordService';
-    import StoreService from '../../../services/utility/StoreService';
-    import { Popup } from '../../../models/popups/Popup';
-
-    import SpaceBackground from '../../../components/backgrounds/SpaceBackground';
-    import Reset from '../../../components/svgs/login/Reset';
-    import Restore from '../../../components/svgs/login/Restore';
-    import Support from '../../../components/svgs/login/Support';
-    import ElectronHelpers from '../../../util/ElectronHelpers';
-    import BackupService from '../../../services/utility/BackupService';
-
-
-    import { RouteNames } from '../../../vue/Routing';
-
-    const STATES = {
-        NEW_OR_LOGIN: 'newOrLogin',
-        CREATE_NEW: 'createNew',
-        IMPORT_KEYS: 'importKeys',
-        IMPORT_BACKUP: 'importBackup',
-    };
-
-
-    const lockoutTime = 1000 * 60 * 5;
-    const resetLockout = () => window.localStorage.removeItem('lockout');
-    const getLockout = () => JSON.parse(window.localStorage.getItem('lockout') || JSON.stringify({
-        tries: 0,
-        stamp: 0
-    }));
-    const setLockout = () => {
-        const lockout = getLockout();
-        lockout.tries++;
-        lockout.stamp = +new Date();
-        return window.localStorage.setItem('lockout', JSON.stringify(lockout));
-    };
-
+    import { mapGetters } from 'vuex';
+    import Token from '../../../models/Token';
+    import TokenList from './TokenList'
 
     export default {
         components: {
-            SpaceBackground,
-            Welcome,
-            SelectBackupLocation,
-            ActionBar,
-            ProgressBubbles,
-            LoginButton,
-            SetPassword,
-            Terms,
-
-            Reset,
-            Restore,
-            Support,
+            TokenList
         },
         data() {
             return {
-                state: STATES.NEW_OR_LOGIN,
-                STATES,
-
-                step: 2,
-                password: '',
-                opening: false,
-                success: false,
-                badPassword: false,
-
-                currentLanguage: 'zh',
-                confirmation: '',
+                loadingBalances: false,
+                searchTerms: '',
+                assetInfo: {},
+                terms: '',
             };
         },
-        created() {
-            // console.log(this.$i18n);
-        },
+
         computed: {
-            ...mapState([
-                'scatter',
-            ]),
             ...mapGetters([
-                // 'currentLanguage'
+                // 'assetInfo',
+                'accountInfo',
+                'tpAccounts',
+                'currentAccount'
             ]),
-            isNewScatter() {
-                return !this.scatter;
-            },
-            steps() {
-                switch (this.state) {
-                    case STATES.CREATE_NEW:
-                        return 3;
-                    case STATES.IMPORT_KEYS:
-                        return 4;
-                    case STATES.IMPORT_BACKUP:
-                        return 3;
-                }
-            },
-            lockedTimeLeft() {
-                return (this.lockedOutTime - this.now) / 1000;
-            },
-            isLockedOut() {
-                return this.lockedTimeLeft > 0 && this.lockedOutTime > 0;
+            tokens() {
+               return this.currentAccount.tokens ? this.currentAccount.tokens() : []
+               // return this.currentAccount.tokens().filter(token => {
+               //      if (!this.terms.length) return true;
+               //      if (this.terms === '-') return this.change(token) && !this.change(token).plus && token.fiatBalance(false);
+               //      if (this.terms === '+') return this.change(token) && this.change(token).plus && token.fiatBalance(false);
+               //      if (this.terms.indexOf('::') > -1) return `${token.contract.toLowerCase()}::${token.symbol.toLowerCase()}` === this.terms;
+               //      if (isNaN(this.terms)) return token.symbol.toLowerCase().indexOf(this.terms) > -1 || token.contract.toLowerCase().indexOf(this.terms) > -1;
+               //      return token.amount >= parseFloat(this.terms);
+               //  }).sort((a, b) => {
+               //      if (this.terms === '+' || this.terms === '-') return this.change(b, true) - this.change(a, true);
+               //      return Token.sorter(a, b);
+               //  });
             }
         },
+
+        mounted() {
+            // this.getAsset();
+            // console.log(this.currentAccount.tokens());
+
+            // const tokens =
+
+            // console.log(tokens);
+            // })
+        },
+
         methods: {
-            create() {
-
+            goTransfer(token) {
+                this.$router.push({
+                    name: this.RouteNames.TRANSFER,
+                    query: { symbol: token.symbol }
+                });
             },
 
-            forgetPwd() {
-
+            async getAsset() {
+                this.loadingBalances = true;
+                await this.$store.dispatch('GET_ASSET');
+                setTimeout(() => this.loadingBalances = false, 500);
             },
 
-            changeLanguage() {
-
+            async refreshTokens() {
+                this.getAsset();
             },
+        },
 
-            // stepBack() {
-            //     if (this.step === 1) {
-            //         this.state = STATES.NEW_OR_LOGIN;
-            //         return;
-            //     }
-            //     this.step--;
+        watch: {
+            // accountInfo() {
+            //     this.getAsset();
             // },
             //
-            // stepForward() {
-            //     this.step++;
-            // },
-
-            // goToSupport() {
-            //     ElectronHelpers.openLinkInBrowser('https://support.get-scatter.com/');
-            // },
-
-            // importBackup() {
-            //     PopupService.push(Popup.importFullBackup({}, done => {
-            //     }));
-            // },
-
-            // importKeypair() {
-            // this.stepForward();
-            // PopupService.push(Popup.importKeypair({ forSignup: true }, keypair => {
-            //     this.stepForward();
-            // }));
-            // },
-
-            async go() {
-                const scatter = this.scatter.clone();
-                scatter.onboarded = true;
-                await this[Actions.SET_SCATTER](scatter);
-                this.$router.push({ name: RouteNames.HOME });
-            },
-
-            async checkPassword() {
-                if (!PasswordService.isValidPassword(this.password, this.confirmation)) return false;
-
-                StoreService.setWorking(true);
-                await this[Actions.CREATE_SCATTER](this.password);
-                StoreService.setWorking(false);
-
-                this.go();
-            },
-
-            async unlock(usingLocalStorage = false) {
-                if (!usingLocalStorage) {
-                    const lockout = getLockout();
-                    if (lockout.tries >= 5 && +new Date() < lockout.stamp + lockoutTime) {
-                        this.lockedOutTime = lockout.stamp + lockoutTime;
-                        return PopupService.push(Popup.snackbar(this.locale(this.langKeys.SNACKBARS.AUTH.LockedOut), 'attention-circled'));
-                    }
-                    if (this.opening) return;
-                    this.opening = true;
-                }
-
-                setTimeout(async () => {
-                    await this[Actions.SET_SEED](this.password);
-                    await this[Actions.LOAD_SCATTER](usingLocalStorage);
-                    if (typeof this.scatter === 'object' && !this.scatter.isEncrypted()) {
-                        resetLockout();
-                        setTimeout(() => {
-                            if (!this.scatter.onboarded) {
-                                PopupService.push(Popup.showTerms(async accepted => {
-                                    if (!accepted) {
-                                        await this[Actions.SET_SEED](null);
-                                        await this[Actions.LOAD_SCATTER](false);
-                                        this.opening = false;
-                                        return;
-                                    }
-
-                                    const clone = this.scatter.clone();
-                                    clone.onboarded = true;
-                                    await this[Actions.SET_SCATTER](clone);
-
-                                    if (!this.scatter.settings.backupLocation.length) {
-                                        await BackupService.setDefaultBackupLocation();
-                                    }
-
-                                    this.success = true;
-                                    this.$router.push({ name: this.RouteNames.HOME });
-                                }));
-                            } else {
-                                this.success = true;
-                                this.$router.push({ name: this.RouteNames.HOME });
-                            }
-                        }, 1000);
-                    } else {
-                        if (!usingLocalStorage) return this.unlock(true);
-                        this.opening = false;
-                        this.badPassword = true;
-                        PopupService.push(Popup.snackbarBadPassword());
-                        setLockout();
-                    }
-                }, 400);
-            },
-
-            destroy() {
-                PopupService.push(Popup.destroyScatter());
-            },
-
-
-            ...mapActions([
-                Actions.SET_SEED,
-                Actions.LOAD_SCATTER,
-                Actions.SET_SCATTER,
-                Actions.CREATE_SCATTER,
-            ])
-        },
-        watch: {
-            ['password']() {
-                this.badPassword = false;
-            }
+            // searchTerms() {
+            //     this.searchTerms === ''
+            //         ? this.getAsset()
+            //         : this.$store.commit('FILTER_ASSET', this.searchTerms.toLowerCase());
+            // }
         }
     };
 </script>
 
 <style scoped lang="scss" rel="stylesheet/scss">
+    /*@import "../../styles/variables";*/
 
-    .login-wrap {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
+    .btn-transfer {
+        background: transparent;
+        color: #fff;
+        height: 30px;
+    }
 
-        .login-left {
-            flex: 1;
-            height: 100%;
-            padding: 0 50px;
-            position: relative;
+    .token-header {
+        padding: 35px 40px 40px 40px;
+        background: linear-gradient(270deg, rgba(32, 72, 204, 1) 0%, rgba(22, 161, 248, 1) 100%);
 
+        .token-header-top,
+        .token-header-bottom {
             h3 {
-                padding: 140px 0 120px 0;
                 margin: 0;
             }
 
-            h4 {
-                margin: 0;
-                padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+
+            section {
+                flex: 1;
             }
+        }
 
-            .login-input {
-                outline: none;
-                border: 0;
-                border-bottom: 1px solid #E5E6F2;
-                padding: 15px 0;
-                width: 100%;
-                font-size: 16px;
-            }
+        .token-header-top {
+            margin-bottom: 25px;
+        }
 
-            .login-btn {
-                margin-top: 56px;
-                width: 250px;
-                height: 56px;
-                border-radius: 14px;
-            }
 
-            .change-language {
-                position: absolute;
-                bottom: 25px;
-                left: 50%;
-                transform: translateX(-50%);
+        .token-search-wrap {
+            display: inline-block;
 
-                span {
-                    display: inline-block;
-                    color: #C4C7D2;
-                    padding: 0 24px;
+            .token-search-bar {
+                display: flex;
+                width: 300px;
+                height: 40px;
+                border: 1px solid #fff;
+                border-radius: 20px;
+                align-items: center;
+                padding: 0 10px;
 
-                    &:first-child {
-                        border-right: 1px solid #E5E6F2;
-                    }
+                > input {
+                    font-family: "Microsoft YaHei", sans-serif;
+                    outline: none;
+                    box-shadow: none;
+                    width: 100%;
+                    height: 90%;
+                    margin: 0 10px;
+                    background: transparent;
+                    color: #fff;
+                    border: 0;
 
-                    &.active {
-                        color: #2E294E;
+                    &::-webkit-input-placeholder {
+                        color: #fff;
                     }
                 }
             }
         }
+    }
 
-        .login-right {
-            width: 620px;
-            height: 100%;
-            background: linear-gradient(180deg, rgba(81, 189, 255, 1) 0%, rgba(39, 97, 231, 1) 100%);
 
-            .logo-img {
-                width: 185px;
-                margin-top: 150px;
-                margin-bottom: 50px;
-            }
+    .token-content {
+        /*padding: 0 40px;*/
+        height: calc(100vh - 170px - 40px);
+        overflow: auto;
 
-            h5 {
-                color: #86ADFF;
-                margin-top: 200px
+        .tokens {
+            .tokens-list {
+                display: flex;
+                align-items: center;
+                padding: 20px 40px;
+                border-bottom: 1px solid #E8EBF4;
+
+                .icon {
+                    margin-right: 50px;
+
+                    .symbol-icon {
+                        width: 40px !important;
+                        height: 40px !important;
+                        border-radius: 50%;
+                    }
+                }
+
+                .name,
+                .amount {
+                    flex: 1
+                }
+
             }
         }
     }
+
 </style>

@@ -138,7 +138,7 @@
                         <i class="people-search-icon TP-Iconfont tp-icon-searchx"></i>
                         <input class="people-search-input"
                                type="search"
-                               :placeholder="$t('TP.COMMON.SEARCH')"
+                               :placeholder="$t('TP.GENERIC.Search')"
                                v-model="searchPeople"/>
                     </div>
                 </section>

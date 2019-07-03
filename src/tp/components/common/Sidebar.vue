@@ -5,7 +5,7 @@
             <section ref="account" style="padding: 0 10px;">
                 <section class="account text-center">
                     <h4 class="ft-16 c-fff pointer" @click="accountOptions">
-                        {{ currentAccount.sendable ? currentAccount.sendable() : $t('TP.COMMON.KEY_ADD') }}
+                        {{ currentAccount.sendable ? currentAccount.sendable() : $t('TP.GENERIC.AddKeys') }}
 
                         <span v-show="currentAccount.sendable">
                             <img style="height: 12px" src="../../assets/images/common/array.png" alt="">
@@ -73,7 +73,7 @@
             <!-- 添加账号 -->
             <section class="account-add">
                 <button class="tp-button on" style="padding: 15px 0;" @click="addAccount">
-                    {{$t('TP.COMMON.KEY_ADD')}}
+                    {{$t('TP.GENERIC.AddKeys')}}
                 </button>
             </section>
         </section>
@@ -128,11 +128,12 @@
             tabList() {
                 return [
                     { title: 'DApp', icon: 'tp-font-dqpps', url: RouteNames.DAPP },
-                    { title: this.$t('TP.COMMON.CHAT'), icon: 'tp-font-chat', url: RouteNames.CHAT },
-                    { title: this.$t('TP.COMMON.ASSET'), icon: 'tp-font-asset', url: RouteNames.ASSET },
-                    { title: this.$t('TP.COMMON.WALLET'), icon: 'tp-font-wallet', url: RouteNames.WALLET },
+                    { title: this.$t('TP.GENERIC.Chat'), icon: 'tp-font-chat', url: RouteNames.CHAT },
+                    { title: this.$t('TP.GENERIC.Asset'), icon: 'tp-font-asset', url: RouteNames.ASSET },
+                    // { title: this.$t('TP.GENERIC.Asset'), icon: 'tp-font-asset', url: RouteNames.ASSET },
+                    { title: this.$t('TP.GENERIC.Wallet'), icon: 'tp-font-wallet', url: RouteNames.WALLET },
                     {
-                        title: this.$t('TP.COMMON.SETTING'),
+                        title: this.$t('TP.GENERIC.Setting'),
                         icon: 'tp-font-settings',
                         url: RouteNames.SETTINGS,
                         // params: {panel: this.SETTINGS_OPTIONS.LANGUAGE}

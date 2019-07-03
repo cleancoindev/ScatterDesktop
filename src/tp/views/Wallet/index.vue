@@ -4,10 +4,10 @@
             <!-- left content -->
             <section>
                 <h3 class="ft-36 c-2e294e" style="">
-                    {{isNewScatter ? $t('TP.COMMON.SETTING') : $t('TP.COMMON.LOGIN')}}
+                    {{isNewScatter ? $t('TP.GENERIC.Setting') : $t('TP.GENERIC.Login')}}
                 </h3>
 
-                <h4 class="ft-24 c-c4c7d2">{{$t('TP.COMMON.PASSWORD')}}</h4>
+                <h4 class="ft-24 c-c4c7d2">{{$t('TP.GENERIC.Password')}}</h4>
 
                 <h5 class="ft-16" v-if="isNewScatter">{{$t('TP.LOGIN.CANT_LOGIN_NOTICE_4')}}</h5>
 
@@ -34,7 +34,7 @@
                             @click="checkPassword"
                             v-loading="working"
                             element-loading-spinner="el-icon-loading">
-                        {{$t('TP.COMMON.CONFIRM')}}
+                        {{$t('TP.GENERIC.Confirm')}}
                     </button>
                 </figure>
 
@@ -46,7 +46,7 @@
                             element-loading-spinner="el-icon-loading"
                             :class="{'on': password.length > 0}"
                             @click="unlock">
-                        {{$t('TP.COMMON.LOGIN')}}
+                        {{$t('TP.GENERIC.Login')}}
                     </button>
                 </figure>
 
