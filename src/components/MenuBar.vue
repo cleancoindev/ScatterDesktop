@@ -140,7 +140,7 @@
                 .x1, .x2 {
                     width: 12px;
                     height: 2px;
-                    background: #fff;
+                    background: #3A3B3D;
                     transform-origin: center center;
                 }
 
@@ -156,14 +156,14 @@
                 .sqr {
                     height: $action;
                     width: $action;
-                    border: 2px solid #fff;
+                    border: 2px solid #3A3B3D;
                     border-radius: 2px;
                 }
 
                 .line {
                     height: 2px;
                     width: $action;
-                    background: #fff;
+                    background: #3A3B3D;
                 }
             }
         }
