@@ -21,7 +21,7 @@ export default class SingletonService {
 		initialized = true;
 		PluginRepository.plugin(Blockchains.TRX).init();
 		SocketService.initialize();
-		UpdateService.needsUpdate();
+		// UpdateService.needsUpdate();
 		AppsService.getApps();
 		StoreService.get().dispatch(Actions.LOAD_HISTORY);
 		StoreService.get().dispatch(Actions.LOAD_LANGUAGE);
