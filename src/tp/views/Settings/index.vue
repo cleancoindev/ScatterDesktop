@@ -234,10 +234,10 @@
                 }));
             },
 
-            translate(option) {
-                console.log(option);
+            // translate(option) {
+                // console.log(option);
                 // return this.$t(`this.langKeys.SETTINGS.MENU[option.name]`);
-            }
+            // }
         }
     };
 </script>
