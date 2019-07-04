@@ -21,7 +21,7 @@ import PriceService from '../services/apis/PriceService';
 
 import Layout from '../tp/Layout/index'
 import i18n from '../tp/i18n/index';
-import 'element-ui/lib/theme-chalk/index.css'
+// import 'element-ui/lib/theme-chalk/index.css'
 import ElementUI from 'element-ui'
 
 const PKG = require('../../package.json');

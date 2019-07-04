@@ -6,14 +6,14 @@
 				<Lock />
 				<br>
 				<br>
-				<figure class="title">{{$t('TP.PASSWORD.Label')}}</figure>
+				<figure class="title">{{$t('TP.SETTINGS.PASSWORD.Label')}}</figure>
 
 				<br>
 				<Input  style="width:350px;" big="1"
 				        :text="password"
 				        v-on:enter="verify"
 				        v-on:changed="x => password = x"
-				        centered="1" :placeholder="$t('TP.PASSWORD.Placeholder')"
+				        centered="1" :placeholder="$t('TP.SETTINGS.PASSWORD.Placeholder')"
 				        type="password" />
 			</section>
 

@@ -90,7 +90,7 @@ Utils.mapMsgType = function (msg) {
 
 Utils.stringifyDate = function (datetime, lang, simple = false) {
     let weekMap = {
-        'zh-Hans': ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+        'zh': ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
         'en': ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     };
     datetime = new Date(datetime);

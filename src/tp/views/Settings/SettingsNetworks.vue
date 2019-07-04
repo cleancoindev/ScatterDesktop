@@ -238,13 +238,15 @@
 			}
 		}
 
-		.with-tail {
-			height: calc(100vh - 290px - 70px - 60px)!important;
-		}
 	}
+
 
 	.blockchain-list-container .head {
 		height: 40px;
+	}
+
+	.blockchain-list-container .scroller.with-tail {
+		height: calc(100vh - 290px - 70px - 60px)!important;
 	}
 
 	.badge {

@@ -7,7 +7,7 @@
         <h3 class="ft-20" style="margin: 25px 0 15px;">v {{clientVersion}}</h3>
 
         <p class="c-2e294e ft-14">
-            {{$t('TP.ABOUT.AboutUsText')}}
+            {{$t('TP.SETTINGS.ABOUT.AboutUsText')}}
         </p>
 
         <section class="link-wrap text-center">

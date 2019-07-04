@@ -1,7 +1,7 @@
 <template>
 	<section class="pop-out-head">
 		<section class="details">
-			<figure class="logo">Scatter</figure>
+			<figure class="logo">TokenPocket</figure>
 		</section>
 		<section class="actions">
 			<section class="id-selector" v-if="idSelector && identities.length > 1">

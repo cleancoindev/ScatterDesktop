@@ -43,23 +43,10 @@
         },
         computed: {
             ...mapGetters([
-
-                'userInfos',
                 'myInfo',
                 'nim',
-
-                'teamMembers',
-                'accountInfo',
-
-
                 'sessionList',
-                'sessionMap',
-
-                'imInfo',
-                'sessionTab',
                 'currentSessionId',
-                'currentSessionMsg',
-                'currentLanguage',
                 'messages',
             ]),
 
@@ -76,7 +63,7 @@
         },
 
         mounted() {
-            if (this.myInfo.account) this.$store.dispatch('GET_FOLLOW_LIST', { type: 'init' });
+            if (this.myInfo.account && this.nim) this.$store.dispatch('GET_FOLLOW_LIST', { type: 'init' });
         },
         methods: {
             onImgError(el) {
@@ -107,7 +94,7 @@
         },
         watch: {
             myInfo() {
-                if (this.myInfo.account) this.$store.dispatch('GET_FOLLOW_LIST', { type: 'init' });
+                if (this.myInfo.account && this.nim) this.$store.dispatch('GET_FOLLOW_LIST', { type: 'init' });
             }
         }
     };
@@ -117,7 +104,7 @@
     @import "../../assets/styles/consts";
 
     .tp-chat_group {
-        border-right: 1px solid #e1e1e1;
+        /*border-right: 1px solid #e1e1e1;*/
 
         .tp-chat_group-search {
             height: 50px;

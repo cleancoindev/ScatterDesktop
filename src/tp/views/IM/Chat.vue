@@ -33,7 +33,6 @@
         },
         computed: {
             ...mapGetters([
-                'currentSessionId',
                 'sessionTab'
             ])
         },

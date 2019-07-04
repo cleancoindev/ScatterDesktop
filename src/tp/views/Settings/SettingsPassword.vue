@@ -10,19 +10,19 @@
                     {{$t('TP.GENERIC.Password')}}
                 </h4>
                 <input class="password-input ft-14" type="password"
-                       :placeholder="$t('TP.PASSWORD.NewPasswordPlaceholder')"
-                        v-model="password"/>
+                       :placeholder="$t('TP.SETTINGS.PASSWORD.NewPasswordPlaceholder')"
+                       v-model="password"/>
             </section>
 
             <section>
                 <h4 style="margin: 1em 0;" class="ft-16 c-232538">
-                    {{$t('TP.PASSWORD.ConfirmPasswordLabel')}}
+                    {{$t('TP.SETTINGS.PASSWORD.ConfirmPasswordLabel')}}
                 </h4>
 
                 <input class="password-input ft-14" type="password"
-                       :placeholder="$t('TP.PASSWORD.ConfirmPasswordPlaceholder')"
-                        v-model="confirmPassword"
-                        @keyup.enter="changePassword"/>
+                       :placeholder="$t('TP.SETTINGS.PASSWORD.ConfirmPasswordPlaceholder')"
+                       v-model="confirmPassword"
+                       @keyup.enter="changePassword"/>
             </section>
 
 
@@ -30,95 +30,43 @@
                 <button class="tp-button change-password c-fff ft-16 pointer"
                         :class="{'on': password.length > 0 && (password === confirmPassword)}"
                         @click="changePassword">
-                    {{$t('TP.PASSWORD.ChangePasswordButton')}}
+                    {{$t('TP.SETTINGS.PASSWORD.ChangePasswordButton')}}
                 </button>
             </section>
         </section>
-
-        <!--<section class="action-box top-pad">-->
-            <!--<label>{{$t('TP.GENERIC.PASSWORD.ViewMnemonicLabel)}}</label>-->
-            <!--<p>{{$t('TP.GENERIC.PASSWORD.ViewMnemonicDescription)}}</p>-->
-
-            <!--<btn v-on:clicked="viewMnemonic" :text="$t('TP.GENERIC.PASSWORD.ViewMnemonicButton)" />-->
-        <!--</section>-->
 
     </section>
 </template>
 
 <script>
-    import { mapActions, mapGetters, mapState } from 'vuex'
-    import * as Actions from '../../../store/constants';
-
+    import { mapState } from 'vuex';
     import PasswordService from '../../../services/secure/PasswordService';
-    import PopupService from '../../../services/utility/PopupService';
-    import {Popup} from '../../../models/popups/Popup';
 
     export default {
-    	props:['mnemonic'],
-        data () {
-    	  return {
-            password:'',
-            confirmPassword:''
-            }
+        props: ['mnemonic'],
+        data() {
+            return {
+                password: '',
+                confirmPassword: ''
+            };
         },
-        computed:{
+        computed: {
             ...mapState([
                 'scatter'
             ])
         },
-        mounted(){
+        mounted() {
         },
         methods: {
-            async changePassword(){
-                // if (this.password === '') {
-                //     this.$notify.error({
-                //         title: 'Error',
-                //         message: 'Please enter new password',
-                //         offset: 50,
-                //         duration: 3000
-                //     });
-                //     return false
-                // }
+            async changePassword() {
+                if (!PasswordService.isValidPassword(this.password, this.confirmPassword)) return false;
 
-                // if (this.confirmPassword === '') {
-                //     this.$notify.error({
-                //         title: 'Error',
-                //         message: 'Please enter confirm new password',
-                //         offset: 50,
-                //         duration: 3000
-                //     });
-                //     return false
-                // }
-
-                // if (this.password !== this.confirmPassword) {
-                //     this.$notify.error({
-                //         title: 'Error',
-                //         message: 'Inconsistent passwords',
-                //         offset: 50,
-                //         duration: 3000
-                //     });
-                //     return false
-                // }
-
-                if(!PasswordService.isValidPassword(this.password, this.confirmPassword)) return false;
-
-                const mnemonic = await PasswordService.changePassword(this.password);
-                this.$emit('mnemonic', mnemonic);
-                PopupService.push(Popup.mnemonic(mnemonic));
-                PopupService.push(Popup.snackbar(this.locale(this.langKeys.SETTINGS.PASSWORD.ChangedPasswordSnackbar), "lock"));
+                await PasswordService.changePassword(this.password);
                 this.password = '';
                 this.confirmPassword = '';
-            },
-
-	        viewMnemonic(){
-                PopupService.push(Popup.mnemonic(this.mnemonic));
-            },
-
-            ...mapActions([
-                Actions.SET_SCATTER
-            ])
+            }
         },
-    }
+    };
 </script>
 
 <style scoped lang="scss" rel="stylesheet/scss">

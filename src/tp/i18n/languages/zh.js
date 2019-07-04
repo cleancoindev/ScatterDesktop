@@ -100,14 +100,6 @@ export default {
             WhitelistNotificationsDescription: '当您对白名单交易进行自动签名时，在某些特定的操作系统上这些通知会出现。',
         },
 
-        TRANSFER: {
-            Title: '转账',
-            SendButton: '发送令牌',
-            Sender: '发送人',
-            Recipient: '接收人',
-            MemoPlaceholder: '备注',
-        },
-
         LOGIN: {
             NOTICE: '提示',
             PASSWORD_DESC: '请输入密码',
@@ -121,6 +113,16 @@ export default {
             CANT_LOGIN_NOTICE_3: '3. 重置钱包不会删除或影响你在区块链上的账号数据。',
             CANT_LOGIN_NOTICE_4: '设置钱包登录密码，以保护你的资产安全。',
             DESC: 'YOUR UNIVERSAL DIGITAL WALLET'
+        },
+
+        ASSET: {
+            TRANSFER: {
+                Title: '转账',
+                SendButton: '发送令牌',
+                Sender: '发送人',
+                Recipient: '接收人',
+                MemoPlaceholder: '备注',
+            },
         },
 
         IM: {
@@ -138,22 +140,22 @@ export default {
             GROUP_DELETE: '退出群聊',
         },
 
-        ABOUT: {
-            AboutUsText: 'TokenPocket 是一款支持多币种、多底层的去中心化通用数字钱包，融合了数字资产管理、账号管理和DApp商店等多种功能。'
-        },
-
-        PASSWORD: {
-            NewPasswordLabel: '新密码',
-            NewPasswordPlaceholder: '密码',
-            ConfirmPassword: '确认密码',
-            ConfirmPasswordLabel: '确认新密码',
-            ConfirmPasswordPlaceholder: '再次输入密码',
-            ChangePasswordButton: '更改密码',
-            Label: '密码',
-            Placeholder: '请输入密码',
-        },
-
         SETTINGS: {
+            ABOUT: {
+                AboutUsText: 'TokenPocket 是一款支持多币种、多底层的去中心化通用数字钱包，融合了数字资产管理、账号管理和DApp商店等多种功能。'
+            },
+
+            PASSWORD: {
+                NewPasswordLabel: '新密码',
+                NewPasswordPlaceholder: '密码',
+                ConfirmPassword: '确认密码',
+                ConfirmPasswordLabel: '确认新密码',
+                ConfirmPasswordPlaceholder: '再次输入密码',
+                ChangePasswordButton: '更改密码',
+                Label: '密码',
+                Placeholder: '请输入密码',
+            },
+
             DESTROY: {
                 Description: '该操作将从本地计算机中删除包括私钥等的重要数据，但不会删除或影响到你在真实区块链上的账号。执行该操作前请确保已备份好私钥等重要信息。'
             }
@@ -182,8 +184,15 @@ export default {
             ERRORS: {
                 InvalidKeyLength: '密码长度不够',
             }
+        },
+
+        WALLET: {
+            UNLINK_ACCOUNT: {
+                Title: '账户取消关联',
+                Desc: '清除账户的关联并同时清除全部的应用权限',
+                SubDesc: '选择要删除的所有权限',
+                AuthoritiesLabel: '授权',
+            }
         }
-
-
     }
 };

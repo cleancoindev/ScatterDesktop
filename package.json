@@ -1,12 +1,12 @@
 {
-  "name": "scatter",
+  "name": "tokenpocket",
   "version": "1.3.0",
   "private": true,
-  "buttonText": "Scatter Desktop Companion",
+  "buttonText": "TokenPocket",
   "author": {
-    "name": "GetScatter",
-    "email": "support@get-scatter.com",
-    "url": "https://get-scatter.com/"
+    "name": "TokenPocket",
+    "email": "service@tokenpocket.pro",
+    "url": "https://tokenpocket.pro"
   },
   "scripts": {
     "build": "concurrently \"npm run copybuildfiles\" \"node build/build.js\"",
@@ -20,7 +20,7 @@
     "testfile": "mocha --require test/babel --exit --timeout 1000000",
     "test": "npm run testfile \"test/**/*.spec.js\" --timeout 1000000",
     "serve": "electron electron.js",
-    "serve:tp": "electron tp-electron.js"
+    "icons": "electron-icon-builder --input=./static/icon.png --output=./static --flatten"
   },
   "dependencies": {
     "@ledgerhq/hw-app-eth": "^4.55.0",
@@ -32,6 +32,7 @@
     "bip32-path": "^0.4.2",
     "bip39": "^2.5.0",
     "chartist": "^0.11.0",
+    "electron-icon-builder": "^1.0.1",
     "electron-store": "^3.2.0",
     "ethereumjs-tx": "^1.3.7",
     "ethereumjs-util": "^5.2.0",
@@ -102,6 +103,7 @@
     "secp256k1": "^3.6.2",
     "semver": "^5.5.1",
     "sha3": "^2.0.2",
+    "shelljs": "^0.8.3",
     "sinon": "^4.0.0",
     "sinon-chai": "^2.8.0",
     "spectron": "^5.0.0",
@@ -138,8 +140,7 @@
     "url": "https://github.com/GetScatter/ScatterDesktop/issues"
   },
   "build": {
-    "productName": "scatter",
-    "appId": "com.get-scatter.server",
+    "productName": "TokenPocket",
     "artifactName": "${os}-${productName}-${version}-${arch}.${ext}",
     "asar": true,
     "asarUnpack": [
@@ -148,13 +149,13 @@
     "protocols": {
       "name": "electron-deep-linking",
       "schemes": [
-        "scatter"
+        "TokenPocket"
       ]
     },
     "files": [
       "dist/**/*",
       "static/**/*",
-      "tp-electron.js",
+      "electron.js",
       "package.json"
     ],
     "publish": {
@@ -166,14 +167,14 @@
       "oneClick": false,
       "createDesktopShortcut": "always",
       "createStartMenuShortcut": true,
-      "shortcutName": "Scatter"
+      "shortcutName": "TokenPocket"
     },
     "directories": {
       "buildResources": "build",
       "output": "release"
     },
     "dmg": {
-      "icon": "static/icons/icon.png",
+      "icon": "static/icon.png",
       "contents": [
         {
           "x": 134,
@@ -202,10 +203,10 @@
     "linux": {
       "category": "Network",
       "desktop": {
-        "Name": "Scatter",
-        "GenericName": "Scatter Desktop",
-        "X-GNOME-FullName": "scatter",
-        "Comment": "Scatter desktop signature server.",
+        "Name": "TokenPocket",
+        "GenericName": "TokenPocket Desktop",
+        "X-GNOME-FullName": "TokenPocket",
+        "Comment": "TokenPocket desktop signature server.",
         "Type": "Application",
         "Terminal": "false",
         "StartupNotify": "false",
@@ -219,18 +220,18 @@
     "node": ">= 6.0.0",
     "npm": ">= 3.0.0"
   },
-  "homepage": "https://get-scatter.com",
+  "homepage": "https://tokenpocket.pro",
   "keywords": [
-    "scatter",
+    "TokenPocket",
     "blockchain",
     "signatures",
     "eos",
     "ethereum"
   ],
   "license": "MIT",
-  "main": "tp-electron.js",
+  "main": "electron.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GetScatter/ScatterDesktop.git"
+    "url": "https://github.com/tokenbankteam/ScatterDesktop.git"
   }
 }

@@ -88,8 +88,8 @@
         top: 0;
         left: 0;
         right: 0;
-        background: rgb(241, 241, 241);
-        border-bottom: 1px solid #e5e5e5;
+        background: rgb(240, 240, 240);
+        /*border-bottom: 1px solid #e5e5e5;*/
         //border-top:1px solid $darkerblue;
         //border-left:1px solid $darkerblue;
         //border-right:1px solid $darkerblue;

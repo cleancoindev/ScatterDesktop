@@ -39,7 +39,6 @@ const TP = {
         ...Chat.actions,
         HAS_CHAIN({ state }, chainId) {
             return new Promise(resolve => {
-                console.log(state.chainIdObj[chainId]);
                 resolve(state.chainIdObj[chainId]);
             });
         },

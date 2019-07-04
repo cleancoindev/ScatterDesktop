@@ -31,6 +31,7 @@ import Asset from '../tp/views/Asset/index'
 import Chat from '../tp/views/IM/index'
 import Wallet from '../tp/views/Wallet/index'
 import ImportTextKey from '../tp/views/Keypair/ImportKeypair'
+import ExportPrivateKey from '../tp/views/Keypair/ExportPrivateKey'
 // import DApp from '../tp/views/DApp/'
 
 // TODO: These should be commented out for testing.
@@ -85,7 +86,8 @@ export const RouteNames = {
 	ASSET: 'asset',
 	WALLET: 'wallet',
 
-	IMPORT_TEXT_KEY: 'importTextKey'
+	IMPORT_TEXT_KEY: 'importTextKey',
+	EXPORT_PRIVATE_KEY: 'ExportPrivateKey'
 
 	// TP_LOGIN: 'TPLogin',
 };
@@ -120,6 +122,7 @@ const RouteViews = {
 	[RouteNames.CHAT]:Chat,
 	[RouteNames.WALLET]:Wallet,
 	[RouteNames.IMPORT_TEXT_KEY]: ImportTextKey,
+	[RouteNames.EXPORT_PRIVATE_KEY]: ExportPrivateKey,
 	// [RouteNames.TP_LOGIN]:TPLogin,
 };
 

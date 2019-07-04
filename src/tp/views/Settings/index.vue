@@ -108,6 +108,7 @@
     // import SettingsBackup from './SettingsBackup.vue';
     import SettingsDestroy from './SettingsDestroy.vue';
     import SettingsPassword from './SettingsPassword.vue';
+    // import SettingsPassword from '../../../components/panels/settings/SettingsPassword.vue';
     // import SettingsFirewall from './SettingsFirewall.vue';
     import SettingsAboutUs from './SettingsAboutUs';
     import SettingsNetworks from './SettingsNetworks.vue';

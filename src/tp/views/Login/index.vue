@@ -33,7 +33,7 @@
                     <button class="tp-button login-btn c-fff ft-24 pointer"
                             :class="{'on': password.length > 0 && password === confirmation}"
                             @click="checkPassword"
-                            v-loading="working"
+                            v-loading="workLoading"
                             element-loading-spinner="el-icon-loading">
                         {{$t('TP.GENERIC.Confirm')}}
                     </button>
@@ -43,7 +43,7 @@
                 <!-- 登录 -->
                 <figure v-show="!isNewScatter">
                     <button class="tp-button loading login-btn c-fff ft-24"
-                            v-loading="working"
+                            v-loading="workLoading"
                             element-loading-spinner="el-icon-loading"
                             :class="{'on': password.length > 0}"
                             @click="unlock">
@@ -277,9 +277,9 @@
                 success: false,
                 badPassword: false,
 
-                currentLanguage: 'zh',
                 confirmation: '',
                 dialogVisible: false,
+                workLoading: false
             };
         },
         created() {
@@ -290,7 +290,9 @@
                 'scatter',
             ]),
             ...mapGetters([
-                // 'currentLanguage'
+                'tpAccounts',
+                'currentLanguage',
+                'currentAccount'
             ]),
             isNewScatter() {
                 return !this.scatter;
@@ -313,10 +315,6 @@
             }
         },
         methods: {
-            create() {
-
-            },
-
             forgetPwd() {
                 this.dialogVisible = true;
             },
@@ -326,48 +324,30 @@
                 this.$store.dispatch('SET_CURRENT_LANGUAGE', lang);
             },
 
-            // stepBack() {
-            //     if (this.step === 1) {
-            //         this.state = STATES.NEW_OR_LOGIN;
-            //         return;
-            //     }
-            //     this.step--;
-            // },
-            //
-            // stepForward() {
-            //     this.step++;
-            // },
+            goDApp() {
+                if (this.tpAccounts.length === 0) {
+                    this.importKeypair();
+                } else {
+                    this.$store.dispatch('INIT_USER_INFO', this.currentAccount);
+                    this.$router.push({ name: this.RouteNames.DAPP });
+                }
+            },
 
-            // goToSupport() {
-            //     ElectronHelpers.openLinkInBrowser('https://support.get-scatter.com/');
-            // },
-
-            // importBackup() {
-            //     PopupService.push(Popup.importFullBackup({}, done => {
-            //     }));
-            // },
-
-            // importKeypair() {
-            // this.stepForward();
-            // PopupService.push(Popup.importKeypair({ forSignup: true }, keypair => {
-            //     this.stepForward();
-            // }));
-            // },
+            importKeypair() {
+                this.$router.push({ name: RouteNames.IMPORT_TEXT_KEY });
+            },
 
             async go() {
                 const scatter = this.scatter.clone();
                 scatter.onboarded = true;
                 await this[Actions.SET_SCATTER](scatter);
-                this.$router.push({ name: RouteNames.DAPP });
+
+                this.goDApp();
             },
 
             async checkPassword() {
                 if (!PasswordService.isValidPassword(this.password, this.confirmation)) return false;
-
-                StoreService.setWorking(true);
                 await this[Actions.CREATE_SCATTER](this.password);
-                StoreService.setWorking(false);
-
                 this.go();
             },
 
@@ -382,6 +362,9 @@
                     this.opening = true;
                 }
 
+                if (!this.password) return false;
+
+                this.workLoading = true;
                 setTimeout(async () => {
                     await this[Actions.SET_SEED](this.password);
                     await this[Actions.LOAD_SCATTER](usingLocalStorage);
@@ -406,11 +389,15 @@
                                     }
 
                                     this.success = true;
-                                    this.$router.push({ name: this.RouteNames.DAPP });
+
+                                    this.goDApp();
+
+                                    this.workLoading = false;
                                 }));
                             } else {
                                 this.success = true;
-                                this.$router.push({ name: this.RouteNames.DAPP });
+                                this.goDApp();
+                                this.workLoading = false;
                             }
                         }, 1000);
                     } else {
@@ -419,21 +406,13 @@
                         this.badPassword = true;
                         PopupService.push(Popup.snackbarBadPassword());
                         setLockout();
+                        this.workLoading = false;
                     }
                 }, 400);
             },
 
-            // async destroy() {
-            //     await this.$store.dispatch('DESTROY_ACCOUNT');
-            //     this.$router.replace({name: 'login'});
-            //     this.password = '';
-            //     this.confirmPassword = '';
-            //     this.dialogVisible = false;
-            // },
-
             async destroy() {
                 await this.$store.dispatch('DESTROY_ACCOUNT');
-                // ElectronHelpers.reload();
                 this.$router.replace({ name: 'login' });
                 this.password = '';
                 this.confirmation = '';

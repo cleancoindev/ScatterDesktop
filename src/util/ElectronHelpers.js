@@ -74,7 +74,7 @@ export default class ElectronHelpers {
 
     static copy(txt){
         clipboard.writeText(txt);
-	    PopupService().push(Popup.snackbar(localizedState(LANG_KEYS.SNACKBARS.CopiedToClipboard), 'check'))
+	    // PopupService().push(Popup.snackbar(localizedState(LANG_KEYS.SNACKBARS.CopiedToClipboard), 'check'))
     }
 
     static openLinkInBrowser(link, filepath = false){

@@ -171,13 +171,12 @@ export default {
 
         async INIT_NIM_SDK({ state, getters, commit, dispatch, rootGetters }, accountInfo) {
             return new Promise(async (resolve, reject) => {
-                if (!state.imAccountInfo[accountInfo.name]) {
+                if (!state.imAccountInfo[accountInfo.sendable()]) {
                     commit('IM_INFO', { isOnline: false });
                     return false;
                 }
 
-
-                const { uid, sdktoken } = state.imAccountInfo[accountInfo.name];
+                const { uid, sdktoken } = state.imAccountInfo[accountInfo.sendable()];
 
                 // 初始化SDK
                 const nim = SDK.NIM.getInstance({

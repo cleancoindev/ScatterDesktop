@@ -1,9 +1,7 @@
 <template>
-    <div class="dapp bg-color-F6F8FA">
-<!--        <div id="dapp" class="bg-color-F6F8FA">-->
-            <DAppBanner :banner-list="bannerList"/>
-            <DAppList :category-list="categoryList" :dapp-list="dappList"/>
-<!--        </div>-->
+    <div id="dapp" class="TP-DApp bg-color-F6F8FA">
+        <DAppBanner :banner-list="bannerList"/>
+        <DAppList :category-list="categoryList" :dapp-list="dappList"/>
     </div>
 
 </template>
@@ -23,7 +21,9 @@
         },
         data() {
             return {
-                dappFormKey: ''
+                dappFormKey: '',
+                DAppEl: null,
+                throttle: null
             };
         },
         computed: {
@@ -51,17 +51,21 @@
 
         },
 
-        mounted() {
-            const DAppEl = this.$el.querySelector('#dapp');
+        beforeDestroy() {
+            if (this.DAppEl !== null) this.DAppEl.removeEventListener('scroll', this.throttle)
+        },
 
-            if (DAppEl) {
-                const throttle = _.throttle(async () => {
-                    const Pos = DAppEl.scrollHeight - DAppEl.scrollTop - DAppEl.clientHeight;
+        mounted() {
+            this.DAppEl = document.querySelector('#dapp');
+
+            if (this.DAppEl) {
+                this.throttle = _.throttle(async () => {
+                    const Pos = this.DAppEl.scrollHeight - this.DAppEl.scrollTop - this.DAppEl.clientHeight;
                     if (Pos < 50) {
                         await this.$store.dispatch('GET_DAPP_LIST', { key: this.dappFormKey });
                     }
                 }, 1000);
-                DAppEl.addEventListener('scroll', throttle);
+                this.DAppEl.addEventListener('scroll', this.throttle);
             }
         },
 
@@ -70,8 +74,8 @@
 </script>
 
 <style lang="scss" scoped>
-    .dapp {
-        height: 100%;
+    #dapp {
+        height: calc(100%);
         overflow-y: scroll;
     }
 </style>

@@ -1,9 +1,10 @@
 import SocketService from "../../../services/utility/SocketService";
 import StorageService from "../../../services/utility/StorageService";
+import Storage from '../../utils/Storage';
 
 const Account = {
     state: {
-        currentAccount: {}
+        currentAccount: Storage.GET_STORAGE('CURRENT_ACCOUNT') || {}
     },
 
     getters: {
@@ -35,12 +36,17 @@ const Account = {
     },
 
     actions: {
+        async SET_CURRENT_ACCOUNT({ commit }, accountInfo) {
+            Storage.SET_STORAGE({ key: 'CURRENT_ACCOUNT', value: accountInfo });
+            commit('CURRENT_ACCOUNT', accountInfo);
+        },
+
         async DESTROY_ACCOUNT({dispatch}) {
             await SocketService.close();
             dispatch('RESET_IM');
             setTimeout(async () => {
                 await StorageService.removeScatter();
-                // Storage.REMOVE_STORAGE('ACCOUNT_INFO');
+                Storage.REMOVE_STORAGE('CURRENT_ACCOUNT');
                 // location.reload();
             }, 500);
         },

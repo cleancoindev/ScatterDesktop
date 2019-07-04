@@ -16,7 +16,7 @@
         <!-- 会话页面 -->
         <section class="tp-chat" v-show="imInfo.isOnline">
             <!-- left -->
-            <section>
+            <section style="border-right: 1px solid #e1e1e1;">
                 <!-- 个人信息 -->
                 <div class="tp-chat_info c-333">
                     <img v-if="myInfo.avatar" :src="myInfo.avatar" alt="">
@@ -74,22 +74,9 @@
         },
         computed: {
             ...mapGetters([
-                'userUID',
-                'teamlist',
-                'accountInfo',
-                'nim',
-                'sessionInfo',
-                'currSessions',
-                'currentSessionId',
                 'imInfo',
-                'imAccountInfo',
-
                 'sessionTab',
-                'sessionList',
-
                 'myInfo',
-
-
                 'currentAccount',
                 'keypairs'
             ])
@@ -101,13 +88,6 @@
 
         methods: {
             async login() {
-                // this.keypairs.forEach(keypair => {
-                //     console.log(keypair);
-                // })
-                // console.log(this.currentAccount);
-                // console.log(this.currentAccount.keypair());
-                // console.log(this.currentAccount.network());
-                // return false;
                 this.loading = true;
                 setTimeout(async () => {
                     await this.$store.dispatch('INIT_USER_INFO', this.currentAccount).catch(e => this.loading = false);
@@ -122,9 +102,6 @@
 
         },
         watch: {
-            // async accountInfo() {
-            //
-            // }
         }
     };
 </script>

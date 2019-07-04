@@ -107,7 +107,8 @@
             ...mapGetters([
                 'unlocked',
                 'tpAccounts',
-                'currentAccount'
+                'currentAccount',
+                'nim'
             ]),
 
             tabList() {
@@ -166,17 +167,22 @@
                 }
             },
 
-            handleCommand(account) {
-                this.$store.commit('CURRENT_ACCOUNT', account)
+            async handleCommand(account) {
+                await this.$store.dispatch('SET_CURRENT_ACCOUNT', account);
+                if (this.nim) {
+                    this.nim.destroy({
+                        done: async err => {
+                            await this.$store.dispatch('RESET_IM');
+                            await this.$store.dispatch('INIT_NIM_SDK', account);
+                        }
+                    });
+                }
             },
 
             addAccount() {
                 this.$router.push({name:this.RouteNames.IMPORT_TEXT_KEY})
-                // PopupService.push(Popup.importKeypair({}, keypair => {}));
             }
 
-        },
-        watch: {
         }
     };
 </script>
@@ -331,174 +337,13 @@
         }
     }
 
-    /*@import "../styles/variables";*/
+    .TP-Font {
 
- /*   $time: 0.2s;
-    $closed: 64px;
-    $open: 200px;*/
+    }
 
-    /*.sidebar-container {
-        -webkit-user-select: none !important;
-        width: $closed;
-        transition: width $time ease; // Matches carousel timeout
-
-        .placeholder {
-            width: $closed;
-            height: $fullheight;
-        }
-
-        .sidebar {
-            flex: 0 0 auto;
-            width: $closed;
-            border-right: 1px solid $lightgrey;
-            border-bottom: 1px solid $lightgrey;
-            border-left: 1px solid $lightgrey;
-            padding: 20px 0;
-            overflow-x: hidden;
-            white-space: nowrap;
-            position: fixed;
-            left: 0;
-            top: 34px;
-            bottom: 0;
-            background: $white;
-            z-index: 10000;
-            box-shadow: 0 0 0 transparent, 0 0 0 transparent;
-
-            transition: width $time ease, box-shadow 1.1s ease;
-
-            .bar-bg {
-                width: $closed;
-                position: absolute;
-                left: 0;
-                top: 0;
-                bottom: 0;
-                z-index: -1;
-            }
-
-            .lock-sidebar {
-                position: absolute;
-                bottom: 10px;
-                left: 10px;
-                right: 10px;
-                padding: 10px;
-                color: $grey;
-                cursor: pointer;
-
-                transition: all 0.2s ease;
-                transition-property: background, color;
-
-                &:hover {
-                    background: rgba(0, 0, 0, 0.03);
-                    color: $silver;
-                }
-            }
-
-            .item {
-                cursor: pointer;
-                padding: 12px;
-                margin: 0 12px;
-                border-radius: $radius;
-                display: flex;
-                align-items: center;
-                color: $lightgrey;
-                transition: all $time ease;
-                transition-property: background;
-
-                i {
-                    padding-right: 18px;
-                    font-size: 24px;
-                    transition: all $time ease;
-                    transition-property: color;
-                    color: $grey;
-                }
-
-                span {
-                    margin-left: 5px;
-                    opacity: 0;
-                    transition: all $time ease;
-                    transition-property: margin-left, opacity, color;
-                    font-size: $medium;
-                }
-
-                &:hover {
-                    background: rgba(0, 0, 0, 0.02);
-                }
-
-                &:hover, &.active {
-
-                    background: $lightestgrey;
-
-                    i {
-                        color: $blue;
-                    }
-
-                    span {
-                        color: $blue;
-                    }
-                }
-            }
-
-            .category-name {
-                font-size: $small;
-                font-weight: bold;
-                text-transform: uppercase;
-                padding: 0 20px;
-                margin-top: 40px;
-                margin-bottom: 10px;
-                opacity: 0;
-                transition: all $time ease;
-                transition-property: opacity;
-            }
-
-
-        }
-
-        &:not(.locked) {
-            .sidebar {
-                &:hover {
-                    width: $open;
-                    transition: width $time ease, box-shadow 0.3s ease;
-                    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.15), 2px 0 10px $blue-shadow;
-                    border-right: 0;
-
-                    .category-name {
-                        opacity: 1;
-                    }
-
-                    .item {
-                        color: $silver;
-
-                        span {
-                            margin-left: 0;
-                            opacity: 1;
-                        }
-                    }
-                }
-            }
-        }
-
-        &.locked {
-            width: $open;
-
-            .sidebar {
-                width: $open;
-                transition: width $time ease, box-shadow 0.3s ease;
-
-                .category-name {
-                    opacity: 1;
-                }
-
-                .item {
-                    color: $silver;
-
-                    span {
-                        margin-left: 0;
-                        opacity: 1;
-                    }
-                }
-            }
-        }
-    }*/
+    .tp-font-wallet {
+        font-size: 24px;
+    }
 
 
 </style>

@@ -214,7 +214,7 @@
                 this.setWorkingScreen(false);
                 // this.returnResult(keypair);
 
-                this.$router.back()
+                this.$router.replace({name: 'DApp'})
             },
 
             ...mapActions([

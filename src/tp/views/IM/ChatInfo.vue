@@ -9,7 +9,7 @@
         <section v-else>
             <!-- 基本信息 -->
             <div class="ChatHeader">
-                <span class="ft-18">
+                <span class="ft-18" style="flex: 3">
                     {{teamInfo.name}}
                     <i v-if="scene === 'team' && teamInfo.memberNum ">({{teamInfo.memberNum || 0}})</i>
                 </span>
@@ -129,7 +129,8 @@
 
                     <!-- 群公告 -->
                     <h5 class="ft-12 c-666">{{ $t('TP.IM.GROUP_NOTICE') }}</h5>
-                    <p class="ft-14 g-over-text" style="color: #B0B0B0;">{{teamInfo.intro || $t('TP.IM.GROUP_NO_NOTICE')}}</p>
+                    <p class="ft-14 g-over-text" style="color: #B0B0B0;">{{teamInfo.intro ||
+                        $t('TP.IM.GROUP_NO_NOTICE')}}</p>
                 </section>
 
                 <!-- 搜索群成员 -->
@@ -171,9 +172,9 @@
                     </div>
                 </section>
 
-<!--                <section class="chat-team_people-out pointer ft-14" @click="outTeam">-->
-<!--                    {{ $t('TP.IM.GROUP_DELETE') }}-->
-<!--                </section>-->
+                <!--                <section class="chat-team_people-out pointer ft-14" @click="outTeam">-->
+                <!--                    {{ $t('TP.IM.GROUP_DELETE') }}-->
+                <!--                </section>-->
             </section>
         </section>
 
@@ -201,7 +202,10 @@
                 isFollow: null,
                 msgToSent: '',
                 searchPeople: '',
-                searchPeopleState: false
+                searchPeopleState: false,
+
+                throttle: null,
+                chatEL: null
             };
         },
         computed: {
@@ -248,8 +252,7 @@
             },
 
             searchTeamMembers() {
-                // console.log(this.currentTeamMembers.filter(member => member.nick.toLowerCase().indexOf(this.searchPeople.toLowerCase()) !== -1));
-                return this.currentTeamMembers.filter(member =>  member.nick.toLowerCase().indexOf(this.searchPeople.toLowerCase()) !== -1);
+                return this.currentTeamMembers.filter(member => member.nick.toLowerCase().indexOf(this.searchPeople.toLowerCase()) !== -1);
             }
         },
 
@@ -269,19 +272,25 @@
             this.getTeamInfo();
         },
 
+        beforeDestroy() {
+            if (this.chatEL !== null) this.chatEL.removeEventListener('scroll', this.throttle);
+        },
+
         methods: {
             scrollEL() {
-                const chatEL = this.$el.querySelector('#chat-list');
+                const chatEL = document.querySelector('#chat-list');
                 if (chatEL) {
-                    const throttle = _.throttle(async () => {
+                    this.throttle = _.throttle(async () => {
                         const scrollTop = chatEL.scrollTop;
                         this.pagePos = chatEL.scrollHeight - chatEL.scrollTop - chatEL.clientHeight;
                         if (scrollTop < 50 && this.lastHistoryMsg) {
                             await this.$store.dispatch('CONCAT_CURRENT_SESSION_MSG', this.lastHistoryMsg);
                             this.scrollChatListDown('load');
+                            console.log('load-more');
                         }
-                    }, 1000);
-                    chatEL.addEventListener('scroll', throttle);
+                    }, 2000);
+                    this.chatEL = chatEL;
+                    chatEL.addEventListener('scroll', this.throttle, false);
                 }
             },
 
@@ -397,7 +406,7 @@
             },
 
             getTeamInfo() {
-                if (this.currentSessionInfo.to) {
+                if (this.currentSessionInfo.to && this.nim) {
                     if (this.currentSessionInfo.scene === 'team') {
                         this.nim.getTeam({
                             teamId: this.currentSessionInfo.to,
@@ -446,7 +455,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100vh;
+        height: calc(100vh - 40px);
     }
 
     /* ChatHeader */

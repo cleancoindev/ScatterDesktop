@@ -39,7 +39,6 @@ export function dataSign(items, besides, appKey = 'yuioplkjhgmnbvc', isReturnKey
         obj[item] = form[item];
     });
 
-    console.log(obj);
     const stringify = param(obj);
     const sign = sha256(stringify);
 

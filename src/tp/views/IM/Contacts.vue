@@ -57,7 +57,6 @@
                 'groupType',
                 'teamList',
                 'followList',
-                'currentTeamInfo',
                 'currentContactInfo'
             ]),
             contactList() {
@@ -93,7 +92,7 @@
 
     .Contacts {
         /*margin-top: 20px;*/
-        height: calc(100vh - 50px - 61px);
+        height: calc(100vh - 50px - 61px - 40px);
         overflow-y: auto;
     }
 

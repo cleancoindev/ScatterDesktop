@@ -20,15 +20,15 @@
                             </section>
                         </section>
 
-<!--                        <section class="blockchain-right text-right">-->
-<!--                            <figure class="authority export pointer" @click="exportPrivate(account)">-->
-<!--                                {{$t('TP.GENERIC.Export')}}-->
-<!--                            </figure>-->
+                        <section class="blockchain-right text-right">
+                            <figure class="authority export pointer" @click="exportPrivate(account)">
+                                {{$t('TP.GENERIC.Export')}}
+                            </figure>
 
-<!--                            <figure class="authority delete pointer" @click="accountUnlink(account)">-->
-<!--                                {{$t('TP.GENERIC.Delete')}}-->
-<!--                            </figure>-->
-<!--                        </section>-->
+                            <figure class="authority delete pointer" @click="getAccountInfo(account)">
+                                {{$t('TP.GENERIC.Delete')}}
+                            </figure>
+                        </section>
                 </section>
 
                 <figure class="account-name ft-20">
@@ -79,9 +79,9 @@
             <img style="width: 80px;margin-bottom: 20px" src="../../assets/images/common/delete.png" alt="">
             <p class="ft-20 c-fff m-bottom-15">{{accountInfo.name}}</p>
 
-            <p class="ft-14 c-828494 m-bottom-15">{{$t('TP.POPINS.FULLSCREEN.UNLINK_ACCOUNT.SubDesc')}}</p>
+            <p class="ft-14 c-828494 m-bottom-15">{{$t('TP.WALLET.UNLINK_ACCOUNT.SubDesc')}}</p>
             <p class="ft-12 c-fff m-bottom-15 text-left">
-                {{$t('TP.POPINS.FULLSCREEN.UNLINK_ACCOUNT.AuthoritiesLabel')}}</p>
+                {{$t('TP.WALLET.UNLINK_ACCOUNT.AuthoritiesLabel')}}</p>
 
             <section>
                 <figure class="account-authorities pointer"
@@ -102,10 +102,6 @@
             </section>
         </section>
 
-<!--        <ExportPrivateKey v-if="isExport"-->
-<!--                          :export-account-info="exportAccountInfo"-->
-<!--                          @state="state => isExport = state"-->
-<!--        />-->
     </section>
 </template>
 
@@ -124,6 +120,9 @@
     import BalanceService from '../../../services/blockchain/BalanceService';
     import * as Actions from '../../../store/constants';
 
+    import PopupService from '../../../services/utility/PopupService';
+    import { Popup } from '../../../models/popups/Popup';
+
     const DASH_STATES = {
         ADD_ACCOUNT: 'addAccount',
         ACCOUNTS: 'accounts',
@@ -137,8 +136,6 @@
         ],
         components: {
             Percentage
-            // AccountInfo,
-            // ExportPrivateKey
         },
 
         data() {
@@ -221,12 +218,15 @@
                 }
             },
 
-            exportPrivate() {
-
+            accountUnlink(account) {
+                this.$emit('delete', account);
             },
 
-            accountUnlink() {
-
+            exportPrivate(account) {
+                PopupService.push(Popup.verifyPassword(verified => {
+                    if (!verified) return false;
+                    this.$router.push({name: 'ExportPrivateKey', query: {id: account.keypair().id}})
+                }));
             },
 
             getAccountInfo(account) {
@@ -248,7 +248,7 @@
             },
 
             async resetState() {
-                await this.$store.dispatch('GET_WALLET_LIST');
+                // await this.$store.dispatch('GET_WALLET_LIST');
                 this.accountUnlinkState = false;
                 this.selectedAuthorities = [];
             },
@@ -275,7 +275,7 @@
                     await KeyPairService.removeKeyPair(keypair);
                     await BalanceService.removeStaleBalances();
 
-                    await this.$store.dispatch('REMOVE_CURRENT_ACCOUNT');
+                    // await this.$store.dispatch('REMOVE_CURRENT_ACCOUNT');
                     this.resetState();
                 } else {
                     // 移除关联账号
@@ -298,13 +298,6 @@
                 await AccountService.removeAccounts(accounts);
                 this.resetState();
             },
-
-            // 添加账号
-            // newKeypair() {
-            //     this.$router.push({
-            //         name: RouteNames.NEW_KEYPAIR
-            //     });
-            // },
 
             ...mapActions([
                 Actions.ADD_RESOURCES

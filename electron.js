@@ -7,12 +7,12 @@ const url = require("url");
 const isDev = process.mainModule.filename.indexOf('app.asar') === -1;
 
 let icon = isDev
-	? 'static/icons/icon.png'
-	: __dirname + '/static/icons/icon.png';
+	? 'static/icons/1024x1024.png'
+	: __dirname + '/static/icons/1024x1024.png';
 
 let trayIcon = isDev
-	? 'static/icons/icon-tray.png'
-	: __dirname + '/static/icons/icon-tray.png';
+	? 'static/icons/16x16.png'
+	: __dirname + '/static/icons/16x16.png';
 
 let mainUrl = isPopup => isDev ? `http://localhost:8080/${isPopup ? '/#/popout' : ''}` : url.format({
 	pathname: path.join(__dirname, "dist", "index.html"),
@@ -76,8 +76,8 @@ const activateInstance = e => {
 const setupTray = () => {
 	tray = new Tray(trayIcon);
 	const contextMenu = Menu.buildFromTemplate([
-		{label: 'Open', type: 'normal', click:() => restoreInstance()},
-		{label: 'Exit', type: 'normal', click:() => quit()}
+		{label: '打开', type: 'normal', click:() => restoreInstance()},
+		{label: '退出', type: 'normal', click:() => quit()}
 	]);
 	tray.setToolTip('Scatter Desktop Companion');
 	tray.setContextMenu(contextMenu);
@@ -89,13 +89,13 @@ const createScatterInstance = () => {
 	app.setAsDefaultProtocolClient('scatter');
 
 	const createMainWindow = (show, backgroundColor) => new BrowserWindow({
-		width: 1024,
-		height: 800,
+		width: 1000,
+		height: 720,
 		frame: false,
 		radii: [5,5,5,5],
 		icon,
 		resizable: true,
-		minWidth: 800,
+		minWidth: 1000,
 		minHeight:720,
 		titleBarStyle:'hiddenInset',
 		backgroundColor,
@@ -110,8 +110,8 @@ const createScatterInstance = () => {
 	mainWindow.loadURL(mainUrl(false));
 
 	mainWindow.once('ready-to-show', () => {
-		mainWindow.show(); 
-  		mainWindow.focus(); 
+		mainWindow.show();
+		mainWindow.focus();
 	});
 
 	// mainWindow.openDevTools();
@@ -185,7 +185,7 @@ class LowLevelWindowService {
 				backgroundColor:'#FFFFFF',
 				width, height,
 				frame: false, radii: [5,5,5,5],
-				icon:'assets/icon.png',
+				icon:'assets/favicon.png',
 				show:false,
 				webPreferences:{
 					nodeIntegration:true,
