@@ -283,7 +283,7 @@
             };
         },
         created() {
-            // console.log(this.$i18n);
+            console.log(this.scatter);
         },
         computed: {
             ...mapState([
@@ -412,8 +412,11 @@
             },
 
             async destroy() {
-                await this.$store.dispatch('DESTROY_ACCOUNT');
-                ElectronHelpers.reload()
+                setTimeout(async () => {
+                    await this.$store.dispatch('DESTROY_ACCOUNT');
+                    this.$router.replace({ name: 'login' });
+                    // ElectronHelpers.reload()
+                }, 500);
             },
 
 

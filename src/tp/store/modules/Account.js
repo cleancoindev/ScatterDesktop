@@ -1,5 +1,5 @@
-import SocketService from "../../../services/utility/SocketService";
-import StorageService from "../../../services/utility/StorageService";
+import SocketService from '../../../services/utility/SocketService';
+import StorageService from '../../../services/utility/StorageService';
 import Storage from '../../utils/Storage';
 
 const Account = {
@@ -11,7 +11,7 @@ const Account = {
         tpAccounts: (state, getters) => {
             if (Array.isArray(getters.keypairs)) {
                 const keypairs = getters.keypairs.map(keypair => {
-                    return keypair.accounts(true).filter(x => x.sendable())
+                    return keypair.accounts(true).filter(x => x.sendable());
                 });
 
                 return keypairs.reduce((a, b) => {
@@ -20,19 +20,19 @@ const Account = {
                 }, []);
             }
 
-            return []
+            return [];
         },
         currentAccount: (state, getters) => {
             if (!state.currentAccount.sendable && getters.tpAccounts.length > 0) {
-                return getters.tpAccounts[0]
+                return getters.tpAccounts[0];
             }
 
-            return state.currentAccount
+            return state.currentAccount;
         }
     },
 
     mutations: {
-        CURRENT_ACCOUNT:(state, account) => state.currentAccount = account
+        CURRENT_ACCOUNT: (state, account) => state.currentAccount = account
     },
 
     actions: {
@@ -41,7 +41,7 @@ const Account = {
             commit('CURRENT_ACCOUNT', accountInfo);
         },
 
-        async DESTROY_ACCOUNT({dispatch}) {
+        async DESTROY_ACCOUNT({ dispatch }) {
             await SocketService.close();
             dispatch('RESET_IM');
             setTimeout(async () => {
@@ -51,6 +51,6 @@ const Account = {
             }, 500);
         },
     }
-}
+};
 
-export default Account
+export default Account;
