@@ -1,5 +1,6 @@
 import SocketService from '../../../services/utility/SocketService';
 import StorageService from '../../../services/utility/StorageService';
+import ElectronHelpers from '../../../util/ElectronHelpers';
 import Storage from '../../utils/Storage';
 
 const Account = {
@@ -43,12 +44,14 @@ const Account = {
 
         async DESTROY_ACCOUNT({ dispatch }) {
             await SocketService.close();
-            dispatch('RESET_IM');
+
             setTimeout(async () => {
                 await StorageService.removeScatter();
-                Storage.REMOVE_STORAGE('CURRENT_ACCOUNT');
-                // location.reload();
+                ElectronHelpers.reload();
             }, 500);
+
+            Storage.REMOVE_STORAGE('CURRENT_ACCOUNT');
+            dispatch('RESET_IM');
         },
     }
 };

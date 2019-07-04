@@ -226,6 +226,9 @@
     import ElectronHelpers from '../../../util/ElectronHelpers';
     import BackupService from '../../../services/utility/BackupService';
 
+    import SocketService from '../../../services/utility/SocketService';
+    import StorageService from '../../../services/utility/StorageService';
+
 
     import { RouteNames } from '../../../vue/Routing';
 
@@ -412,11 +415,7 @@
             },
 
             async destroy() {
-                setTimeout(async () => {
-                    await this.$store.dispatch('DESTROY_ACCOUNT');
-                    this.$router.replace({ name: 'login' });
-                    // ElectronHelpers.reload()
-                }, 500);
+                this.$store.dispatch('DESTROY_ACCOUNT');
             },
 
 

@@ -44,8 +44,7 @@
                 this[Actions.RELEASE_POPUP](this.popin);
             },
             async destroy() {
-                await this.$store.dispatch('DESTROY_ACCOUNT');
-                ElectronHelpers.reload()
+                this.$store.dispatch('DESTROY_ACCOUNT');
             },
 
             ...mapActions([
