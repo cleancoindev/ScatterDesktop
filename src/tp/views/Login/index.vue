@@ -413,10 +413,7 @@
 
             async destroy() {
                 await this.$store.dispatch('DESTROY_ACCOUNT');
-                this.$router.replace({ name: 'login' });
-                this.password = '';
-                this.confirmation = '';
-                this.dialogVisible = false;
+                ElectronHelpers.reload()
             },
 
 

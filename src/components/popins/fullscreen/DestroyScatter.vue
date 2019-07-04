@@ -45,8 +45,7 @@
             },
             async destroy() {
                 await this.$store.dispatch('DESTROY_ACCOUNT');
-                this.$router.replace({ name: 'login' });
-                this.returnResult(false)
+                ElectronHelpers.reload()
             },
 
             ...mapActions([
