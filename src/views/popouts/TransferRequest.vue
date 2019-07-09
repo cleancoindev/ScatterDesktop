@@ -17,7 +17,7 @@
                 <section class="boxes">
                     <section class="box nested account-selector" @click="selectTokenAndAccount">
                         <section>
-                            <figure class="name">Select Account</figure>
+                            <figure class="name">{{$t('TP.POPOUT.SelectAccount')}}</figure>
                             <figure class="network">{{network.name}}</figure>
                         </section>
                         <figure class="chevron icon-dot-3"></figure>

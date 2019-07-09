@@ -11,12 +11,12 @@
 
             <section class="actions">
                 <!-- DENY TRANSACTION -->
-                <Button :text="locale(langKeys.GENERIC.Deny)" big="1"
+                <Button :text="$t('TP.GENERIC.Deny')"
                         @click.native="returnResult(false)" />
 
                 <!-- ACCEPT TRANSACTION -->
-                <Button blue="1" big="1"
-                        :text="locale(langKeys.GENERIC.Allow)"
+                <Button blue="1"
+                        :text="$t('TP.GENERIC.Allow')"
                         @click.native="returnResult(true)" />
             </section>
 

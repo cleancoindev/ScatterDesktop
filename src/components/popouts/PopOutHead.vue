@@ -44,18 +44,18 @@
 		justify-content: space-between;
 		align-items: center;
 		padding:0 0 0 10px;
-		border:1px solid $darkerblue;
-		border-bottom:0;
-		background:$blue;
+		border-bottom:1px solid #e6e6e6;
+		background: #fff;
 
 		.details {
 			-webkit-app-region: drag;
 			flex:2;
 
 			.logo {
-				font-family: 'Grand Hotel', sans-serif;
-				font-size: 24px;
-				color: $white;
+				font-family: 'PingFangSC-Medium', 'Microsoft YaHei', sans-serif;
+				font-weight: 500;
+				font-size: 16px;
+				color: #7a7a7a;
 			}
 		}
 
@@ -107,13 +107,9 @@
 				text-align:right;
 				padding:0 10px;
 				font-size: 18px;
-				color:rgba(255,255,255,0.4);
 				line-height:90px;
 				height:90px;
-
-				&:hover {
-					color:$white;
-				}
+				color: #7a7a7a;
 			}
 		}
 

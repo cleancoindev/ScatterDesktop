@@ -5,7 +5,7 @@
 		<section class="app-login">
 
 			<section>
-				<PopOutApp :app="appData" :suffix="account ? 'will see:' : ''" />
+				<PopOutApp :app="appData"/>
 
 
 				<!------------------------------------->
@@ -116,8 +116,8 @@
 			</section>
 
 			<section class="actions">
-				<Button big="1" text="Cancel" @click.native="returnResult(null)" />
-				<Button big="1" style="padding:0 20px;" :disabled="!allRequirementsMet" blue="1" text="Allow" @click.native="login" />
+				<Button :text="$t('TP.GENERIC.Cancel')" @click.native="returnResult(null)" />
+				<Button style="padding:0 20px;" :disabled="!allRequirementsMet" blue="1" :text="$t('TP.GENERIC.Allow')" @click.native="login" />
 			</section>
 
 		</section>
