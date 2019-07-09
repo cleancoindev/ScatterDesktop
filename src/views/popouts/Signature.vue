@@ -12,7 +12,6 @@
 
 
                 <section class="participants" v-if="participantAccounts">
-                    <!--                    <label>{{locale(langKeys.POPOUTS.SIGNATURE.AccountsInvolved)}}</label>-->
                     <section v-if="!participantsAsSelector">
                         <section class="participant" v-for="p in participantAccounts.slice(0,2)">
                             {{p.network().name}} - <b>{{p.sendable()}}</b>
@@ -59,13 +58,6 @@
             <!--SIDE PANEL-->
             <section class="side-panel" v-if="!expanded">
 
-                <!--<section class="view-types">-->
-                <!--<Select :selected="viewType" bordered="1"-->
-                <!--:options="viewTypesArray"-->
-                <!--:parser="x => formatViewType(x)"-->
-                <!--v-on:selected="x => viewType = x"></Select>-->
-                <!--</section>-->
-
                 <section class="messages-scroller">
 
                     <RequiredFields v-if="!isArbitrarySignature && (personalFields.length || locationFields.length)"
@@ -107,7 +99,6 @@
 
                                     <ReputationScore class="score" :reputable="reputable(message)" small="1"/>
                                     <span>{{message.code}} <i class="contract-split icon-right-open-big"></i> {{message.type}}</span>
-                                    <!--                                    <span @click="collapse(message)">{{message.code}} <i class="contract-split icon-right-open-big"></i> {{message.type}}</span>-->
                                 </figure>
                                 <span class="danger-title" v-if="isDangerous">This action is <b>dangerous</b>!</span>
                             </section>
@@ -139,19 +130,16 @@
                                 </section>
                             </section>
 
-                            <!--                            <section class="collapsed" v-else>-->
-                            <!--                                {{locale(langKeys.POPOUTS.SIGNATURE.HiddenActions)}}-->
-                            <!--                            </section>-->
                         </section>
                     </section>
                 </section>
 
                 <section class="whitelist-bar" v-if="!isArbitrarySignature && !isDangerous">
-                    <figure class="text" v-if="!whitelisted">You can whitelist this so that you don't have to keep
-                        re-accepting this transaction.
+                    <figure class="text" v-if="!whitelisted">
+                        {{$t('TP.POPOUT.SIGNATURE.offWhitelist')}}
                     </figure>
-                    <figure class="text blue" v-if="whitelisted">Checkboxes that are checked can have their values
-                        changed without breaking the whitelist.
+                    <figure class="text blue" v-if="whitelisted">
+                        {{$t('TP.POPOUT.SIGNATURE.onWhitelist')}}
                     </figure>
                     <Switcher :state="whitelisted" @click.native="whitelist"/>
                 </section>

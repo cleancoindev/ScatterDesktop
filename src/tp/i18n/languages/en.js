@@ -97,6 +97,9 @@ export default {
     // *************************************** POPOUT *************************************** //
     'TP.POPOUT.SelectAccount': 'Select Account',
     'TP.POPOUT.LINKAPP.Notices': 'Please make sure that the application is the one you\'re interacting with right now. Beware that interact with an unknown application is unsafe.',
+    // Whitelist
+    'TP.POPOUT.SIGNATURE.offWhitelist': 'Please make sure that the application is the one you\'re interacting with right now. Beware that interact with an unknown application is unsafe.',
+    'TP.POPOUT.SIGNATURE.onWhitelist': 'The values of the checked checkboxes are allowed to be changed when executing the whitelist.',
 
     TP: {
         GENERIC: {

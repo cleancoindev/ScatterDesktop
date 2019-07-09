@@ -1,11 +1,10 @@
 <template>
     <section class="popout-window">
-        <PopOutApp :app="popup.data.props.appData" suffix="is relinking" />
+        <PopOutApp :app="popup.data.props.appData"/>
 
 
         <section class="fixed-actions">
-            Make sure the application name is an application you are interacting with right now.
-            If it isn't it could be a dangerous application trying to act like a different one.
+            {{$t('TP.POPOUT.LINKAPP.Notices')}}
             <br>
             <br>
 
