@@ -59,9 +59,9 @@
 				</section>
 			</section>
 
-<!--			<section class="tail">-->
-<!--				<Button @click.native="addCustomNetwork" text="Add custom network" blue="1" />-->
-<!--			</section>-->
+			<section class="tail">
+				<Button @click.native="addCustomNetwork" text="Add custom network" blue="1" />
+			</section>
 		</section>
 
 	</section>
