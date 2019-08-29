@@ -480,11 +480,11 @@ const Locale = {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	[SETTINGS.FIREWALL.ENABLED.Label]:() => `Enable Firewall`,
 	[SETTINGS.FIREWALL.ENABLED.Description]:() =>
-		`RIDL Defender is Scatter's proprietary decentralized firewall system. It helps protect you from malicious websites, applications, and accounts.`,
+		`RIDL Defender is proprietary decentralized firewall system. It helps protect you from malicious websites, applications, and accounts.`,
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	[SETTINGS.DESTROY.Label]:() => `Configure`,
 	[SETTINGS.DESTROY.Description]:() =>
-		`Destroying your Scatter will remove all your data including your identities and Keypair 
+		`Destroying your will remove all your data including your identities and Keypair 
 		configurations from your local machine.
         It will not delete your blockchain accounts from the actual blockchain.`,
 	[SETTINGS.DESTROY.Important]:() => `MAKE SURE YOU HAVE A BACKUP BEFORE YOU DO THIS!`,
@@ -612,7 +612,7 @@ const Locale = {
 	[POPOUTS.LOGIN.AccountRequirements]:() => `App requires accounts for these networks`,
 	[POPOUTS.LOGIN.NoAccountsTitle]:() => `You do not have blockchain accounts for the networks that this application requires.`,
 	[POPOUTS.LOGIN.NoAccountsDesc]:() =>
-		`Before logging into this application go back to Scatter and import some keys for the network/blockchain that this application is using.`,
+		`Before logging into this application go back and import some keys for the network/blockchain that this application is using.`,
 	[POPOUTS.LOGIN.MissingFieldsTitle]:() => `You are missing some fields!`,
 	[POPOUTS.LOGIN.MissingFieldsDesc]:() =>
 		`Fill out the inputs below which will add those fields to your Identity for later use and also return them to the application.`,

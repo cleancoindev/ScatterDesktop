@@ -134,6 +134,8 @@
 				return !!this.networks.find(x => x.unique() === network.unique());
 			},
 			async toggleNetwork(network){
+				console.log(network);
+				
 				this.setWorkingScreen(true);
 				if(this.isEnabled(network)) await NetworkService.removeNetwork(network);
 				else {
@@ -182,6 +184,7 @@
 			},
 			async saveNetwork(){
 				await NetworkService.updateNetwork(this.expanded);
+				await AccountService.importAllAccountsForNetwork(this.expanded);
 				this.expanded = null;
 				this.expandedUnique = null;
 			},
