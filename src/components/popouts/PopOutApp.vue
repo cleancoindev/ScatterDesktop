@@ -3,9 +3,9 @@
 	<!------------ APP DETAILS ------------>
 	<!------------------------------------->
 	<section class="app-details">
-		<figure class="logo" v-if="!untrusted" :class="{'border':app.applink !== 'Scatter' && !app.img}">
-			<Scatter v-if="app.applink === 'Scatter'" />
-			<img v-else-if="app.img" :src="app.img" />
+		<figure class="logo border" v-if="!untrusted">
+			<!-- <Scatter v-if="app.applink === 'Scatter'" /> -->
+			<img v-if="app.img" :src="app.img" />
 			<span v-else>No Image</span>
 		</figure>
 		<figure class="logo scam" v-else>
@@ -20,7 +20,7 @@
 			</section>
 		</section>
 
-		<figure class="name"><b>{{app.name}}</b> <span v-if="suffix">{{suffix}}</span></figure>
+		<figure class="name"><b v-if="app.applink !== 'Scatter'">{{app.name}}</b> <span v-if="suffix">{{suffix}}</span></figure>
 	</section>
 </template>
 
