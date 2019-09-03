@@ -15,21 +15,13 @@
                                :loading="loadingBalances">
                         {{$t('TP.GENERIC.RefreshBalances')}}
                     </el-button>
-
-                    <!-- 转账 -->
-<!--                    <el-button class="btn-transfer"-->
-<!--                               size="mini"-->
-<!--                               round-->
-<!--                               @click="$router.push({name: RouteNames.TRANSFER})">-->
-<!--                        {{$t('TP.TRANSFER.Title')}}-->
-<!--                    </el-button>-->
                 </section>
 
             </section>
 
             <section class="tokens-header-bottom">
                 <section class="c-fff">
-                    <h3>{{assetInfo.unit || '$'}} {{currentAccount.totalFiatBalance ? currentAccount.totalFiatBalance() : 0}}</h3>
+                    <h3 class="ft-30" style="font-size:30px;">{{assetInfo.unit || '$'}} {{currentAccount.totalFiatBalance ? currentAccount.totalFiatBalance() : 0}}</h3>
                 </section>
 
                 <!-- 搜索token -->
@@ -48,30 +40,11 @@
             </section>
         </section>
 
-        <section class="tokens-content">
+        <!-- <section class="tokens-content"> -->
             <TokenList :balances="tokens" :terms="terms"/>
-<!--            <section class="tokens" v-for="(token, index) in tokens" :key="index" @click="goTransfer(token)">-->
-<!--                <section class="tokens-list pointer">-->
-<!--                    <figure class="icon">-->
-<!--&lt;!&ndash;                        <img class="symbol-icon" :src="token.icon_url" alt="">&ndash;&gt;-->
-<!--                    </figure>-->
 
-<!--                    <section class="name">-->
-<!--                        <figure class="c-232538 ft-24">{{token.symbol}}</figure>-->
-<!--                    </section>-->
 
-<!--                    <section class="amount">-->
-<!--                        <figure class="c-232538 ft-24" style="margin-bottom: 19px">{{token.balance}}</figure>-->
-<!--                        <figure class="c-c4c7d2 ft-20">-->
-<!--                            ≈ {{token.amount}}-->
-<!--&lt;!&ndash;                            {{token.asset.toFixed(4)}}&ndash;&gt;-->
-<!--                        </figure>-->
-<!--                    </section>-->
-<!--                </section>-->
-
-<!--            </section>-->
-
-        </section>
+        <!-- </section> -->
 
 
     </section>
@@ -180,7 +153,7 @@
 
             .tokens-search-bar {
                 display: flex;
-                width: 300px;
+                width: 200px;
                 height: 40px;
                 border: 1px solid #fff;
                 border-radius: 20px;
@@ -202,38 +175,6 @@
                         color: #fff;
                     }
                 }
-            }
-        }
-    }
-
-
-    .tokens-content {
-        /*padding: 0 40px;*/
-        height: calc(100vh - 170px - 40px);
-        overflow: auto;
-
-        .tokens {
-            .tokens-list {
-                display: flex;
-                align-items: center;
-                padding: 20px 40px;
-                border-bottom: 1px solid #E8EBF4;
-
-                .icon {
-                    margin-right: 50px;
-
-                    .symbol-icon {
-                        width: 40px !important;
-                        height: 40px !important;
-                        border-radius: 50%;
-                    }
-                }
-
-                .name,
-                .amount {
-                    flex: 1
-                }
-
             }
         }
     }

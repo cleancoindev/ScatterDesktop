@@ -113,6 +113,14 @@ export default {
   'TP.FIREWALL.TEXT3': 'Add a new restricted action',
   'TP.FIREWALL.TEXT4': 'Blacklisted Actions',
 
+  // Transfer
+  'TP.TRANSFER.ReceiverAccount': 'Receiver Account',
+  'TP.TRANSFER.Receiver': 'Receiver',
+  'TP.TRANSFER.Amount': 'Amount',
+  'TP.TRANSFER.AmountInput': 'Input transfer amount',
+  'TP.TRANSFER.Balance': 'Balance',
+  'TP.TRANSFER.Memo': 'Memo',
+
   TP: {
     LOGIN: {
       NOTICE: 'Noticed',

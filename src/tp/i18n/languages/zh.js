@@ -112,6 +112,14 @@ export default {
   'TP.FIREWALL.TEXT3': '添加新的限制操作',
   'TP.FIREWALL.TEXT4': '黑名单操作',
 
+  // Transfer
+  'TP.TRANSFER.ReceiverAccount': '收款账号',
+  'TP.TRANSFER.Receiver': '接收方',
+  'TP.TRANSFER.Amount': '转账数量',
+  'TP.TRANSFER.AmountInput': '输入转出金额',
+  'TP.TRANSFER.Balance': '余额',
+  'TP.TRANSFER.Memo': '备注',
+
   TP: {
     LOGIN: {
       NOTICE: '提示',
