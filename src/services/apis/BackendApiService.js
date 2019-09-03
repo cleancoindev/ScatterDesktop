@@ -21,8 +21,10 @@ const validate = (proof, res) => {
 	try {
 		const signedProof = res.headers.get('proof');
 		if(!signedProof) throw 'Invalid API Request';
-		if(ecc.recover(signedProof, proof) !== PROOF_KEY) throw 'Invalid API Request';
-		return res.json();
+		if (ecc.recover(signedProof, proof) !== PROOF_KEY) throw 'Invalid API Request';
+		const data = res.json()
+		console.log(data)
+		return data;
 	} catch(e){
 		throw "Invalid API Request";
 	}
