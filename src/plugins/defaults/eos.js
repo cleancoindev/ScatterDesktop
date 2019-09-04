@@ -176,7 +176,7 @@ export default class EOS extends Plugin {
 	}
 
 	getEndorsedNetwork(){
-		return new Network('EOS Mainnet', 'https', 'nodes.get-scatter.com', 443, Blockchains.EOSIO, mainnetChainId)
+		return new Network('EOS Mainnet', 'http', 'eospush.tokenpocket.pro', 80, Blockchains.EOSIO, mainnetChainId)
 	}
 
 	isEndorsedNetwork(network){

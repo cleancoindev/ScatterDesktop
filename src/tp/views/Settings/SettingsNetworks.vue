@@ -10,7 +10,8 @@
           <section
             class="badge-item hoverable"
             :class="{'active':selectedBlockchain === blockchain}"
-            v-for="blockchain in blockchains"
+            v-for="(blockchain, index) in blockchains"
+            :key="index"
             @click="selectBlockchain(blockchain)"
           >
             <figure class="badge iconed" :class="`token-${blockchain}-${blockchain}`"></figure>
@@ -34,7 +35,7 @@
       <section class="head">{{$t('TP.GENERIC.Network')}}</section>
       <section class="scroller with-tail">
         <section class="item-list">
-          <section class="item" v-for="network in visibleNetworks">
+          <section class="item" v-for="(network, index) in visibleNetworks" :key="index">
             <section
               class="basics"
               :class="{'open':expanded && expanded.unique() === network.unique()}"
@@ -60,7 +61,7 @@
                 <Button
                   v-if="isCustom(network)"
                   blue="1"
-                  text="Remove"
+                  :text="$t('TP.GENERIC.Remove')"
                   @click.native="toggleNetwork(network)"
                 />
               </section>
@@ -80,7 +81,7 @@
       </section>
 
       <section class="tail">
-        <Button @click.native="addCustomNetwork" text="Add custom network" blue="1" />
+        <Button @click.native="addCustomNetwork" :text="$t('TP.GENERIC.New')" blue="1" />
       </section>
     </section>
   </section>
