@@ -1,246 +1,249 @@
 <template>
-    <section class="pop-in import-key">
+  <section class="pop-in import-key">
+    <!--        <section>-->
 
-<!--        <section>-->
+    <!-- SELECT IMPORT TYPE -->
+    <!--            <section class="select-type" v-if="state === STATES.SELECT_TYPE">-->
+    <!--                <section class="head">-->
+    <!--                    <Key/>-->
+    <!--                    <br>-->
+    <!--                    <br>-->
+    <!--                    <figure class="title">Import Keypair</figure>-->
+    <!--                </section>-->
+    <!--                <br>-->
+    <!--                <br>-->
 
+    <!--                <section class="type-selector">-->
+    <!--                    <section class="types">-->
+    <!--                        <section class="type" v-for="type in importTypes" @click="type.onClick()">-->
+    <!--                            <figure class="type-icon" :class="type.icon"></figure>-->
+    <!--                            <figure class="type-text">{{type.text}}</figure>-->
+    <!--                        </section>-->
+    <!--                    </section>-->
+    <!--                </section>-->
 
-            <!-- SELECT IMPORT TYPE -->
-<!--            <section class="select-type" v-if="state === STATES.SELECT_TYPE">-->
-<!--                <section class="head">-->
-<!--                    <Key/>-->
-<!--                    <br>-->
-<!--                    <br>-->
-<!--                    <figure class="title">Import Keypair</figure>-->
-<!--                </section>-->
-<!--                <br>-->
-<!--                <br>-->
+    <!--            </section>-->
 
-<!--                <section class="type-selector">-->
-<!--                    <section class="types">-->
-<!--                        <section class="type" v-for="type in importTypes" @click="type.onClick()">-->
-<!--                            <figure class="type-icon" :class="type.icon"></figure>-->
-<!--                            <figure class="type-text">{{type.text}}</figure>-->
-<!--                        </section>-->
-<!--                    </section>-->
-<!--                </section>-->
+    <!-- IMPORT KEY -->
+    <!--            <section v-if="state === STATES.IMPORT_KEY">-->
+    <ImportPrivateKey return-only="1" v-on:key="x => privateKey = x" />
+    <!--                <ImportHardwareKey v-if="importType === IMPORT_TYPES.HARDWARE" v-on:key="finishImporting"/>-->
+    <!--                <ImportQRKey v-if="importType === IMPORT_TYPES.QR" v-on:key="finishImporting"/>-->
+    <!--            </section>-->
 
-<!--            </section>-->
-
-
-            <!-- IMPORT KEY -->
-<!--            <section v-if="state === STATES.IMPORT_KEY">-->
-                <ImportPrivateKey return-only="1" v-on:key="x => privateKey = x"/>
-<!--                <ImportHardwareKey v-if="importType === IMPORT_TYPES.HARDWARE" v-on:key="finishImporting"/>-->
-<!--                <ImportQRKey v-if="importType === IMPORT_TYPES.QR" v-on:key="finishImporting"/>-->
-<!--            </section>-->
-
-
-            <!-- SELECT BLOCKCHAIN (optionally required) -->
-<!--            <section class="select-type type-selector" v-if="state === STATES.SELECT_BLOCKCHAIN">-->
-<!--                <section class="types">-->
-<!--                    <section class="type" v-for="blockchain in blockchains" @click="selectBlockchain(blockchain)">-->
-<!--                        <figure class="type-icon" :class="`token-${blockchain}-${blockchain}`"></figure>-->
-<!--                        <figure class="type-text">{{blockchainName(blockchain)}}</figure>-->
-<!--                    </section>-->
-<!--                </section>-->
-<!--            </section>-->
-
-
-<!--            <ActionBar v-if="buttonsLeft.length || buttonsRight.length" :buttons-left="buttonsLeft"-->
-<!--                       :buttons-right="buttonsRight"/>-->
-            <!--  :buttons-right="[{text:'Save Key', blue:true, click:() => saveKeypair()}]" -->
-<!--        </section>-->
-
-
-        <!--<ImportPrivateKey />-->
+    <!-- SELECT BLOCKCHAIN (optionally required) -->
+    <section class="select-type type-selector" v-if="state === STATES.SELECT_BLOCKCHAIN">
+      <section class="types">
+        <section
+          class="type"
+          v-for="(blockchain,index) in blockchains"
+          :key="index"
+          @click="selectBlockchain(blockchain)"
+        >
+          <figure class="type-icon" :class="`token-${blockchain}-${blockchain}`"></figure>
+          <figure class="type-text">{{blockchainName(blockchain)}}</figure>
+        </section>
+      </section>
     </section>
+
+    <!--            <ActionBar v-if="buttonsLeft.length || buttonsRight.length" :buttons-left="buttonsLeft"-->
+    <!--                       :buttons-right="buttonsRight"/>-->
+    <!--  :buttons-right="[{text:'Save Key', blue:true, click:() => saveKeypair()}]" -->
+    <!--        </section>-->
+
+    <!--<ImportPrivateKey />-->
+  </section>
 </template>
 
 <script>
-    import { mapActions, mapGetters, mapState } from 'vuex';
-    import * as Actions from '../../../store/constants';
-    import ImportPrivateKey from './ImportPrivateKey';
-    // import ImportHardwareKey from '../../panels/keypair/ImportHardwareKey';
-    import KeyPairService from '../../../services/secure/KeyPairService';
-    import Keypair from '../../../models/Keypair';
-    import AccountService from '../../../services/blockchain/AccountService';
-    import BalanceService from '../../../services/blockchain/BalanceService';
-    // import ImportQRKey from "../../../panels/keypair/ImportQRKey";
-    import Key from '../../../components/svgs/Key';
+import { mapActions, mapGetters, mapState } from "vuex";
+import * as Actions from "../../../store/constants";
+import ImportPrivateKey from "./ImportPrivateKey";
+// import ImportHardwareKey from '../../panels/keypair/ImportHardwareKey';
+import KeyPairService from "../../../services/secure/KeyPairService";
+import Keypair from "../../../models/Keypair";
+import AccountService from "../../../services/blockchain/AccountService";
+import BalanceService from "../../../services/blockchain/BalanceService";
+// import ImportQRKey from "../../../panels/keypair/ImportQRKey";
+import Key from "../../../components/svgs/Key";
 
-    const STATES = {
-        SELECT_TYPE: 'selectType',
-        IMPORT_KEY: 'importKey',
-        SELECT_BLOCKCHAIN: 'selectBlockchain',
+const STATES = {
+  SELECT_TYPE: "selectType",
+  IMPORT_KEY: "importKey",
+  SELECT_BLOCKCHAIN: "selectBlockchain"
+};
+
+const IMPORT_TYPES = {
+  TEXT: "text",
+  HARDWARE: "hardware",
+  QR: "qr"
+};
+
+export default {
+  props: ["popin"],
+  components: {
+    // ImportQRKey,
+    ImportPrivateKey,
+    // ImportHardwareKey,
+    Key
+  },
+  data() {
+    return {
+      STATES,
+      state: STATES.SELECT_TYPE,
+
+      IMPORT_TYPES,
+      importType: null,
+
+      privateKey: "",
+      blockchains: [],
+      keypair: null
     };
+  },
+  computed: {
+    ...mapGetters(["keypairs"])
 
-    const IMPORT_TYPES = {
-        TEXT: 'text',
-        HARDWARE: 'hardware',
-        QR: 'qr',
-    };
+    // options() {
+    //   return this.popin.data.props.options;
+    // },
 
-    export default {
-        props: ['popin'],
-        components: {
-            // ImportQRKey,
-            ImportPrivateKey,
-            // ImportHardwareKey,
-            Key
-        },
-        data() {
-            return {
-                STATES,
-                state: STATES.SELECT_TYPE,
+    // buttonsLeft() {
+    //   if (!this.options.forSignup) {
+    //     if (this.state === STATES.SELECT_TYPE) {
+    //       return [{ text: "Cancel", click: () => this.returnResult(null) }];
+    //     } else {
+    //       return [
+    //         { text: "Back", click: () => (this.state = STATES.SELECT_TYPE) }
+    //       ];
+    //     }
+    //   } else {
+    //     if (this.state === STATES.SELECT_TYPE) return [];
+    //     return [
+    //       { text: "Back", click: () => (this.state = STATES.SELECT_TYPE) }
+    //     ];
+    //   }
+    // },
 
-                IMPORT_TYPES,
-                importType: null,
+    // buttonsRight() {
+    //   if (this.options.forSignup)
+    //     return [{ text: "Skip", click: () => this.returnResult(false) }];
+    //   return [];
+    // },
 
-                privateKey: '',
-                blockchains: [],
-                keypair: null,
-            };
-        },
-        computed: {
-            ...mapGetters([
-                'keypairs'
-            ]),
+    // importTypes() {
+    //   return [
+    //     {
+    //       icon: "icon-pencil",
+    //       text: "Text",
+    //       onClick: () => {
+    //         this.selectImportType(IMPORT_TYPES.TEXT);
+    //       }
+    //     }
+    // {
+    // 	icon:'icon-microchip',
+    // 	text:'Hardware',
+    // 	onClick:() => { this.selectImportType(IMPORT_TYPES.HARDWARE); },
+    // },
+    // {
+    // 	icon:'icon-qrcode',
+    // 	text:'QR Code',
+    // 	onClick:() => { this.selectImportType(IMPORT_TYPES.QR); },
+    // }
+    //   ];
+    // }
+  },
+  methods: {
+    saveKeypair() {},
+    returnResult() {
+      this.popin.data.callback(this.keypair);
+      this[Actions.RELEASE_POPUP](this.popin);
+    },
 
-            options() {
-                return this.popin.data.props.options;
-            },
+    selectImportType(type) {
+      this.state = STATES.IMPORT_KEY;
+      this.importType = type;
+    },
 
-            buttonsLeft() {
-                if (!this.options.forSignup) {
-                    if (this.state === STATES.SELECT_TYPE) {
-                        return [{ text: 'Cancel', click: () => this.returnResult(null) }];
-                    } else {
-                        return [{ text: 'Back', click: () => this.state = STATES.SELECT_TYPE }];
-                    }
+    async testKey() {
+      const reset = () => this.setWorkingScreen(false);
 
-                } else {
-                    if (this.state === STATES.SELECT_TYPE) return [];
-                    return [{ text: 'Back', click: () => this.state = STATES.SELECT_TYPE }];
-                }
-            },
+      this.keypair = null;
+      this.setWorkingScreen(true);
+      this.error = null;
+      if (!this.privateKey || !this.privateKey.trim().length) return reset();
+      const key = this.privateKey
+        .trim()
+        .replace(/\W/g, "")
+        .replace("0x", "");
+      const keypair = Keypair.placeholder();
+      keypair.privateKey = key;
 
-            buttonsRight() {
-                if (this.options.forSignup) return [{ text: 'Skip', click: () => this.returnResult(false) }];
-                return [];
-            },
+      if (!KeyPairService.isValidPrivateKey(keypair)) {
+        this.error = "Invalid Private Key";
+        return reset();
+      }
 
-            importTypes() {
-                return [
-                    {
-                        icon: 'icon-pencil',
-                        text: 'Text',
-                        onClick: () => {
-                            this.selectImportType(IMPORT_TYPES.TEXT);
-                        },
-                    },
-                    // {
-                    // 	icon:'icon-microchip',
-                    // 	text:'Hardware',
-                    // 	onClick:() => { this.selectImportType(IMPORT_TYPES.HARDWARE); },
-                    // },
-                    // {
-                    // 	icon:'icon-qrcode',
-                    // 	text:'QR Code',
-                    // 	onClick:() => { this.selectImportType(IMPORT_TYPES.QR); },
-                    // }
-                ];
-            }
-        },
-        methods: {
-            saveKeypair() {
-            },
-            returnResult() {
-                this.popin.data.callback(this.keypair);
-                this[Actions.RELEASE_POPUP](this.popin);
-            },
+      // Buffer conversion
+      await KeyPairService.convertHexPrivateToBuffer(keypair);
 
-            selectImportType(type) {
-                this.state = STATES.IMPORT_KEY;
-                this.importType = type;
-            },
+      this.keypair = keypair;
 
-            async testKey() {
-                const reset = () => this.setWorkingScreen(false);
+      const blockchains = KeyPairService.getImportedKeyBlockchains(key);
 
-                this.keypair = null;
-                this.setWorkingScreen(true);
-                this.error = null;
-                if (!this.privateKey || !this.privateKey.trim().length) return reset();
-                const key = this.privateKey.trim().replace(/\W/g, '').replace('0x', '');
-                const keypair = Keypair.placeholder();
-                keypair.privateKey = key;
+      if (blockchains.length === 1) {
+        await this.selectBlockchain(blockchains[0]);
+      } else {
+        this.blockchains = blockchains;
+        this.state = STATES.SELECT_BLOCKCHAIN;
+        this.setWorkingScreen(false);
+      }
+    },
 
-                if (!KeyPairService.isValidPrivateKey(keypair)) {
-                    this.error = 'Invalid Private Key';
-                    return reset();
-                }
+    async selectBlockchain(blockchain) {
+      this.keypair.blockchains = [blockchain];
+      await KeyPairService.makePublicKeys(this.keypair);
+      if (!this.keypair.publicKeys.find(x => x.blockchain === blockchain)) {
+        this.error = "Invalid Private Key";
+        this.setWorkingScreen(false);
+        return;
+      }
+      this.keypair.setName();
 
-                // Buffer conversion
-                await KeyPairService.convertHexPrivateToBuffer(keypair);
+      await KeyPairService.saveKeyPair(this.keypair);
+      await AccountService.importAllAccounts(this.keypair);
+      BalanceService.loadAllBalances(true);
+      this.setWorkingScreen(false);
+      this.$router.replace({ name: "DApp" });
 
-                this.keypair = keypair;
+      // this.finishImporting();
+    },
 
-                const blockchains = KeyPairService.getImportedKeyBlockchains(key);
-                if (blockchains.length === 1) {
-                    this.selectBlockchain(blockchains[0]);
-                } else {
-                    this.blockchains = blockchains;
-                    this.state = STATES.SELECT_BLOCKCHAIN;
-                    this.setWorkingScreen(false);
-                }
-            },
+    // async finishImporting() {
+    //   await KeyPairService.saveKeyPair(keypair, this.$router);
+    //   await AccountService.importAllAccounts(keypair);
+    //   BalanceService.loadAllBalances(true);
+    //   this.setWorkingScreen(false);
+    // this.returnResult(keypair);
 
-            async selectBlockchain(blockchain) {
-                this.keypair.blockchains = [blockchain];
-                await KeyPairService.makePublicKeys(this.keypair);
-                if (!this.keypair.publicKeys.find(x => x.blockchain === blockchain)) {
-                    this.error = 'Invalid Private Key';
-                    this.setWorkingScreen(false);
-                    return;
-                }
-                this.keypair.setName();
-                this.finishImporting(this.keypair);
-            },
+    //   this.$router.replace({ name: "DApp" });
+    //   debugger;
+    // },
 
-            async finishImporting(keypair) {
-                await KeyPairService.saveKeyPair(keypair, this.$router);
-                await AccountService.importAllAccounts(keypair);
-                BalanceService.loadAllBalances(true);
-                this.setWorkingScreen(false);
-                // this.returnResult(keypair);
-
-                this.$router.replace({name: 'DApp'})
-            },
-
-            ...mapActions([
-                Actions.RELEASE_POPUP
-            ])
-        },
-        watch: {
-            ['privateKey']() {
-                this.testKey();
-            }
-        }
-
-    };
+    ...mapActions([Actions.RELEASE_POPUP])
+  },
+  watch: {
+    ["privateKey"]() {
+      this.testKey();
+    }
+  }
+};
 </script>
 
 <style scoped lang="scss">
-    @import "../../../styles/variables";
+@import "../../../styles/variables";
 
-    .import-key {
-
-
-        .select-type {
-
-
-        }
-
-    }
-
+// .import-key {
+//   .select-type {
+//   }
+// }
 </style>

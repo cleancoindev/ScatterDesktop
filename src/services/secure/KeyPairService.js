@@ -98,7 +98,8 @@ export default class KeyPairService {
     static async saveKeyPair(keypair, router){
         if(!keypair.name.length) keypair.name = `Key-${IdGenerator.text(8)}`;
         // PopupService.push(Popup.snackbar("Keypair already exists."))
-        if(!keypair.isUnique()) return router.back();
+        // if(!keypair.isUnique()) return router.back();
+        if(!keypair.isUnique()) return false;
         const scatter = StoreService.get().state.scatter.clone();
         scatter.keychain.keypairs.push(Keypair.fromJson(keypair));
         return StoreService.get().dispatch(Actions.SET_SCATTER, scatter);

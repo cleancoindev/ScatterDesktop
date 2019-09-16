@@ -22,15 +22,15 @@ import i18n from '../tp/i18n/index'
 // import 'element-ui/lib/theme-chalk/index.css'
 import ElementUI from 'element-ui'
 
-import * as fundebug from 'fundebug-javascript'
-import fundebugVue from 'fundebug-vue'
-fundebug.apikey =
-    '063876b2e596cab10dbb6ddb2c61376b4c6656ff7ca1b8a2479b0b6d905b8821'
+// import * as fundebug from 'fundebug-javascript'
+// import fundebugVue from 'fundebug-vue'
+// fundebug.apikey =
+//     '063876b2e596cab10dbb6ddb2c61376b4c6656ff7ca1b8a2479b0b6d905b8821'
   
-if (process.env.NODE_ENV !== 'production') {
-  fundebugVue(fundebug, Vue)
-  require('fundebug-revideo')
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   fundebugVue(fundebug, Vue)
+//   require('fundebug-revideo')
+// }
 
 const PKG = require('../../package.json')
 

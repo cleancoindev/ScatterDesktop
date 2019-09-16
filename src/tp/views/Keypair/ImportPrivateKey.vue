@@ -4,11 +4,6 @@
         <br>
         <br>
         <h2>{{$t('TP.KEYS.IMPORT.TextTitle')}}</h2>
-        <!--		<p>-->
-        <!--			Your private key never leaves your device. We only use this to sign transactions and-->
-        <!--			nobody will have access to it but you. Please remember that though Scatter is a good place to keep your-->
-        <!--			key, you should always have a backup of it somewhere offline.-->
-        <!--		</p>-->
 
         <br>
 
@@ -28,11 +23,9 @@
                 {{$t('TP.GENERIC.Import')}}
             </button>
         </figure>
-        <!--		<p v-if="!error"><u>Once you input a valid key, it will automatically import it.</u></p>-->
-        <!--		<p v-else>{{error}}</p>-->
+        <p v-if="!error"><u>Once you input a valid key, it will automatically import it.</u></p>
+        <p v-else>{{error}}</p>
 
-        <!--		<ActionBar v-if="returnOnly"-->
-        <!--				   :buttons-left="[{text:'Back', click:() => $router.go(-1)}]"/>-->
     </section>
 </template>
 
@@ -44,6 +37,7 @@
     import Key from '../../../components/svgs/Key';
 
     export default {
+        name: 'ImportPrivateKey',
         components: { Key },
         props: ['returnOnly'],
         data() {
@@ -63,10 +57,14 @@
                 this.$emit('key', this.privateKey.trim().replace(/\W/g, '').replace('0x', ''));
             }
         },
+        mounted(){
+            console.log(this.keypairs);
+            
+        },
         watch: {
-            ['privateKey']() {
-                this.importKey();
-            }
+            // ['privateKey']() {
+            //     this.importKey();
+            // }
         }
     };
 </script>

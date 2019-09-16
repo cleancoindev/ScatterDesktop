@@ -72,7 +72,7 @@
 
                     <section class="messages"
                              :class="{'dangerous':isDangerous || (reputable(message) && reputable(message).decimal < 0)}"
-                             :ref="`message_${index}`" v-for="(message, index) in messages">
+                             :ref="`message_${index}`" v-for="(message, index) in messages" :key="index">
 
 
                         <section class="whitelist-overlay" v-if="isPreviouslyWhitelisted(message)">
@@ -83,7 +83,7 @@
                         </section>
 
                         <section :class="{'previous-whitelist':isPreviouslyWhitelisted(message)}">
-
+                            <!-- 合约 -->
                             <section class="details contract-action">
 
                                 <section class="danger wiggle" v-if="isDangerous"
@@ -105,7 +105,7 @@
 
                             <section v-if="!isCollapsed(message)">
                                 <br>
-                                <section class="properties" v-for="(value,key) in message.data"
+                                <section class="properties" v-for="(value,key) in message.data" :key="key"
                                          v-if="viewType === VIEW_TYPES.HUMAN">
                                     <label>{{key}}</label>
                                     <section class="split-inputs">
