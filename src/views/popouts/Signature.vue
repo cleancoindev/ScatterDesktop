@@ -227,6 +227,7 @@
             this.clonedLocation = this.selectedLocation.clone();
 
             this.participantAccounts.map(async acc => {
+                console.log(acc)
                 if (ResourceService.usesResources(acc)) {
                     const resources = await ResourceService.getResourcesFor(acc);
                     this[Actions.ADD_RESOURCES]({ acc: acc.identifiable(), res: resources });
@@ -268,6 +269,7 @@
                 return this.popup.payload();
             },
             participantAccounts() {
+                console.log(this.payload.participants)
                 if (!this.payload.hasOwnProperty('participants')) return null;
                 return this.payload.participants.map(x => {
                     return Account.fromJson(x);
@@ -317,6 +319,8 @@
         },
         methods: {
             returnResult(result) {
+                console.log(result, 'signature');
+                
                 this.$emit('returned', result);
             },
 

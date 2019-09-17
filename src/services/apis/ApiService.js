@@ -345,6 +345,12 @@ export default class ApiService {
         })
       }
 
+      console.log(
+        payload.transaction.participants,
+        ' payload.transaction.participants'
+      )
+
+      console.log(possibleId)
       const availableAccounts = possibleId.accounts.map(x => x.formatted())
       const participants = ObjectHelpers.distinct(
         plugin.actionParticipants(payload)
@@ -352,6 +358,7 @@ export default class ApiService {
         .filter(x => availableAccounts.includes(x))
         .map(x => possibleId.accounts.find(acc => acc.formatted() === x))
 
+      console.log(participants)
       // Must have the proper account participants.
       if (!participants.length)
         return resolve({
@@ -376,6 +383,8 @@ export default class ApiService {
             } else return plugin.signer(payload, account.publicKey)
           })
         )
+
+        console.log(signatures, 'signatures')
 
         if (signatures.length !== participants.length)
           return resolve({

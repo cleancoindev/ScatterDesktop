@@ -123,6 +123,10 @@
         },
         methods: {
             async returnResult(result) {
+                console.log(result, 'returnResult');
+                console.log(this.windowMessage, 'this.windowMessage');
+                
+                
                 await WindowService.sendResult(this.windowMessage, result);
 
                 const window = remote.getCurrentWindow();

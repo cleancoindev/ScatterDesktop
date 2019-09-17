@@ -395,186 +395,188 @@ export default class TRX extends Plugin {
   }
 
   async dappSign(datas) {
-    let { transaction, origin, address } = datas
-    const payload = {
-      origin,
-      requiredFields: '',
-      blockchain: 'trx',
-      network: {
-        blockchain: 'trx',
-        chainId: '1',
-        host: 'api.trongrid.io',
-        name: 'Tron Mainnet',
-        port: 443,
-        protocol: 'https'
-      },
-      transaction: {
-        transaction
-      }
-    }
-    const { requiredFields, blockchain } = payload
-    payload.identityKey = address
-    payload.network = Network.fromJson(payload.network)
-    payload.participants = [address]
-    payload.messages = (await this.requestParser(payload, null)) || []
+    return new Promise(async resolve => {
+      const { transaction, origin, address, account } = datas
+      const tron = getCachedInstance(account.network())
+      const { contract_address } = datas.payload
 
-    if (!payload.messages)
-      return resolve({ id: request.id, result: Error.cantParseTransaction() })
-
-    // const blacklisted = payload.messages
-    //   .map(x => `${blockchain}::${x.code}::${x.type}`)
-    //   .filter(actionTag =>
-    //     StoreService.get().state.scatter.settings.isActionBlacklisted(actionTag)
-    //   )
-
-    // if (blacklisted.length) {
-    //   const names = blacklisted.reduce((acc, x) => {
-    //     if (!acc.hasOwnProperty(x)) acc[x] = 0
-    //     acc[x]++
-    //     return acc
-    //   }, {})
-    //   const parsed = Object.keys(names)
-    //     .reduce((acc, name) => {
-    //       acc.push(`${name.replace(`${blockchain}::`, '')} (${names[name]})`)
-    //       return acc
-    //     }, [])
-    //     .join(', ')
-    //   PopupService.push(
-    //     Popup.prompt(
-    //       'Whoa nelly!',
-    //       `An application tried to push a blacklisted action to your Scatter [ ${parsed} ]. Check your Firewall settings if this is a mistake.`
-    //     )
-    //   )
-    //   WindowService.flashWindow()
-    //   return resolve({
-    //     id: request.id,
-    //     result: Error.malicious('firewalled')
-    //   })
-    // }
-
-    // console.log(payload)
-    let identity = null
-    // const fillIdentity = () =>
-    //   (identity = StoreService.get().state.scatter.keychain.identities.find(
-    //     x => x.publicKey === address
-    //   ))
-
-    // fillIdentity()
-
-    const signAndReturn = async selectedLocation => {
-      const signatures = this.signer(payload, address)
-      // await Promise.all(
-      // payload.participants.map(async account => {
-      // if (KeyPairService.isHardware(account.publicKey)) {
-      // return HardwareService.sign(account, payload)
-      // } else return
-
-      // })
-      // )
-
-      // if (signatures.length !== payload.participants.length)
-      //   return resolve({
-      //     id: request.id,
-      //     result: Error.signatureAccountMissing()
-      //   })
-      // if (signatures.length === 1 && signatures[0] === null)
-      //   return resolve({
-      //     id: request.id,
-      //     result: Error.signatureError(
-      //       'signature_rejected',
-      //       'User rejected the signature request'
-      //     )
-      //   })
-      // if (signatures.some(x => !x))
-      //   return resolve({
-      //     id: request.id,
-      //     result: Error.signatureError(
-      //       'missing_sig',
-      //       'A signature for this request was missing'
-      //     )
-      //   })
-
-      const returnedFields = Identity.asReturnedFields(
-        requiredFields,
-        identity,
-        selectedLocation
+      const parameterData = transaction.raw_date.contract.find(
+        contract => item.parameter.value.contract_address === contract_address
       )
+      console.log(contract_address, 'contract_address')
 
-      resolve({ id: null, result: { signatures, returnedFields } })
-    }
+      console.log(parameterData, 'parameterData')
+      const addressFromHex = tron.address.fromHex(contract_address)
 
-    // const existingApp = null
-    //   StoreService.get().state.scatter.keychain.findApp(
-    //   origin
-    // )
-
-    // const hasHardwareKeys = payload.participants.some(x =>
-    //   KeyPairService.isHardware(x.publicKey)
-    // )
-    // if (
-    //   existingApp &&
-    //   !hasHardwareKeys &&
-    //   PermissionService.isWhitelistedTransaction(
-    //     origin,
-    //     identity,
-    //     payload.participants,
-    //     payload.messages,
-    //     requiredFields
-    //   )
-    // ) {
-    //   if (StoreService.get().state.scatter.settings.showNotifications)
-    //     NotificationService.pushNotification(
-    //       'Signed Transaction',
-    //       `${origin} - ${participants.map(x => x.sendable()).join(',')}`
-    //     )
-
-    //   return await signAndReturn(identity.getLocation())
-    // }
-
-    const sendableRequest = {}
-    sendableRequest.type = 'requestSignature'
-    sendableRequest.appkey = null
-    sendableRequest.payload = {
-      messages: payload.messages,
-      network: payload.network,
-      origin: origin,
-      participants: payload.participants,
-      requiredFields: payload.requiredFields
-    }
-
-    PopupService.push(
-      Popup.popout(sendableRequest, async ({ result }) => {
-        if (!result)
-          return resolve({
-            id: null,
-            result: Error.signatureError(
-              'signature_rejected',
-              'User rejected the signature request'
-            )
-          })
-
-        // await updateIdentity(result);
-        // fillIdentity()
-
-        if (result.needResources)
-          await Promise.all(
-            result.needResources.map(
-              async account => await ResourceService.addResources(account)
-            )
-          )
-        await PermissionService.addIdentityRequirementsPermission(
-          origin,
-          identity,
-          requiredFields
-        )
-        await PermissionService.addActionPermissions(
-          origin,
-          identity,
-          participants,
-          result.whitelists
-        )
-        await signAndReturn(result.selectedLocation)
+      let abi = null
+      await tron.trx.getContract(addressFromHex).then(res => {
+        abi = res.abi.entrys
       })
-    )
+
+      console.log(abi)
+
+      let contract = null
+
+      await tron
+        .contract(abi)
+        .at(addressFromHex)
+        .then(res => {
+          contract = res
+        })
+
+      console.log(contract)
+
+      const payload = {
+        abi: {
+          abi,
+          address: contract_address
+        },
+        origin,
+        requiredFields: '',
+        blockchain: 'trx',
+        network: {
+          blockchain: 'trx',
+          chainId: '1',
+          host: 'api.trongrid.io',
+          name: 'Tron Mainnet',
+          port: 443,
+          protocol: 'https'
+        },
+        transaction: {
+          transaction
+        }
+      }
+      const { requiredFields, blockchain } = payload
+      const participants = [account]
+      payload.identityKey = address
+      payload.network = Network.fromJson(payload.network)
+      payload.participants = [address]
+
+      payload.messages = (await this.requestParser(payload, null)) || []
+
+      if (!payload.messages)
+        return resolve({ id: null, result: Error.cantParseTransaction() })
+
+      // const blacklisted = payload.messages
+      //   .map(x => `${blockchain}::${x.code}::${x.type}`)
+      //   .filter(actionTag =>
+      //     StoreService.get().state.scatter.settings.isActionBlacklisted(actionTag)
+      //   )
+
+      // if (blacklisted.length) {
+      //   const names = blacklisted.reduce((acc, x) => {
+      //     if (!acc.hasOwnProperty(x)) acc[x] = 0
+      //     acc[x]++
+      //     return acc
+      //   }, {})
+      //   const parsed = Object.keys(names)
+      //     .reduce((acc, name) => {
+      //       acc.push(`${name.replace(`${blockchain}::`, '')} (${names[name]})`)
+      //       return acc
+      //     }, [])
+      //     .join(', ')
+      //   PopupService.push(
+      //     Popup.prompt(
+      //       'Whoa nelly!',
+      //       `An application tried to push a blacklisted action to your Scatter [ ${parsed} ]. Check your Firewall settings if this is a mistake.`
+      //     )
+      //   )
+      //   WindowService.flashWindow()
+      //   return resolve({
+      //     id: request.id,
+      //     result: Error.malicious('firewalled')
+      //   })
+      // }
+
+      let identity = null
+
+      const signAndReturn = async selectedLocation => {
+        const signatures = this.signer(payload, address)
+        // await Promise.all(
+        // payload.participants.map(async account => {
+        // if (KeyPairService.isHardware(account.publicKey)) {
+        // return HardwareService.sign(account, payload)
+        // } else return
+
+        // })
+        // )
+
+        console.log(signatures, 'signatures')
+
+        // if (signatures.length !== payload.participants.length)
+        //   return resolve({
+        //     id: request.id,
+        //     result: Error.signatureAccountMissing()
+        //   })
+        // if (signatures.length === 1 && signatures[0] === null)
+        //   return resolve({
+        //     id: request.id,
+        //     result: Error.signatureError(
+        //       'signature_rejected',
+        //       'User rejected the signature request'
+        //     )
+        //   })
+        // if (signatures.some(x => !x))
+        //   return resolve({
+        //     id: request.id,
+        //     result: Error.signatureError(
+        //       'missing_sig',
+        //       'A signature for this request was missing'
+        //     )
+        //   })
+
+        const returnedFields = Identity.asReturnedFields(
+          requiredFields,
+          identity,
+          selectedLocation
+        )
+
+        resolve({ id: null, result: { signatures, returnedFields } })
+      }
+
+      const sendableRequest = {}
+      sendableRequest.type = 'requestSignature'
+      sendableRequest.appkey = null
+      sendableRequest.payload = {
+        messages: payload.messages,
+        network: payload.network,
+        origin: origin,
+        participants,
+        requiredFields: payload.requiredFields
+      }
+
+      PopupService.push(
+        Popup.popout(sendableRequest, async ({ result }) => {
+          console.log(result, 'result')
+          if (!result)
+            return resolve({
+              id: null,
+              result: Error.signatureError(
+                'signature_rejected',
+                'User rejected the signature request'
+              )
+            })
+
+          if (result.needResources)
+            await Promise.all(
+              result.needResources.map(
+                async account => await ResourceService.addResources(account)
+              )
+            )
+          await PermissionService.addIdentityRequirementsPermission(
+            origin,
+            identity,
+            requiredFields
+          )
+          await PermissionService.addActionPermissions(
+            origin,
+            identity,
+            participants,
+            result.whitelists
+          )
+          await signAndReturn(result.selectedLocation)
+        })
+      )
+    })
   }
 }

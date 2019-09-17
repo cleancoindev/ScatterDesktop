@@ -103,12 +103,11 @@ const trxHook = {
     sign: false
   },
   init: function init() {
-    this._bindTronWeb()
-
     var _this = this
     ipcMain.on('CONTACT_TRON_WEB', (event, account) => {
+      this._bindTronWeb()
       console.log(account, 'CONTACT_TRON_WEB')
-      _this.setAddress({
+      this.setAddress({
         address: account.publicKey,
         name: account.name || '',
         type: 0
@@ -125,7 +124,8 @@ const trxHook = {
     console.log('_bindTronWeb')
     var _this2 = this
 
-    if (window.tronWeb !== undefined) {
+    console.log(window.tronWeb, 'window.tronWeb ')
+    if (window.tronWeb) {
       console.log(
         'TronWeb is already initiated. TPTron will overwrite the current instance'
       )
@@ -165,6 +165,7 @@ const trxHook = {
       name = _ref.name,
       type = _ref.type
 
+    console.log(tronWeb)
     // console.log('TPTron: New address configured');
     if (!tronWeb.isAddress(address)) {
       tronWeb.defaultAddress = {
@@ -233,7 +234,8 @@ const trxHook = {
         transaction,
         useTronHeader,
         address,
-        origin: window.location.host
+        origin: window.location.host,
+        payload: transaction.__payload__
       })
     )
   }

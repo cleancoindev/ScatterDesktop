@@ -6,7 +6,9 @@
 </template>
 
 <script>
-// import Stroage
+import { mapGetters, mapState } from "vuex";
+import { LOAD_SCATTER } from "../../../store/constants";
+// import StoreService from '../../../services/utility/StoreService'
 import PluginRepository from "../../../plugins/PluginRepository";
 // import TransferService from "../../../services/blockchain/TransferService";
 const ipc = window.require("electron").ipcRenderer;
@@ -22,6 +24,10 @@ export default {
       inject: ""
     };
   },
+  computed: {
+    ...mapState(["scatter"]),
+    ...mapGetters(["currentAccount"])
+  },
   methods: {
     sendMessgae() {
       const webview = document.querySelector("#webview");
@@ -35,12 +41,14 @@ export default {
         });
       });
 
-    webview.addEventListener('close', () => {
-      webview.src = null;
-    })
+      webview.addEventListener("close", () => {
+        webview.src = null;
+      });
     }
   },
-  created() {},
+  created() {
+     this.$store.dispatch(LOAD_SCATTER, true);
+  },
   mounted() {
     ipc.on("INSERT_WEBVIEW_DATA", (event, arg) => {
       // console.log(arg, "INSERT_WEBVIEW_DATA");
@@ -50,21 +58,28 @@ export default {
       this.sendMessgae();
     });
 
+    // console.log(this.scatter);
+    // console.log(this.currentAccount)
+
     ipcMain.on("DAPP_SIGNS", (event, arg) => {
       let datas = {};
       if (typeof arg === "string") {
         try {
-          datas = JSON.parse(arg)
-        } catch (e){
-          console.log(e)
+          datas = JSON.parse(arg);
+        } catch (e) {
+          console.log(e);
         }
       } else {
-        datas = arg
+        datas = arg;
       }
 
       console.log(datas, "DAPP_SIGNS");
-      const plugin = PluginRepository.plugin('trx');
-      plugin.dappSign(datas)
+      const plugin = PluginRepository.plugin("trx");
+
+      plugin.dappSign({
+        ...datas, 
+        account: this.currentAccount
+      });
     });
   }
 };
