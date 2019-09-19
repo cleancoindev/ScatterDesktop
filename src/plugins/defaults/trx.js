@@ -349,6 +349,8 @@ export default class TRX extends Plugin {
   }
 
   async requestParser(transaction, abiData) {
+    // console.log(transaction, 'requestParser transaction')
+    // console.log(abiData, 'requestParser abiData')
     const network = Network.fromJson(transaction.network)
     const txID = transaction.transaction.transaction.txID
     transaction = transaction.transaction.transaction.raw_data
@@ -395,17 +397,16 @@ export default class TRX extends Plugin {
   }
 
   async dappSign(datas) {
-    return new Promise(async resolve => {
+    return new Promise(async (resolve, rejecet) => {
       const { transaction, origin, address, account } = datas
       const tron = getCachedInstance(account.network())
       const { contract_address } = datas.payload
 
-      const parameterData = transaction.raw_date.contract.find(
-        contract => item.parameter.value.contract_address === contract_address
+      const contracts = transaction.raw_data.contract
+      const parameterData = contracts.find(
+        item => item.parameter.value.contract_address === contract_address
       )
-      console.log(contract_address, 'contract_address')
-
-      console.log(parameterData, 'parameterData')
+      const parameterValueData = parameterData.parameter.value.data
       const addressFromHex = tron.address.fromHex(contract_address)
 
       let abi = null
@@ -413,10 +414,7 @@ export default class TRX extends Plugin {
         abi = res.abi.entrys
       })
 
-      console.log(abi)
-
       let contract = null
-
       await tron
         .contract(abi)
         .at(addressFromHex)
@@ -424,12 +422,13 @@ export default class TRX extends Plugin {
           contract = res
         })
 
-      console.log(contract)
+      const parseSignData = contract.decodeInput(parameterValueData)
 
       const payload = {
         abi: {
           abi,
-          address: contract_address
+          address: contract_address,
+          method: parseSignData.name
         },
         origin,
         requiredFields: '',
@@ -446,93 +445,13 @@ export default class TRX extends Plugin {
           transaction
         }
       }
-      const { requiredFields, blockchain } = payload
+
       const participants = [account]
       payload.identityKey = address
       payload.network = Network.fromJson(payload.network)
       payload.participants = [address]
 
-      payload.messages = (await this.requestParser(payload, null)) || []
-
-      if (!payload.messages)
-        return resolve({ id: null, result: Error.cantParseTransaction() })
-
-      // const blacklisted = payload.messages
-      //   .map(x => `${blockchain}::${x.code}::${x.type}`)
-      //   .filter(actionTag =>
-      //     StoreService.get().state.scatter.settings.isActionBlacklisted(actionTag)
-      //   )
-
-      // if (blacklisted.length) {
-      //   const names = blacklisted.reduce((acc, x) => {
-      //     if (!acc.hasOwnProperty(x)) acc[x] = 0
-      //     acc[x]++
-      //     return acc
-      //   }, {})
-      //   const parsed = Object.keys(names)
-      //     .reduce((acc, name) => {
-      //       acc.push(`${name.replace(`${blockchain}::`, '')} (${names[name]})`)
-      //       return acc
-      //     }, [])
-      //     .join(', ')
-      //   PopupService.push(
-      //     Popup.prompt(
-      //       'Whoa nelly!',
-      //       `An application tried to push a blacklisted action to your Scatter [ ${parsed} ]. Check your Firewall settings if this is a mistake.`
-      //     )
-      //   )
-      //   WindowService.flashWindow()
-      //   return resolve({
-      //     id: request.id,
-      //     result: Error.malicious('firewalled')
-      //   })
-      // }
-
-      let identity = null
-
-      const signAndReturn = async selectedLocation => {
-        const signatures = this.signer(payload, address)
-        // await Promise.all(
-        // payload.participants.map(async account => {
-        // if (KeyPairService.isHardware(account.publicKey)) {
-        // return HardwareService.sign(account, payload)
-        // } else return
-
-        // })
-        // )
-
-        console.log(signatures, 'signatures')
-
-        // if (signatures.length !== payload.participants.length)
-        //   return resolve({
-        //     id: request.id,
-        //     result: Error.signatureAccountMissing()
-        //   })
-        // if (signatures.length === 1 && signatures[0] === null)
-        //   return resolve({
-        //     id: request.id,
-        //     result: Error.signatureError(
-        //       'signature_rejected',
-        //       'User rejected the signature request'
-        //     )
-        //   })
-        // if (signatures.some(x => !x))
-        //   return resolve({
-        //     id: request.id,
-        //     result: Error.signatureError(
-        //       'missing_sig',
-        //       'A signature for this request was missing'
-        //     )
-        //   })
-
-        const returnedFields = Identity.asReturnedFields(
-          requiredFields,
-          identity,
-          selectedLocation
-        )
-
-        resolve({ id: null, result: { signatures, returnedFields } })
-      }
+      payload.messages = await this.requestParser(payload, payload.abi)
 
       const sendableRequest = {}
       sendableRequest.type = 'requestSignature'
@@ -546,10 +465,11 @@ export default class TRX extends Plugin {
       }
 
       PopupService.push(
-        Popup.popout(sendableRequest, async ({ result }) => {
-          console.log(result, 'result')
+        Popup.popout(sendableRequest, async result => {
+          const signatures = await this.signer(payload, address)
+          // console.log(signatures, 'signAndReturn signatures')
           if (!result)
-            return resolve({
+            return rejecet({
               id: null,
               result: Error.signatureError(
                 'signature_rejected',
@@ -557,24 +477,7 @@ export default class TRX extends Plugin {
               )
             })
 
-          if (result.needResources)
-            await Promise.all(
-              result.needResources.map(
-                async account => await ResourceService.addResources(account)
-              )
-            )
-          await PermissionService.addIdentityRequirementsPermission(
-            origin,
-            identity,
-            requiredFields
-          )
-          await PermissionService.addActionPermissions(
-            origin,
-            identity,
-            participants,
-            result.whitelists
-          )
-          await signAndReturn(result.selectedLocation)
+          resolve(signatures)
         })
       )
     })

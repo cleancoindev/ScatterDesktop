@@ -1,12 +1,17 @@
 const electron = require('electron')
 const { remote, app, BrowserWindow, Tray, Menu, MenuItem, ipcMain } = electron
 const path = require('path')
-const url = require('url')
+const URL = require('url')
 const fs = require('fs')
-const CreateDAppWebView = require('./BrowserWindow/Webview')
+// const URL = require('URL')
+
+// console.log(fs.readFileSync('./insert/trx.js').toString())
+
 
 const isDev = process.mainModule.filename.indexOf('app.asar') === -1
 
+
+// console.log(process.mainModule)
 let icon = isDev
   ? 'static/icons/1024x1024.png'
   : __dirname + '/static/icons/1024x1024.png'
@@ -18,7 +23,7 @@ let trayIcon = isDev
 let mainUrl = isPopup =>
   isDev
     ? `http://localhost:8080/${isPopup ? '/#/popout' : ''}`
-    : url.format({
+    : URL.format({
         pathname: path.join(__dirname, 'dist', 'index.html'),
         protocol: 'file:',
         slashes: true,
@@ -157,7 +162,7 @@ app.on('second-instance', (event, argv) => {
 app.on(
   'certificate-error',
   (event, webContents, url, error, certificate, callback) => {
-    const isLocal = url.startsWith('https://127.0.0.1')
+    const isLocal = URL.startsWith('https://127.0.0.1')
     if (isLocal) {
       event.preventDefault()
       callback(true)
@@ -501,18 +506,14 @@ ipcMain.on('seed', (event, arg) => {
 })
 
 ipcMain.on('goGame', (event, arg) => {
+  // console.log(arg.data.title)
   newwin = new BrowserWindow({
     title: arg.data.title,
-    width: 800,
-    height: 500,
+    width: 1000,
+    height: 720,
     radii: [5, 5, 5, 5],
     resizable: true,
-    // parent: mainWindow,
-    // minWidth: 1000,
-    // minHeight: 720,
-    // titleBarStyle: 'hiddenInset',
-    // backgroundColor,
-    // show,
+    titleBarStyle: 'hiddenInset',
     webPreferences: {
       nodeIntegration: true,
       webviewTag: true
@@ -521,7 +522,7 @@ ipcMain.on('goGame', (event, arg) => {
 
   const webviewURL = isDev
     ? `http://localhost:8080/#/WebView`
-    : url.format({
+    : URL.format({
         pathname: path.join(__dirname, 'dist', 'index.html'),
         protocol: 'file:',
         slashes: true,
@@ -529,6 +530,7 @@ ipcMain.on('goGame', (event, arg) => {
       })
 
   const js = fs.readFileSync(path.join(__dirname, './insert/trx.js')).toString()
+  // const js = fs.readFileSync('./insert/trx.js').toString()
   newwin.loadURL(webviewURL) //new.html是新开窗口的渲染进程
   // newwin.loadURL(arg.data.url) //new.html是新开窗口的渲染进程
 

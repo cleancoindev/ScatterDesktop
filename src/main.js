@@ -37,12 +37,12 @@ import PopOutHead from './components/popouts/PopOutHead.vue'
 // import SocketService from './services/utility/SocketService'
 // import SingletonService from './services/utility/SingletonService'
 
-if (process.env.NODE_ENV !== 'production') {
-  // f12 to open console from anywhere.
-  document.addEventListener('keydown', e => {
-    if (e.which === 123) WindowService.openTools()
-  })
-}
+// if (process.env.NODE_ENV !== 'production') {
+// f12 to open console from anywhere.
+document.addEventListener('keydown', e => {
+  if (e.which === 123) WindowService.openTools()
+})
+// }
 
 document.onmousedown = e => {
   if (e.which === 2) e.preventDefault()

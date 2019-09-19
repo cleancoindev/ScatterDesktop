@@ -123,9 +123,9 @@
         },
         methods: {
             async returnResult(result) {
-                console.log(result, 'returnResult');
-                console.log(this.windowMessage, 'this.windowMessage');
-                
+                // console.log(result, 'returnResult');
+                // console.log(this.windowMessage, 'this.windowMessage');
+                // return false;
                 
                 await WindowService.sendResult(this.windowMessage, result);
 

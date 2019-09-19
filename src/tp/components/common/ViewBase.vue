@@ -72,7 +72,7 @@
             ]),
 
             onboarded() {
-                return this.unlocked && this.scatter.onboarded && this.route !== RouteNames.LOGIN;
+                return this.unlocked && this.scatter.onboarded && this.route !== RouteNames.LOGIN && this.route !== RouteNames.WEB_VIEW;
             },
 
             isPopout() {
@@ -108,7 +108,7 @@
                     RouteNames.WALLET,
                     RouteNames.WALLETS,
                     RouteNames.SETTINGS,
-                    RouteNames.LOGIN
+                    RouteNames.LOGIN,
                 ].includes(this.$route.name);
             }
         },

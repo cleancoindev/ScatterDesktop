@@ -61,7 +61,7 @@ remote.getGlobal('appShared').ApiWatcher = deepLink => {
 
 export default class ApiService {
   static async handleDeepLink(deepLink) {
-    console.log('handling deep link', deepLink)
+    // console.log('handling deep link', deepLink)
     if (!deepLink || Array.isArray(deepLink)) return
     let [type, payload] = deepLink
       .toString()
@@ -271,7 +271,7 @@ export default class ApiService {
   }
 
   static async [Actions.SIGN](request) {
-    console.log(request, 'Actions.SIGN')
+    // console.log(request, 'Actions.SIGN')
 
     return new Promise(async resolve => {
       const { payload } = request
@@ -345,12 +345,12 @@ export default class ApiService {
         })
       }
 
-      console.log(
-        payload.transaction.participants,
-        ' payload.transaction.participants'
-      )
+      // console.log(
+      //   payload.transaction.participants,
+      //   ' payload.transaction.participants'
+      // )
 
-      console.log(possibleId)
+      // console.log(possibleId)
       const availableAccounts = possibleId.accounts.map(x => x.formatted())
       const participants = ObjectHelpers.distinct(
         plugin.actionParticipants(payload)
@@ -358,7 +358,7 @@ export default class ApiService {
         .filter(x => availableAccounts.includes(x))
         .map(x => possibleId.accounts.find(acc => acc.formatted() === x))
 
-      console.log(participants)
+      // console.log(participants)
       // Must have the proper account participants.
       if (!participants.length)
         return resolve({
@@ -384,7 +384,7 @@ export default class ApiService {
           })
         )
 
-        console.log(signatures, 'signatures')
+        // console.log(signatures, 'signatures')
 
         if (signatures.length !== participants.length)
           return resolve({
@@ -494,7 +494,7 @@ export default class ApiService {
   }
 
   static async [Actions.SIGN_ARBITRARY](request, identityKey = null) {
-    console.log(request, 'Actions.SIGN_ARBITRARY')
+    // console.log(request, 'Actions.SIGN_ARBITRARY')
 
     return new Promise(async resolve => {
       const { payload } = request
@@ -567,7 +567,7 @@ export default class ApiService {
   }
 
   static async [Actions.TRANSFER](request) {
-    console.log(request, 'Actions.TRANSFER')
+    // console.log(request, 'Actions.TRANSFER')
     return new Promise(resolve => {
       let { to, network, amount, options } = request.payload
       if (!options) options = {}
@@ -641,7 +641,7 @@ export default class ApiService {
   }
 
   static async [Actions.GET_PUBLIC_KEY](request) {
-    console.log(request, 'Actions.GET_PUBLIC_KEY')
+    // console.log(request, 'Actions.GET_PUBLIC_KEY')
     return new Promise((resolve, reject) => {
       const badResult = (msg = 'Invalid format') =>
         resolve({ id: request.id, result: Error.malicious(msg) })
@@ -677,7 +677,7 @@ export default class ApiService {
   }
 
   static async [Actions.UPDATE_IDENTITY](request) {
-    console.log(request, 'Actions.UPDATE_IDENTITY')
+    // console.log(request, 'Actions.UPDATE_IDENTITY')
     return new Promise(async resolve => {
       const { origin, name, kyc, ridl } = request.payload
 

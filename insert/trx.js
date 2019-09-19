@@ -1,244 +1,247 @@
-const TronWeb = require('tronweb')
-const { HttpProvider } = TronWeb.providers
+// const TronWeb = require('tronweb')
+// const { HttpProvider } = TronWeb.providers
 const endPoint = 'https://api.trongrid.io'
-const ipc = require('electron').ipcRenderer
-const remote = require('electron').remote
+const ipc = window.require('electron').ipcRenderer
+const remote = window.require('electron').remote
 const axios = require('axios')
-
 const { ipcMain } = remote
 
-// ipcMain.on('dapp-data', (event, arg) => {
-//   console.log(arg)
-// })
-class ProxiedProvider extends HttpProvider {
-  constructor() {
-    super('http://127.0.0.1')
+console.log(axios, 'axios')
+console.log(ipc, 'ipc')
+console.log(remote, 'remote')
 
-    console.info('Provider initialised')
+// class ProxiedProvider extends HttpProvider {
+//   constructor() {
+//     super('http://127.0.0.1')
 
-    this.ready = false
-    this.queue = []
-  }
+//     console.info('Provider initialised')
 
-  configure(url) {
-    console.info('Received new node:', url)
+//     this.ready = false
+//     this.queue = []
+//   }
 
-    this.host = url
-    this.instance = axios.create({
-      baseURL: url,
-      timeout: 30000
-    })
+//   configure(url) {
+//     console.info('Received new node:', url)
 
-    this.ready = true
+//     this.host = url
+//     this.instance = axios.create({
+//       baseURL: url,
+//       timeout: 30000
+//     })
 
-    while (this.queue.length) {
-      const { args, resolve, reject } = this.queue.shift()
+//     this.ready = true
 
-      this.request(...args)
-        .then(resolve)
-        .catch(reject)
-        .then(() => console.info(`Completed the queued request to ${args[0]}`))
-    }
-  }
+//     while (this.queue.length) {
+//       const { args, resolve, reject } = this.queue.shift()
 
-  request(endpoint, payload = {}, method = 'get') {
-    if (!this.ready) {
-      console.info(`Request to ${endpoint} has been queued`)
+//       this.request(...args)
+//         .then(resolve)
+//         .catch(reject)
+//         .then(() => console.info(`Completed the queued request to ${args[0]}`))
+//     }
+//   }
 
-      return new Promise((resolve, reject) => {
-        this.queue.push({
-          args: [endpoint, payload, method],
-          resolve,
-          reject
-        })
-      })
-    }
+//   request(endpoint, payload = {}, method = 'get') {
+//     if (!this.ready) {
+//       console.info(`Request to ${endpoint} has been queued`)
 
-    return super.request(endpoint, payload, method).then(res => {
-      const response = res.transaction || res
+//       return new Promise((resolve, reject) => {
+//         this.queue.push({
+//           args: [endpoint, payload, method],
+//           resolve,
+//           reject
+//         })
+//       })
+//     }
 
-      Object.defineProperty(response, '__payload__', {
-        writable: false,
-        enumerable: false,
-        configurable: false,
-        value: payload
-      })
+//     return super.request(endpoint, payload, method).then(res => {
+//       const response = res.transaction || res
 
-      return res
-    })
-  }
-}
+//       Object.defineProperty(response, '__payload__', {
+//         writable: false,
+//         enumerable: false,
+//         configurable: false,
+//         value: payload
+//       })
 
-var injectPromise = function injectPromise(func) {
-  for (
-    var _len = arguments.length,
-      args = new Array(_len > 1 ? _len - 1 : 0),
-      _key = 1;
-    _key < _len;
-    _key++
-  ) {
-    args[_key - 1] = arguments[_key]
-  }
+//       return res
+//     })
+//   }
+// }
 
-  return new Promise(function(resolve, reject) {
-    func.apply(
-      void 0,
-      args.concat([
-        function(err, res) {
-          if (err) reject(err)
-          else resolve(res)
-        }
-      ])
-    )
-  })
-}
+// var injectPromise = function injectPromise(func) {
+//   for (
+//     var _len = arguments.length,
+//       args = new Array(_len > 1 ? _len - 1 : 0),
+//       _key = 1;
+//     _key < _len;
+//     _key++
+//   ) {
+//     args[_key - 1] = arguments[_key]
+//   }
 
-var isFunction = function isFunction(obj) {
-  return typeof obj === 'function'
-}
+//   return new Promise(function(resolve, reject) {
+//     func.apply(
+//       void 0,
+//       args.concat([
+//         function(err, res) {
+//           if (err) reject(err)
+//           else resolve(res)
+//         }
+//       ])
+//     )
+//   })
+// }
 
-const trxHook = {
-  proxiedMethods: {
-    setAddress: false,
-    sign: false
-  },
-  init: function init() {
-    var _this = this
-    ipcMain.on('CONTACT_TRON_WEB', (event, account) => {
-      this._bindTronWeb()
-      console.log(account, 'CONTACT_TRON_WEB')
-      this.setAddress({
-        address: account.publicKey,
-        name: account.name || '',
-        type: 0
-      })
+// var isFunction = function isFunction(obj) {
+//   return typeof obj === 'function'
+// }
 
-      _this.setNode({
-        fullNode: endPoint,
-        solidityNode: endPoint,
-        eventServer: endPoint
-      })
-    })
-  },
-  _bindTronWeb: function _bindTronWeb() {
-    console.log('_bindTronWeb')
-    var _this2 = this
+// const trxHook = {
+//   proxiedMethods: {
+//     setAddress: false,
+//     sign: false
+//   },
+//   init: function init() {
+//     var _this = this
+//     ipcMain.on('CONTACT_TRON_WEB', (event, account) => {
+//       this._bindTronWeb()
+//       // console.log(account, 'CONTACT_TRON_WEB')
+//       this.setAddress({
+//         address: account.publicKey,
+//         name: account.name || '',
+//         type: 0
+//       })
 
-    console.log(window.tronWeb, 'window.tronWeb ')
-    if (window.tronWeb) {
-      console.log(
-        'TronWeb is already initiated. TPTron will overwrite the current instance'
-      )
-      return
-    }
+//       _this.setNode({
+//         fullNode: endPoint,
+//         solidityNode: endPoint,
+//         eventServer: endPoint
+//       })
+//     })
+//   },
+//   _bindTronWeb: function _bindTronWeb() {
+//     console.log('_bindTronWeb')
+//     var _this2 = this
 
-    var tronWeb = new TronWeb(
-      new ProxiedProvider(),
-      new ProxiedProvider(),
-      new ProxiedProvider()
-    )
-    this.proxiedMethods = {
-      setAddress: tronWeb.setAddress.bind(tronWeb),
-      sign: tronWeb.trx.sign.bind(tronWeb)
-    }
-    ;[
-      'setPrivateKey',
-      'setAddress',
-      'setFullNode',
-      'setSolidityNode',
-      'setEventServer'
-    ].forEach(function(method) {
-      return (tronWeb[method] = function() {
-        return new Error('TPTron has disabled this method')
-      })
-    })
+//     // console.log(window.tronWeb, 'window.tronWeb ')
+//     if (window.tronWeb) {
+//       console.log(
+//         'TronWeb is already initiated. TPTron will overwrite the current instance'
+//       )
+//       return
+//     }
 
-    tronWeb.trx.sign = function() {
-      return _this2.sign.apply(_this2, arguments)
-    }
+//     var tronWeb = new TronWeb(
+//       new ProxiedProvider(),
+//       new ProxiedProvider(),
+//       new ProxiedProvider()
+//     )
+//     this.proxiedMethods = {
+//       setAddress: tronWeb.setAddress.bind(tronWeb),
+//       sign: tronWeb.trx.sign.bind(tronWeb)
+//     }
+//     ;[
+//       'setPrivateKey',
+//       'setAddress',
+//       'setFullNode',
+//       'setSolidityNode',
+//       'setEventServer'
+//     ].forEach(function(method) {
+//       return (tronWeb[method] = function() {
+//         return new Error('TPTron has disabled this method')
+//       })
+//     })
 
-    window.tronWeb = tronWeb
-  },
-  setAddress: function setAddress(_ref) {
-    console.log('setAddress')
-    var address = _ref.address,
-      name = _ref.name,
-      type = _ref.type
+//     tronWeb.trx.sign = function() {
+//       return _this2.sign.apply(_this2, arguments)
+//     }
 
-    console.log(tronWeb)
-    // console.log('TPTron: New address configured');
-    if (!tronWeb.isAddress(address)) {
-      tronWeb.defaultAddress = {
-        hex: false,
-        base58: false
-      }
-    } else {
-      this.proxiedMethods.setAddress(address)
-      tronWeb.defaultAddress.name = name
-      tronWeb.defaultAddress.type = type
-    }
+//     window.tronWeb = tronWeb
+//   },
+//   setAddress: function setAddress(_ref) {
+//     console.log('setAddress')
+//     var address = _ref.address,
+//       name = _ref.name,
+//       type = _ref.type
 
-    tronWeb.ready = true
-  },
-  setNode: function setNode(node) {
-    // debugger
-    console.log('setNode TPTron: New node configured')
-    tronWeb.fullNode.configure(node.fullNode)
-    tronWeb.solidityNode.configure(node.solidityNode)
-    tronWeb.eventServer.configure(node.eventServer)
-  },
-  sign: function sign(transaction) {
-    var privateKey =
-      arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false
-    var useTronHeader =
-      arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true
-    var callback =
-      arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false
+//     if (!tronWeb.isAddress(address)) {
+//       tronWeb.defaultAddress = {
+//         hex: false,
+//         base58: false
+//       }
+//     } else {
+//       this.proxiedMethods.setAddress(address)
+//       tronWeb.defaultAddress.name = name
+//       tronWeb.defaultAddress.type = type
+//     }
 
-    if (isFunction(privateKey)) {
-      callback = privateKey
-      privateKey = false
-    }
+//     tronWeb.ready = true
+//   },
+//   setNode: function setNode(node) {
+//     // debugger
+//     console.log('setNode TPTron: New node configured')
+//     tronWeb.fullNode.configure(node.fullNode)
+//     tronWeb.solidityNode.configure(node.solidityNode)
+//     tronWeb.eventServer.configure(node.eventServer)
+//   },
+//   sign: function sign(transaction) {
+//     var privateKey =
+//       arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false
+//     var useTronHeader =
+//       arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true
+//     var callback =
+//       arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false
 
-    if (isFunction(useTronHeader)) {
-      callback = useTronHeader
-      useTronHeader = true
-    }
+//     if (isFunction(privateKey)) {
+//       callback = privateKey
+//       privateKey = false
+//     }
 
-    if (!callback)
-      return injectPromise(
-        this.sign.bind(this),
-        transaction,
-        privateKey,
-        useTronHeader
-      )
-    if (privateKey)
-      return this.proxiedMethods.sign(
-        transaction,
-        privateKey,
-        useTronHeader,
-        callback
-      )
-    if (!transaction) return callback('Invalid transaction provided')
-    if (!tronWeb.ready) return callback('User has not unlocked wallet') // sign
+//     if (isFunction(useTronHeader)) {
+//       callback = useTronHeader
+//       useTronHeader = true
+//     }
 
-    console.log('sign')
-    var address = tronWeb.defaultAddress.base58
-    console.log('transaction:', transaction)
-    console.log('useTronHeader:', useTronHeader)
-    console.log('address', address)
+//     if (!callback)
+//       return injectPromise(
+//         this.sign.bind(this),
+//         transaction,
+//         privateKey,
+//         useTronHeader
+//       )
+//     if (privateKey)
+//       return this.proxiedMethods.sign(
+//         transaction,
+//         privateKey,
+//         useTronHeader,
+//         callback
+//       )
+//     if (!transaction) return callback('Invalid transaction provided')
+//     if (!tronWeb.ready) return callback('User has not unlocked wallet') // sign
 
-    ipc.send(
-      'DAPP_SIGNS',
-      JSON.stringify({
-        transaction,
-        useTronHeader,
-        address,
-        origin: window.location.host,
-        payload: transaction.__payload__
-      })
-    )
-  }
-}
+//     // console.log('sign')
+//     var address = tronWeb.defaultAddress.base58
+//     // console.log('transaction:', transaction)
+//     // console.log('useTronHeader:', useTronHeader)
+//     // console.log('address', address)
 
-trxHook.init()
+//     ipc.send(
+//       'DAPP_SIGNS',
+//       JSON.stringify({
+//         transaction,
+//         useTronHeader,
+//         address,
+//         origin: window.location.host,
+//         payload: transaction.__payload__
+//       })
+//     )
+
+//     ipcMain.on('REQUEST_SIGNATURE', (event, arg) => {
+//       // console.log(arg, 'on REQUEST_SIGNATURE')
+//       callback(null, arg)
+//     })
+//   }
+// }
+
+// trxHook.init()

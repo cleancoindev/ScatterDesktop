@@ -319,7 +319,7 @@
         },
         methods: {
             returnResult(result) {
-                console.log(result, 'signature');
+                console.log(result, 'return Result');
                 
                 this.$emit('returned', result);
             },
