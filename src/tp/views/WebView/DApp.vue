@@ -57,7 +57,9 @@ export default {
     ...mapState(["scatter"]),
     ...mapGetters(["currentAccount"]),
     dappInput() {
-      return this.$i18n.locale !== "en" ? '输入输入DApp的URL' : 'Input DApps URL'
+      return this.$i18n.locale !== "en"
+        ? "输入输入DApp的URL"
+        : "Input DApps URL";
     }
   },
   methods: {
@@ -155,7 +157,7 @@ export default {
 
     this.getSigns();
   },
-  mounted() {},
+  mounted() {}
 };
 </script>
 

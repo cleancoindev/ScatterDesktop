@@ -95,7 +95,7 @@
 
             <section style="margin-top: 50px;">
                 <button class="tp-button"
-                        :class="{'on': selectedAuthorities.length > 0}"
+                        :class="{'on': selectedAuthorities.length > 0 || (accountInfo.account.blockchain && accountInfo.account.blockchain() !== 'eos')}"
                         @click="unlinkAccount">
                     {{$t('TP.GENERIC.Confirm')}}
                 </button>
@@ -150,6 +150,7 @@
                 newAccountName: '',
                 accountUnlinkState: false,
                 accountInfo: {
+                    account: {},
                     name: '',
                     authorities: []
                 },

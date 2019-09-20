@@ -26,16 +26,47 @@ const Account = {
 
       return []
     },
+
     currentAccount: (state, getters) => {
-      if (
-        !state.currentAccount.keypairUnique &&
-        getters.tpAccounts.length > 0
-      ) {
-        return getters.tpAccounts[0]
-      }
-      return getters.tpAccounts.find(
-        acc => acc.keypairUnique === state.currentAccount.keypairUnique
-      )
+      // const {
+      //   keypairUnique,
+      //   networkUnique,
+      //   name,
+      //   authority,
+      //   publicKey
+      // } = state.currentAccount
+
+      // const onlyone = `${keypairUnique}${networkUnique}${name}${authority}${publicKey}`
+      const onlyone = state.currentAccount.unique
+        ? state.currentAccount.unique()
+        : null
+      const account = getters.tpAccounts.find(acc => acc.unique() === onlyone)
+
+      if (onlyone && account) return account
+
+      return getters.tpAccounts.length > 0 ? getters.tpAccounts[0] : {}
+      // keypairUnique
+      //   ? account
+      //     ? account
+      //     : getters.tpAccounts.length > 0
+      //   ? getters.tpAccounts[0]
+      //   : {}
+      // if (!state.currentAccount) {
+      //   return getters.tpAccounts.length > 0 ? getters.tpAccounts[0] : {}
+      // }
+
+      // return state.currentAccount
+
+      // const account = getters.tpAccounts.find(
+      //   acc => acc.keypairUnique === keypairUnique
+      // )
+
+      // if (!account && ) {
+      //   return
+      // }
+
+      // console.log(account, 'accountaccount')
+      // return account ? account : {}
     }
   },
 
