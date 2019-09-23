@@ -8,10 +8,10 @@
         </section>
 
         <section v-else>
+         
             <MenuBar/>
 
             <section class="app-content" :class="{'column': onboarded && unlocked && !isViewBase}">
-
                 <Sidebar v-if="onboarded && unlocked && isViewBase"/>
 
                 <section class="view-pane">

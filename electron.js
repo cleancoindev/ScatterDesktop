@@ -508,13 +508,16 @@ ipcMain.on('seed', (event, arg) => {
   event.sender.send('seed', seed)
 })
 
+let newwin
 ipcMain.on('goGame', (event, arg) => {
+  Menu.setApplicationMenu(null)
   const js = fs.readFileSync(path.join(__dirname, './insert/trx.js')).toString()
-  const newwin = new BrowserWindow({
+  newwin = new BrowserWindow({
     title: arg.data.title,
     width: 1200,
     height: 720,
     radii: [5, 5, 5, 5],
+    frame: false,
     resizable: true,
     titleBarStyle: 'hiddenInset',
     webPreferences: {
@@ -548,6 +551,10 @@ ipcMain.on('goGame', (event, arg) => {
   })
 })
 
+ipcMain.on('CLOSE_WEBVIEW', (evet, arg) => {
+  // console.log(newwin);
+  newwin.close()
+})
 // -------------------------------------------------------------
 // CATCH ALL EXCEPTIONS AND CONSOLES
 // We're throwing all exceptions and console up to the renderer console so they can be visible in running builds.
