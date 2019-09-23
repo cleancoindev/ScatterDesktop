@@ -41,7 +41,6 @@ export const actions = {
     },
 
     [Actions.LOAD_SCATTER]:async ({commit, state, dispatch}, forceLocal = false) => {
-
         if(!state.scatter) {
             let scatter = StorageService.getScatter();
             if (!scatter) return null;

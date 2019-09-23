@@ -125,7 +125,7 @@ export default {
       NOTICE: '提示',
       PASSWORD_DESC: '请输入密码',
       SET_PASSWORD_DESC: '请设置登录密码',
-      CONFIRM_PASSWORD_DESC: '确认密码',
+      CONFIRM_PASSWORD_DESC: '请再次确认密码',
       FORGET_PASSWORD: '忘记密码',
       CANT_LOGIN: '无法登录',
       CANT_LOGIN_DESC:

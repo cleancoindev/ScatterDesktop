@@ -71,6 +71,7 @@
         },
         created() {
             WindowService.watch('popup', windowMessage => {
+                debugger
                 this.windowMessage = windowMessage;
 
                 const scatter = this.windowMessage.data.scatter;

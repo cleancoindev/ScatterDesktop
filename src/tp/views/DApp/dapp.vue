@@ -41,7 +41,7 @@
 import { mapGetters } from "vuex";
 import ElectronHelpers from "../../../util/ElectronHelpers";
 import { urlReg } from "../../utils/RegExp";
-const ipc = window.require('electron').ipcRenderer
+const ipc = window.require("electron").ipcRenderer;
 
 export default {
   name: "home-main",
@@ -79,10 +79,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      "language",
-      'currentAccount'
-      ]),
+    ...mapGetters(["language", "currentAccount"]),
     category() {
       const categoryList = [...this.categoryList];
       categoryList.unshift({
@@ -111,23 +108,26 @@ export default {
     },
 
     goDetail(id) {
-    //   CreateDAppWebView(
-    //     `https://dapp.mytokenpocket.vip/detail/index.html#/dapp/${id}`
-    //   );
+      //   CreateDAppWebView(
+      //     `https://dapp.mytokenpocket.vip/detail/index.html#/dapp/${id}`
+      //   );
       // ElectronHelpers.openLinkInBrowser('https://dapp.mytokenpocket.vip/detail/index.html#/dapp/' + id);
     },
 
     goGame(item) {
-        ipc.send('goGame', {
+      // console.log(item)
+      // return false
+      if (item.platform.trx === 1) {
+        ipc.send("goGame", {
           data: item,
           account: {
             ...this.currentAccount,
             blockchain: this.currentAccount.blockchain()
           }
         });
-    //   CreateDAppWebView(url);
-      // ElectronHelpers.openLinkInBrowser(url);
-      // window.open(url)
+      } else {
+        ElectronHelpers.openLinkInBrowser(item.url);
+      }
     },
 
     searchDapp() {

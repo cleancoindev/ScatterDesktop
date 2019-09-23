@@ -6,15 +6,18 @@
         <h3
           class="ft-36 c-2e294e"
           style
-        >{{isNewScatter ? $t('TP.GENERIC.Setting') : $t('TP.GENERIC.Login')}}</h3>
+        >
+        {{isNewScatter ? $t('TP.GENERIC.Setting') : $t('TP.GENERIC.Login')}}
+
+        <h5
+          class="ft-18"
+          style="font-weight: normal;color: #666;margin-top:15px;"
+          v-if="isNewScatter"
+        >{{$t('TP.LOGIN.CANT_LOGIN_NOTICE_4')}}</h5>
+        </h3>
 
         <h4 class="ft-24 c-c4c7d2">{{$t('TP.GENERIC.Password')}}</h4>
 
-        <h5
-          class="ft-14"
-          style="font-weight: normal"
-          v-if="isNewScatter"
-        >{{$t('TP.LOGIN.CANT_LOGIN_NOTICE_4')}}</h5>
 
         <!-- 密码 -->
         <figure>
@@ -299,7 +302,7 @@ export default {
     };
   },
   created() {
-      this.unlock()
+      // this.unlock()
     // console.log(this.scatter);
   },
   computed: {

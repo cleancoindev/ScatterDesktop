@@ -30,8 +30,14 @@
 
 <script>
 import { mapGetters, mapState } from "vuex";
-import { LOAD_SCATTER } from "../../../store/constants";
+import AES from "aes-oop";
+import Scatter from "../../../models/Scatter";
+import { LOAD_SCATTER, SET_SCATTER } from "../../../store/constants";
 import PluginRepository from "../../../plugins/PluginRepository";
+
+import StorageService from "../../../services/utility/StorageService";
+import PasswordService from "../../../services/secure/PasswordService";
+import { ipcAsync } from "../../../util/ElectronHelpers";
 
 const URL = window.require("url");
 const ipc = window.require("electron").ipcRenderer;
@@ -145,10 +151,11 @@ export default {
       });
     }
   },
-  created() {
-    this.$store.dispatch(LOAD_SCATTER, true);
+  async created() {
+    console.log(this.scatter, "this.scatter 111");
+    const seed = await ipcAsync("seed");
+    console.log(seed, 'seed')
     ipc.on("INSERT_WEBVIEW_DATA", (event, arg) => {
-      // console.log(arg, "INSERT_WEBVIEW_DATA");
       this.url = arg.data.url;
       this.res = arg;
       this.inject = arg.js;
@@ -156,6 +163,18 @@ export default {
     });
 
     this.getSigns();
+
+    let scatter = AES.decrypt(this.scatter, seed);
+
+    // console.log(this.scatter, "this.scatter 222");
+    scatter = Scatter.fromJson(scatter);
+    scatter.decrypt(seed);
+
+    // console.log(this.scatter, "this.scatter 333");
+    this.$store.commit(SET_SCATTER, scatter);
+
+    console.log(scatter, "scatter");
+    // console.log(this.scatter, "this.scatter 444");
   },
   mounted() {}
 };

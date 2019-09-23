@@ -398,6 +398,7 @@ export default class TRX extends Plugin {
 
   async dappSign(datas) {
     return new Promise(async (resolve, rejecet) => {
+      // await StoreService.get().dispatch('loadScatter', true)
       const { transaction, origin, address, account } = datas
       const tron = getCachedInstance(account.network())
       const { contract_address } = datas.payload
