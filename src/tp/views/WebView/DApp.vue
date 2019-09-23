@@ -90,7 +90,7 @@ export default {
       webview.addEventListener("did-finish-load", res => {
         this.canGoBack = webview.canGoBack();
         this.canGoForward = webview.canGoForward();
-        webview.openDevTools();
+        // webview.openDevTools();
 
         webview.executeJavaScript(this.inject, true).then(result => {
           // console.log("insert INIT_TRON_WEB");

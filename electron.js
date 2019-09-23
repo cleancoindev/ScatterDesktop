@@ -539,7 +539,7 @@ ipcMain.on('goGame', (event, arg) => {
   newwin.loadURL(webviewURL) //new.html是新开窗口的渲染进程
 
   newwin.webContents.on('dom-ready', () => {
-    newwin.openDevTools()
+    // newwin.openDevTools()
     newwin.webContents.send('INSERT_WEBVIEW_DATA', {
       ...arg,
       js
