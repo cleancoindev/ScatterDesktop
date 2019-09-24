@@ -101,7 +101,7 @@ export default {
       if (!this.canSend) return;
       this.sending = true;
       if (!(await PasswordService.verifyPIN())) return reset();
-      this.setWorkingScreen(true);
+      // this.setWorkingScreen(true);
       const sent = await TransferService[this.currentAccount.blockchain()]({
         account: this.currentAccount,
         recipient: this.recipient,
@@ -109,9 +109,12 @@ export default {
         memo: this.memo,
         token: this.token,
         promptForSignature: false
-      }).catch(() => false);
+      }).catch(err => {
+        console.log(err);
+        // this.setWorkingScreen(false);
+      });
       reset();
-      this.setWorkingScreen(false);
+      // this.setWorkingScreen(false);
       if (sent)
         setTimeout(() => {
           BalanceService.loadBalancesFor(this.account);

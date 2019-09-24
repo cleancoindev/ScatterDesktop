@@ -148,8 +148,8 @@ export default {
 
   mounted() {
     window.addEventListener("click", this.accountClick, false);
-    console.log(this.currentAccount)
-    console.log(this.currentAccount.sendable)
+    // console.log(this.currentAccount)
+    // console.log(this.currentAccount.sendable)
   },
 
   beforeDestroy() {

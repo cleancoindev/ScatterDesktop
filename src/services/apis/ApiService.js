@@ -271,7 +271,7 @@ export default class ApiService {
   }
 
   static async [Actions.SIGN](request) {
-    // console.log(request, 'Actions.SIGN')
+    console.log(request, 'Actions.SIGN')
 
     return new Promise(async resolve => {
       const { payload } = request
@@ -384,7 +384,7 @@ export default class ApiService {
           })
         )
 
-        // console.log(signatures, 'signatures')
+        console.log(signatures, 'signatures')
 
         if (signatures.length !== participants.length)
           return resolve({
@@ -458,6 +458,7 @@ export default class ApiService {
 
       PopupService.push(
         Popup.popout(sendableRequest, async ({ result }) => {
+          console.log(result, 'actions sign')
           if (!result)
             return resolve({
               id: request.id,

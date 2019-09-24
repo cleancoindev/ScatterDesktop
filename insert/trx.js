@@ -134,17 +134,21 @@ const trxHook = {
       new ProxiedProvider(),
       new ProxiedProvider()
     )
+
     this.proxiedMethods = {
       setAddress: tronWeb.setAddress.bind(tronWeb),
       sign: tronWeb.trx.sign.bind(tronWeb)
     }
-    ;[
+
+    const tronWebMethods = [
       'setPrivateKey',
       'setAddress',
       'setFullNode',
       'setSolidityNode',
       'setEventServer'
-    ].forEach(function(method) {
+    ]
+
+    tronWebMethods.forEach(function(method) {
       return (tronWeb[method] = function() {
         return new Error('TPTron has disabled this method')
       })
@@ -235,8 +239,9 @@ const trxHook = {
     )
 
     ipcMain.on('REQUEST_SIGNATURE', (event, arg) => {
-      // console.log(arg, 'on REQUEST_SIGNATURE')
-      callback(null, arg)
+      console.log(arg, 'on REQUEST_SIGNATURE')
+      // console.log(arg)
+      arg.res ? callback(null, arg.res) : callback(arg.error)
     })
   }
 }

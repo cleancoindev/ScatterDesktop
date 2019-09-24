@@ -1,7 +1,6 @@
 import SocketService from '../../../services/utility/SocketService'
 import StorageService from '../../../services/utility/StorageService'
 import ElectronHelpers from '../../../util/ElectronHelpers'
-import Storage from '../../utils/Storage'
 const Store = window.require('electron-store')
 
 const elStore = new Store()
@@ -28,15 +27,6 @@ const Account = {
     },
 
     currentAccount: (state, getters) => {
-      // const {
-      //   keypairUnique,
-      //   networkUnique,
-      //   name,
-      //   authority,
-      //   publicKey
-      // } = state.currentAccount
-
-      // const onlyone = `${keypairUnique}${networkUnique}${name}${authority}${publicKey}`
       const onlyone = state.currentAccount.unique
         ? state.currentAccount.unique()
         : null
@@ -45,28 +35,6 @@ const Account = {
       if (onlyone && account) return account
 
       return getters.tpAccounts.length > 0 ? getters.tpAccounts[0] : {}
-      // keypairUnique
-      //   ? account
-      //     ? account
-      //     : getters.tpAccounts.length > 0
-      //   ? getters.tpAccounts[0]
-      //   : {}
-      // if (!state.currentAccount) {
-      //   return getters.tpAccounts.length > 0 ? getters.tpAccounts[0] : {}
-      // }
-
-      // return state.currentAccount
-
-      // const account = getters.tpAccounts.find(
-      //   acc => acc.keypairUnique === keypairUnique
-      // )
-
-      // if (!account && ) {
-      //   return
-      // }
-
-      // console.log(account, 'accountaccount')
-      // return account ? account : {}
     }
   },
 

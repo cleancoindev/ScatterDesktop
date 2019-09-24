@@ -38,8 +38,6 @@ export default class PopupService {
 
   static openPopOut(popup) {
     let responded = false
-    // debugger
-    // await StoreService.get().dispatch('loadScatter', true)
     const scatter = StoreService.get().state.scatter.clone()
 
     scatter.keychain.keypairs.map(keypair => delete keypair.privateKey)
@@ -58,8 +56,9 @@ export default class PopupService {
       popouts.find(
         x => x.data.props.payload.origin === popup.data.props.payload.origin
       )
-    )
+    ) {
       return false
+    }
 
     popup.data.props.appData = AppsService.getAppData(
       popup.data.props.payload.origin

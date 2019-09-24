@@ -510,7 +510,7 @@ ipcMain.on('seed', (event, arg) => {
 
 let newwin
 ipcMain.on('goGame', (event, arg) => {
-  Menu.setApplicationMenu(null)
+  // Menu.setApplicationMenu(null)
   const js = fs.readFileSync(path.join(__dirname, './insert/trx.js')).toString()
   newwin = new BrowserWindow({
     title: arg.data.title,
@@ -523,7 +523,6 @@ ipcMain.on('goGame', (event, arg) => {
     webPreferences: {
       nodeIntegration: true,
       webviewTag: true,
-      preload: path.join(__dirname, './insert/trx.js')
     }
   })
 
@@ -539,7 +538,7 @@ ipcMain.on('goGame', (event, arg) => {
   newwin.loadURL(webviewURL) //new.html是新开窗口的渲染进程
 
   newwin.webContents.on('dom-ready', () => {
-    // newwin.openDevTools()
+    newwin.openDevTools()
     newwin.webContents.send('INSERT_WEBVIEW_DATA', {
       ...arg,
       js

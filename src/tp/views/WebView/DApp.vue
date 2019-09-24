@@ -87,14 +87,14 @@ export default {
       this.webview = webview;
 
       webview.src = loadURL;
+
       webview.addEventListener("did-finish-load", res => {
+        webview.openDevTools();
         this.canGoBack = webview.canGoBack();
         this.canGoForward = webview.canGoForward();
-        // webview.openDevTools();
-
         webview.executeJavaScript(this.inject, true).then(result => {
           // console.log("insert INIT_TRON_WEB");
-          // 发送给 insert trx.js
+          // 发送给 insert/trx.js
           ipc.send("CONTACT_TRON_WEB", this.res.account);
           //
         });
@@ -104,14 +104,12 @@ export default {
       // 当发生页内导航时，虽然页面地址发生变化，但它并没有导航到其它页面。 例如，点击锚点链接，或者DOM的 hashchange事件被触发时，都会触发该事件
       webview.addEventListener("did-navigate-in-page", e => {
         // console.log(e, "did-navigate-in-page");
-        // console.log(e.url);
         this.url = e.url;
         this.canGoBack = webview.canGoBack();
         this.canGoForward = webview.canGoForward();
       });
 
       webview.addEventListener("new-window", e => {
-        // console.log(e.url);
         if (this.isCanLoadURL(e.url)) {
           webview.src = e.url;
         }
@@ -120,7 +118,6 @@ export default {
       webview.addEventListener("close", () => {
         webview.src = null;
       });
-      // }
     },
 
     getSigns() {
@@ -146,15 +143,21 @@ export default {
           })
           .then(res => {
             // console.log(res, 'dappSign res')
-            ipc.send("REQUEST_SIGNATURE", res);
+            ipc.send("REQUEST_SIGNATURE", { res });
+          })
+          .catch(error => {
+            ipc.send("REQUEST_SIGNATURE", { error });
           });
       });
     }
   },
   async created() {
-    console.log(this.scatter, "this.scatter 111");
+    // console.log(this.scatter, "this.scatter 111");
+    // return false;
+    let scatter =
+      StorageService.getScatter() || StorageService.getLocalScatter();
     const seed = await ipcAsync("seed");
-    console.log(seed, 'seed')
+    // console.log(seed, 'seed')
     ipc.on("INSERT_WEBVIEW_DATA", (event, arg) => {
       this.url = arg.data.url;
       this.res = arg;
@@ -164,17 +167,12 @@ export default {
 
     this.getSigns();
 
-    let scatter = AES.decrypt(this.scatter, seed);
+    scatter = AES.decrypt(scatter, seed);
 
-    // console.log(this.scatter, "this.scatter 222");
     scatter = Scatter.fromJson(scatter);
     scatter.decrypt(seed);
 
-    // console.log(this.scatter, "this.scatter 333");
     this.$store.commit(SET_SCATTER, scatter);
-
-    console.log(scatter, "scatter");
-    // console.log(this.scatter, "this.scatter 444");
   },
   mounted() {}
 };

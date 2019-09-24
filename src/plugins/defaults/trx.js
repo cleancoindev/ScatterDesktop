@@ -466,17 +466,26 @@ export default class TRX extends Plugin {
       }
 
       PopupService.push(
-        Popup.popout(sendableRequest, async result => {
-          const signatures = await this.signer(payload, address)
-          // console.log(signatures, 'signAndReturn signatures')
-          if (!result)
-            return rejecet({
-              id: null,
-              result: Error.signatureError(
+        Popup.popout(sendableRequest, async ({ result }) => {
+          if (!result) {
+            return rejecet(
+              Error.signatureError(
                 'signature_rejected',
                 'User rejected the signature request'
               )
+            )
+          }
+
+          const signatures = await Promise.all(
+            participants.map(async account => {
+              if (KeyPairService.isHardware(account.publicKey)) {
+                return HardwareService.sign(account, payload)
+              } else return this.signer(payload, account.publicKey)
             })
+          )
+          // [await this.signer(payload, address)]
+          console.log(result, 'dapp-sign result')
+          console.log(signatures, 'signAndReturn signatures')
 
           resolve(signatures)
         })
