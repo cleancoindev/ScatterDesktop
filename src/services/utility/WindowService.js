@@ -1,6 +1,8 @@
-import { ipcRenderer, remote } from '../../util/ElectronHelpers'
-const path = window.require('path')
-const url = window.require('url')
+import { ipcRenderer } from '../../util/ElectronHelpers'
+// const path = window.require('path')
+// const url = window.require('url')
+const remote = window.require('electron').remote
+const { ipcMain } = remote
 
 const LowLevelWindowService = remote.getGlobal('appShared')
   .LowLevelWindowService
@@ -15,14 +17,11 @@ const removePending = msg =>
 
 const handlers = []
 
-ipcRenderer.on('result', (event, result) => {
+ipcMain.on('WINDOW_RESULT', (event, result) => {
   if (!result) return
 
-  console.log(result, 'ipc-on')
   const pending = getPending(result.original)
   if (pending) pending.resolver(result.result)
-
-  console.log(pending, 'ipc-pending')
 
   const rWin = remote.BrowserWindow.fromId(result.windowId)
   rWin.webContents.send('ack', true)
@@ -56,12 +55,11 @@ export default class WindowService {
   }
 
   static sendResult(original, result = null) {
-    console.log(result, 'sendResult')
     return new Promise(resolve => {
       setTimeout(() => resolve(true), 5500)
       const windowId = remote.getCurrentWindow().id
 
-      ipcRenderer.sendTo(original.windowId, 'result', {
+      ipcRenderer.send('WINDOW_RESULT', {
         original,
         result,
         windowId

@@ -21,11 +21,13 @@ export default class PopupService {
       StoreService.get().state.popups.find(
         x => JSON.stringify(x.data) === JSON.stringify(popup.data)
       )
-    )
+    ) {
       return false
+    }
 
-    if (popup.displayType === PopupDisplayTypes.POP_OUT)
+    if (popup.displayType === PopupDisplayTypes.POP_OUT) {
       return this.openPopOut(popup)
+    }
 
     StoreService.get().dispatch(Actions.PUSH_POPUP, popup)
 

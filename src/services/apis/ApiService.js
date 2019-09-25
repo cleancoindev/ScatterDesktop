@@ -457,8 +457,10 @@ export default class ApiService {
       }
 
       PopupService.push(
-        Popup.popout(sendableRequest, async ({ result }) => {
-          console.log(result, 'actions sign')
+        Popup.popout(sendableRequest, async res => {
+          console.log(res, 'actions res')
+          const { result } = res
+        
           if (!result)
             return resolve({
               id: request.id,

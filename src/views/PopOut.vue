@@ -71,7 +71,7 @@
         },
         created() {
             WindowService.watch('popup', windowMessage => {
-                debugger
+                console.log(windowMessage, 'wathc windowMessage')
                 this.windowMessage = windowMessage;
 
                 const scatter = this.windowMessage.data.scatter;
@@ -124,10 +124,6 @@
         },
         methods: {
             async returnResult(result) {
-                // console.log(result, 'returnResult');
-                // console.log(this.windowMessage, 'this.windowMessage');
-                // return false;
-                
                 await WindowService.sendResult(this.windowMessage, result);
 
                 const window = remote.getCurrentWindow();
