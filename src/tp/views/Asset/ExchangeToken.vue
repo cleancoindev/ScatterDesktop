@@ -15,8 +15,10 @@
       <h5>{{$t('TP.TRANSFER.Balance')}}</h5>
       <p>{{tokenInfo.amount}} {{tokenInfo.symbol}}</p>
 
-      <h5>{{$t('TP.TRANSFER.Memo')}}</h5>
-      <textarea rows="5" v-model="memo"></textarea>
+      <div v-if="hasMemo">
+        <h5>{{$t('TP.TRANSFER.Memo')}}</h5>
+        <textarea rows="5" v-model="memo"></textarea>
+      </div>
 
       <button
         class="tp-button ft-14"
@@ -70,6 +72,10 @@ export default {
         this.recipient.length &&
         this.toSend.amount > 0
       );
+    },
+    hasMemo() {
+      const blacklist = ["trx", "eth"];
+      return !blacklist.includes(this.tokenInfo.blockchain);
     }
   },
 
@@ -97,11 +103,10 @@ export default {
     },
 
     async send() {
-      const reset = () => (this.sending = false);
-      if (!this.canSend) return;
+      // const reset = () => (this.sending = false);
+      if (!this.canSend) return false;
       this.sending = true;
-      if (!(await PasswordService.verifyPIN())) return reset();
-      // this.setWorkingScreen(true);
+      if (!(await PasswordService.verifyPIN())) return this.sending = false;
       const sent = await TransferService[this.currentAccount.blockchain()]({
         account: this.currentAccount,
         recipient: this.recipient,
@@ -111,10 +116,9 @@ export default {
         promptForSignature: false
       }).catch(err => {
         console.log(err);
-        // this.setWorkingScreen(false);
       });
-      reset();
-      // this.setWorkingScreen(false);
+      // reset();
+    
       if (sent)
         setTimeout(() => {
           BalanceService.loadBalancesFor(this.account);

@@ -23,8 +23,8 @@
                 {{$t('TP.GENERIC.Import')}}
             </button>
         </figure>
-        <p v-if="!error"><u>Once you input a valid key, it will automatically import it.</u></p>
-        <p v-else>{{error}}</p>
+        <!-- <p v-if="!error"><u>Once you input a valid key, it will automatically import it.</u></p> -->
+        <p class="ft-16" style="color: red" v-show="keyError">{{keyError}}</p>
 
     </section>
 </template>
@@ -39,12 +39,12 @@
     export default {
         name: 'ImportPrivateKey',
         components: { Key },
-        props: ['returnOnly'],
+        props: ['returnOnly', 'keyError'],
         data() {
             return {
                 privateKey: '',
                 importing: false,
-                error: '',
+                // error: '',
             };
         },
         computed: {
@@ -58,7 +58,7 @@
             }
         },
         mounted(){
-            console.log(this.keypairs);
+            // console.log(this.keypairs);
             
         },
         watch: {

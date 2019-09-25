@@ -101,8 +101,8 @@ const trxHook = {
   },
   init: function init() {
     var _this = this
+    this._bindTronWeb()
     ipcMain.on('CONTACT_TRON_WEB', (event, account) => {
-      this._bindTronWeb()
       // console.log(account, 'CONTACT_TRON_WEB')
       this.setAddress({
         address: account.publicKey,
@@ -239,8 +239,7 @@ const trxHook = {
     )
 
     ipcMain.on('REQUEST_SIGNATURE', (event, arg) => {
-      console.log(arg, 'on REQUEST_SIGNATURE')
-      // console.log(arg)
+      // console.log(arg, 'on REQUEST_SIGNATURE')
       arg.res ? callback(null, arg.res) : callback(arg.error)
     })
   }

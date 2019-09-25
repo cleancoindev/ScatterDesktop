@@ -26,7 +26,7 @@
 
     <!-- IMPORT KEY -->
     <!--            <section v-if="state === STATES.IMPORT_KEY">-->
-    <ImportPrivateKey return-only="1" v-on:key="x => privateKey = x" />
+    <ImportPrivateKey return-only="1" v-on:key="x => privateKey = x" :key-error="keyError" />
     <!--                <ImportHardwareKey v-if="importType === IMPORT_TYPES.HARDWARE" v-on:key="finishImporting"/>-->
     <!--                <ImportQRKey v-if="importType === IMPORT_TYPES.QR" v-on:key="finishImporting"/>-->
     <!--            </section>-->
@@ -97,7 +97,8 @@ export default {
 
       privateKey: "",
       blockchains: [],
-      keypair: null
+      keypair: null,
+      keyError: ""
     };
   },
   computed: {
@@ -169,7 +170,7 @@ export default {
 
       this.keypair = null;
       this.setWorkingScreen(true);
-      this.error = null;
+      this.keyError = "";
       if (!this.privateKey || !this.privateKey.trim().length) return reset();
       const key = this.privateKey
         .trim()
@@ -179,7 +180,7 @@ export default {
       keypair.privateKey = key;
 
       if (!KeyPairService.isValidPrivateKey(keypair)) {
-        this.error = "Invalid Private Key";
+        this.keyError = "Invalid Private Key";
         return reset();
       }
 
@@ -203,7 +204,7 @@ export default {
       this.keypair.blockchains = [blockchain];
       await KeyPairService.makePublicKeys(this.keypair);
       if (!this.keypair.publicKeys.find(x => x.blockchain === blockchain)) {
-        this.error = "Invalid Private Key";
+        this.keyError = "Invalid Private Key";
         this.setWorkingScreen(false);
         return;
       }
@@ -242,8 +243,7 @@ export default {
 <style scoped lang="scss">
 @import "../../../styles/variables";
 
-// .import-key {
-//   .select-type {
-//   }
-// }
+.select-type {
+  margin-top: 20px;
+}
 </style>

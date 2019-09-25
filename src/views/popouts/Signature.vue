@@ -173,7 +173,8 @@
           </section>
         </section>
 
-        <section class="whitelist-bar" v-if="!isArbitrarySignature && !isDangerous">
+        <!-- 白名单 -->
+        <section class="whitelist-bar" v-if="!isArbitrarySignature && !isDangerous && currentPropNetwork.blockchain !=='trx'">
           <figure class="text" v-if="!whitelisted">{{$t('TP.POPOUT.SIGNATURE.offWhitelist')}}</figure>
           <figure class="text blue" v-if="whitelisted">{{$t('TP.POPOUT.SIGNATURE.onWhitelist')}}</figure>
           <Switcher :state="whitelisted" @click.native="whitelist" />
@@ -267,7 +268,7 @@ export default {
     this.clonedLocation = this.selectedLocation.clone();
 
     this.participantAccounts.map(async acc => {
-      console.log(acc);
+    //   console.log(acc);
       if (ResourceService.usesResources(acc)) {
         const resources = await ResourceService.getResourcesFor(acc);
         this[Actions.ADD_RESOURCES]({
@@ -373,6 +374,9 @@ export default {
         return `This action is dangerous. Accepting it will change your keys and possibly give your account to someone else. <br><br><b>Check to make sure the keys are correct.</b>`;
       }
       return false;
+    },
+    currentPropNetwork () {
+        return this.payload.network
     }
   },
   methods: {

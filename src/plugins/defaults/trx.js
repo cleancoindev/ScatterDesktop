@@ -349,27 +349,31 @@ export default class TRX extends Plugin {
   }
 
   async requestParser(transaction, abiData) {
-    // console.log(transaction, 'requestParser transaction')
-    // console.log(abiData, 'requestParser abiData')
     const network = Network.fromJson(transaction.network)
-    const txID = transaction.transaction.transaction.txID
+    // const txID = transaction.transaction.transaction.txID
     transaction = transaction.transaction.transaction.raw_data
 
     const tron = getCachedInstance(network)
     return transaction.contract.map(contract => {
       let data = contract.parameter.value
-      const address = data.hasOwnProperty('contract_address')
-        ? data.contract_address
-        : 'system'
+      let address = null
+      if (data.hasOwnProperty('contract_address')) {
+        const isHexAddress = tron.utils.isHex(data.contract_address)
+        isHexAddress
+          ? (address = tron.address.fromHex(data.contract_address))
+          : (address = data.contract_address)
+      } else {
+        address = 'system'
+      }
 
       const quantity = data.hasOwnProperty('call_value')
         ? { paying: tron.fromSun(data.call_value) + ' TRX' }
         : {}
 
-      let params = {}
+      // let params = {}
       let methodABI
       if (abiData) {
-        const { abi, address, method } = abiData
+        const { abi, method } = abiData
         methodABI = abi.find(x => x.name === method)
         if (!methodABI)
           throw Error.signatureError(
@@ -381,6 +385,8 @@ export default class TRX extends Plugin {
 
         data = tron.utils.abi.decodeParams(names, types, data.data, true)
         data = Object.assign(data, quantity)
+
+        console.log(data)
 
         Object.keys(data).map(key => {
           if (tron.utils.isBigNumber(data[key]))
