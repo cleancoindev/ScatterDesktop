@@ -285,8 +285,8 @@ export default {
       STATES,
 
       step: 2,
-      // password: "",
-      password: "123123123",
+      password: "",
+      // password: "123123123",
       opening: false,
       success: false,
       badPassword: false,
@@ -297,7 +297,7 @@ export default {
     };
   },
   created() {
-    this.unlock()
+    // this.unlock()
     // console.log(this.scatter);
   },
   computed: {
