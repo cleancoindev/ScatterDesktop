@@ -10,7 +10,7 @@
       />
 
       <h5>{{$t('TP.TRANSFER.Amount')}}</h5>
-      <input type="number" :placeholder="$t('TP.TRANSFER.AmountInput')" v-model="amount" />
+      <input type="number" :placeholder="$t('TP.TRANSFER.AmountInput')" v-model.number="amount" />
 
       <h5>{{$t('TP.TRANSFER.Balance')}}</h5>
       <p>{{tokenInfo.amount}} {{tokenInfo.symbol}}</p>
@@ -44,7 +44,6 @@ export default {
   props: {
     tokenInfo: {
       type: Object
-      //   required: true
     },
     isShow: {
       type: Boolean,
@@ -66,12 +65,7 @@ export default {
   computed: {
     ...mapGetters(["currentAccount"]),
     canSend() {
-      return (
-        !this.sending &&
-        this.recipient &&
-        this.recipient.length &&
-        this.toSend.amount > 0
-      );
+      return this.recipient && parseFloat(this.amount) > 0;
     },
     hasMemo() {
       const blacklist = ["trx", "eth"];
@@ -103,10 +97,7 @@ export default {
     },
 
     async send() {
-      // const reset = () => (this.sending = false);
       if (!this.canSend) return false;
-      this.sending = true;
-      if (!(await PasswordService.verifyPIN())) return this.sending = false;
       const sent = await TransferService[this.currentAccount.blockchain()]({
         account: this.currentAccount,
         recipient: this.recipient,
@@ -117,12 +108,13 @@ export default {
       }).catch(err => {
         console.log(err);
       });
-      // reset();
-    
-      if (sent)
+
+      if (sent) {
+        this.exchangeHidden();
         setTimeout(() => {
-          BalanceService.loadBalancesFor(this.account);
+          BalanceService.loadBalancesFor(this.currentAccount);
         }, 500);
+      }
     }
   },
 
@@ -137,10 +129,10 @@ export default {
         parseFloat(this.amount) > 0 &&
         parseFloat(this.amount) > parseFloat(this.tokenInfo.amount)
       ) {
-        this.amount = this.tokenInfo.amount;
+        this.amount = parseFloat(this.tokenInfo.amount);
       }
 
-      this.toSend.amount = this.amount;
+      this.toSend.amount = parseFloat(this.amount);
     }
   }
 };
