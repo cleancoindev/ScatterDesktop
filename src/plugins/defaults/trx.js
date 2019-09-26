@@ -303,6 +303,8 @@ export default class TRX extends Plugin {
     if (typeof privateKey !== 'string')
       privateKey = this.bufferToHexPrivate(privateKey)
 
+    this.transferMessageParser(payload)
+
     return utils.crypto.signTransaction(
       privateKey,
       payload.transaction.transaction
@@ -329,16 +331,22 @@ export default class TRX extends Plugin {
         Popup.popout(
           request,
           async ({ result }) => {
-            if (!result || (!result.accepted || false))
+            if (!result || (!result.accepted || false)) {
               return rejector({ error: 'Could not get signature' })
+            }
 
-            let signature = null
-            if (KeyPairService.isHardware(account.publicKey)) {
-              signature = await HardwareService.sign(account, payload)
-            } else signature = await this.signer(payload, account.publicKey)
+            // let signature = null
+            // if (KeyPairService.isHardware(account.publicKey)) {
+            //   signature = await HardwareService.sign(account, payload)
+            // } else {
+            //   signature = await this.signer(payload, account.publicKey)
+            // }
 
-            if (!signature)
+            const signature = await this.signer(payload, account.publicKey)
+
+            if (!signature) {
               return rejector({ error: 'Could not get signature' })
+            }
 
             resolve(signature)
           },
@@ -348,16 +356,44 @@ export default class TRX extends Plugin {
     })
   }
 
+  transferMessageParser(payload) {
+    const network = Network.fromJson(payload.network)
+    const transaction = payload.transaction.transaction.raw_data
+    const tron = getCachedInstance(network)
+
+    transaction.contract.forEach(contract => {
+      const data = contract.parameter.value
+
+      if (data.amount) {
+        data.amount = parseFloat(
+          TokenService.formatAmount(
+            parseFloat(data.amount),
+            this.defaultToken()
+          )
+        )
+      }
+
+      if (data.owner_address) {
+        data.owner_address = tron.address.toHex(data.owner_address)
+      }
+
+      if (data.to_address) {
+        data.to_address = tron.address.toHex(data.to_address)
+      }
+    })
+  }
+
   async requestParser(transaction, abiData) {
     const network = Network.fromJson(transaction.network)
-    // const txID = transaction.transaction.transaction.txID
     transaction = transaction.transaction.transaction.raw_data
 
     const tron = getCachedInstance(network)
     return transaction.contract.map(contract => {
       let data = contract.parameter.value
       let address = null
-      if (data.hasOwnProperty('contract_address')) {
+
+      // Contract format
+      if (data.contract_address) {
         const isHexAddress = tron.utils.isHex(data.contract_address)
         isHexAddress
           ? (address = tron.address.fromHex(data.contract_address))
@@ -366,11 +402,29 @@ export default class TRX extends Plugin {
         address = 'system'
       }
 
+      // Transfer address format
+      if (data.owner_address) {
+        data.owner_address = tron.address.fromHex(data.owner_address)
+      }
+
+      if (data.to_address) {
+        data.to_address = tron.address.fromHex(data.to_address)
+      }
+
+      if (data.amount) {
+        data.amount = `${parseFloat(tron.fromSun(data.amount)).toFixed(
+          this.defaultDecimals()
+        )} TRX`
+      }
+
       const quantity = data.hasOwnProperty('call_value')
-        ? { paying: tron.fromSun(data.call_value) + ' TRX' }
+        ? {
+            paying: `${parseFloat(tron.fromSun(data.call_value)).toFixed(
+              this.defaultDecimals()
+            )} TRX`
+          }
         : {}
 
-      // let params = {}
       let methodABI
       if (abiData) {
         const { abi, method } = abiData
@@ -385,8 +439,6 @@ export default class TRX extends Plugin {
 
         data = tron.utils.abi.decodeParams(names, types, data.data, true)
         data = Object.assign(data, quantity)
-
-        console.log(data)
 
         Object.keys(data).map(key => {
           if (tron.utils.isBigNumber(data[key]))
@@ -404,7 +456,6 @@ export default class TRX extends Plugin {
 
   async dappSign(datas) {
     return new Promise(async (resolve, rejecet) => {
-      // await StoreService.get().dispatch('loadScatter', true)
       const { transaction, origin, address, account } = datas
       const tron = getCachedInstance(account.network())
       const { contract_address } = datas.payload
@@ -473,7 +524,6 @@ export default class TRX extends Plugin {
 
       PopupService.push(
         Popup.popout(sendableRequest, async res => {
-          // console.log(res, 'dapp-sign res')
           const { result } = res
           if (!result) {
             return rejecet(

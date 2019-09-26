@@ -12,6 +12,7 @@
             :class="{'active':selectedBlockchain === blockchain}"
             v-for="(blockchain, index) in blockchains"
             :key="index"
+            v-if="blockchain !== 'btc'"
             @click="selectBlockchain(blockchain)"
           >
             <figure class="badge iconed" :class="`token-${blockchain}-${blockchain}`"></figure>
@@ -80,7 +81,7 @@
         </section>
       </section>
 
-      <section class="tail">
+      <section class="tail" v-if="selectedBlockchain === 'eos'">
         <Button @click.native="addCustomNetwork" :text="$t('TP.GENERIC.New')" blue="1" />
       </section>
     </section>
