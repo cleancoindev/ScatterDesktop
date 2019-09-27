@@ -27,14 +27,25 @@ const Account = {
     },
 
     currentAccount: (state, getters) => {
-      const onlyone = state.currentAccount.unique
-        ? state.currentAccount.unique()
-        : null
+      const {
+        keypairUnique,
+        networkUnique,
+        name,
+        authority,
+        publicKey
+      } = state.currentAccount
+      const onlyone = `${keypairUnique}${networkUnique}${name}${authority}${publicKey}`
+
       const account = getters.tpAccounts.find(acc => acc.unique() === onlyone)
 
       if (onlyone && account) return account
 
-      return getters.tpAccounts.length > 0 ? getters.tpAccounts[0] : {}
+      if (getters.tpAccounts.length > 0) {
+        elStore.set('CURRENT_ACCOUNT', getters.tpAccounts[0])
+        return getters.tpAccounts[0]
+      }
+
+      return {}
     }
   },
 

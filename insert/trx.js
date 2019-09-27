@@ -99,11 +99,13 @@ const trxHook = {
     setAddress: false,
     sign: false
   },
-  init: function init() {
+  init() {
     var _this = this
-    this._bindTronWeb()
-    ipcMain.on('CONTACT_TRON_WEB', (event, account) => {
+
+    ipcMain.on('CONTACT_TRON_WEB', async (event, account) => {
       // console.log(account, 'CONTACT_TRON_WEB')
+      await this._bindTronWeb()
+      
       this.setAddress({
         address: account.publicKey,
         name: account.name || '',
@@ -117,7 +119,7 @@ const trxHook = {
       })
     })
   },
-  _bindTronWeb: function _bindTronWeb() {
+  async _bindTronWeb() {
     console.log('_bindTronWeb')
     var _this2 = this
 
@@ -160,7 +162,7 @@ const trxHook = {
 
     window.tronWeb = tronWeb
   },
-  setAddress: function setAddress(_ref) {
+  setAddress(_ref) {
     console.log('setAddress')
     var address = _ref.address,
       name = _ref.name,
@@ -179,14 +181,14 @@ const trxHook = {
 
     tronWeb.ready = true
   },
-  setNode: function setNode(node) {
+  setNode(node) {
     // debugger
     console.log('setNode TPTron: New node configured')
     tronWeb.fullNode.configure(node.fullNode)
     tronWeb.solidityNode.configure(node.solidityNode)
     tronWeb.eventServer.configure(node.eventServer)
   },
-  sign: function sign(transaction) {
+  sign(transaction) {
     var privateKey =
       arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false
     var useTronHeader =

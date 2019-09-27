@@ -121,6 +121,8 @@ export default {
     },
 
     getSigns() {
+      // console.log(this.currentAccount);
+      // console.log(this.currentAccount.network());
       ipcMain.on("DAPP_SIGNS", (event, arg) => {
         let datas = {};
         if (typeof arg === "string") {
@@ -152,12 +154,15 @@ export default {
     }
   },
   async created() {
-    // console.log(this.scatter, "this.scatter 111");
-    // return false;
     let scatter =
       StorageService.getScatter() || StorageService.getLocalScatter();
     const seed = await ipcAsync("seed");
     // console.log(seed, 'seed')
+    scatter = AES.decrypt(scatter, seed);
+    scatter = Scatter.fromJson(scatter);
+    scatter.decrypt(seed);
+    this.$store.commit(SET_SCATTER, scatter);
+
     ipc.on("INSERT_WEBVIEW_DATA", (event, arg) => {
       this.url = arg.data.url;
       this.res = arg;
@@ -166,13 +171,6 @@ export default {
     });
 
     this.getSigns();
-
-    scatter = AES.decrypt(scatter, seed);
-
-    scatter = Scatter.fromJson(scatter);
-    scatter.decrypt(seed);
-
-    this.$store.commit(SET_SCATTER, scatter);
   },
   mounted() {}
 };
