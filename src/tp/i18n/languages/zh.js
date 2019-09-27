@@ -190,7 +190,7 @@ export default {
         NameLabel: '密钥名称',
         NamePlaceholder: '为秘钥命名，方便记忆',
         TextTitle: '导入私钥',
-        TextDescription: '输入或粘贴私钥',
+        TextDescription: '输入或粘贴EOS、ETH、TRON私钥',
         TextButton: '文本',
         HardwareTitle: '从硬件钱包导入',
         HardwareDescription: '如果您有支持的硬件钱包',

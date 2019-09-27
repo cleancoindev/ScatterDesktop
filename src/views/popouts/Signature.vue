@@ -174,7 +174,7 @@
         </section>
 
         <!-- 白名单 -->
-        <section class="whitelist-bar" v-if="!isArbitrarySignature && !isDangerous && currentPropNetwork.blockchain !=='trx'">
+        <section class="whitelist-bar" v-if="!isArbitrarySignature && !isDangerous && hasWhite">
           <figure class="text" v-if="!whitelisted">{{$t('TP.POPOUT.SIGNATURE.offWhitelist')}}</figure>
           <figure class="text blue" v-if="whitelisted">{{$t('TP.POPOUT.SIGNATURE.onWhitelist')}}</figure>
           <Switcher :state="whitelisted" @click.native="whitelist" />
@@ -377,6 +377,10 @@ export default {
     },
     currentPropNetwork () {
         return this.payload.network
+    },
+
+    hasWhite () {
+        return this.currentPropNetwork.blockchain === 'eos'
     }
   },
   methods: {
