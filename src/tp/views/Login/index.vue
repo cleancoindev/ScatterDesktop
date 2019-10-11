@@ -285,19 +285,19 @@ export default {
       STATES,
 
       step: 2,
-      password: "",
-      // password: "123123123",
+      // password: "",
+      // confirmation: "",
+      password: "123123123",
+      confirmation: "123123123",
       opening: false,
       success: false,
       badPassword: false,
-
-      confirmation: "",
       dialogVisible: false,
       workLoading: false
     };
   },
   created() {
-    // this.unlock()
+    this.unlock();
     // console.log(this.scatter);
   },
   computed: {

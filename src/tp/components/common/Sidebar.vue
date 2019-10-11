@@ -90,6 +90,9 @@ import * as Actions from "../../../store/constants";
 import { RouteNames } from "../../../vue/Routing";
 import PopupService from "../../../services/utility/PopupService";
 import { Popup } from "../../../models/popups/Popup";
+// const ElectronStore = window.require('electron-store')
+
+// const store = new ElectronStore()
 
 export default {
   data() {

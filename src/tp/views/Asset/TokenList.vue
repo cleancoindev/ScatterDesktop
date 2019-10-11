@@ -1,6 +1,6 @@
 <template>
   <section class="TokenList">
-     <div class="asset-header text-center">
+    <div class="asset-header text-center">
       <div class="asset-balance c-fff">$123,123.00</div>
       <div class="asset-balance-text c-fff">Total Balance</div>
       <div class="asset-balance-view">
@@ -19,7 +19,25 @@
       <div class="asset-operation"></div>
 
       <div class="asset-tokens">
-        <div class="asset-token-item">
+        <div class="asset-token-item" v-for="(item, index) in assetTokenInfo.tokens" :key="index">
+          <img class="asset-token-logo" :src="item.icon_url" alt />
+
+          <div class="asset-token-right">
+            <div class="asset-token-name">
+              <h5>{{item.symbol}}</h5>
+              <!-- <p class="ft-12">Liquid</p> -->
+            </div>
+
+            <div class="asset-token-balance">
+              <h5>{{item.balance}}</h5>
+              <p class="ft-14">≈ {{item.price_usd ? item.price_usd.toFixed(item.precision) : 0}}</p>
+            </div>
+          </div>
+
+          <i class="asset-arrow"></i>
+        </div>
+
+        <!-- <div class="asset-token-item">
           <img class="asset-token-logo" src="../../assets/images/platform/eos.png" alt />
 
           <div class="asset-token-right">
@@ -35,9 +53,9 @@
           </div>
 
           <i class="asset-arrow"></i>
-        </div>
+        </div> -->
 
-         <div class="asset-token-item">
+        <!-- <div class="asset-token-item">
           <img class="asset-token-logo" src="../../assets/images/platform/eos.png" alt />
 
           <div class="asset-token-right">
@@ -53,9 +71,9 @@
           </div>
 
           <i class="asset-arrow"></i>
-        </div>
+        </div> -->
 
-         <div class="asset-token-item">
+        <!-- <div class="asset-token-item">
           <img class="asset-token-logo" src="../../assets/images/platform/eos.png" alt />
 
           <div class="asset-token-right">
@@ -71,9 +89,9 @@
           </div>
 
           <i class="asset-arrow"></i>
-        </div>
+        </div> -->
 
-         <div class="asset-token-item">
+        <!-- <div class="asset-token-item">
           <img class="asset-token-logo" src="../../assets/images/platform/eos.png" alt />
 
           <div class="asset-token-right">
@@ -89,25 +107,7 @@
           </div>
 
           <i class="asset-arrow"></i>
-        </div>
-
-         <div class="asset-token-item">
-          <img class="asset-token-logo" src="../../assets/images/platform/eos.png" alt />
-
-          <div class="asset-token-right">
-            <div class="asset-token-name">
-              <h5>EOS</h5>
-              <p class="ft-12">Liquid</p>
-            </div>
-
-            <div class="asset-token-balance">
-              <h5>123.1234</h5>
-              <p class="ft-14">≈$123.1234</p>
-            </div>
-          </div>
-
-          <i class="asset-arrow"></i>
-        </div>
+        </div> -->
       </div>
     </div>
     <!-- <section class="tokens">
@@ -147,7 +147,7 @@
       </section>
 
       <ExchangeToken :token-info="tokenInfo" :is-show="isShow" @showState="getShowState" />
-    </section> -->
+    </section>-->
   </section>
 </template>
 
@@ -158,11 +158,11 @@ import Token from "../../../models/Token";
 import ExchangeToken from "./ExchangeToken";
 
 export default {
-  name: 'TokenList',
+  name: "TokenList",
   components: {
     ExchangeToken
   },
-  props: ["balances", "hoverable", "selected", "noSearch", "terms"],
+  // props: ["balances", "hoverable", "selected", "noSearch", "terms"],
   data() {
     return {
       tokenInfo: {},
@@ -171,86 +171,104 @@ export default {
   },
   computed: {
     ...mapState([]),
-    ...mapGetters(["networkTokens", "balanceFilters", "displayCurrency"]),
-    sortedBalances() {
-      return this.balances
-        .filter(token => {
-          if (!this.terms.length) return true;
-          if (this.terms === "-")
-            return (
-              this.change(token) &&
-              !this.change(token).plus &&
-              token.fiatBalance(false)
-            );
-          if (this.terms === "+")
-            return (
-              this.change(token) &&
-              this.change(token).plus &&
-              token.fiatBalance(false)
-            );
-          if (this.terms.indexOf("::") > -1)
-            return (
-              `${token.contract.toLowerCase()}::${token.symbol.toLowerCase()}` ===
-              this.terms
-            );
-          if (isNaN(this.terms))
-            return (
-              token.symbol.toLowerCase().indexOf(this.terms) > -1 ||
-              token.contract.toLowerCase().indexOf(this.terms) > -1
-            );
-          return token.amount >= parseFloat(this.terms);
-        })
-        .sort((a, b) => {
-          if (this.terms === "+" || this.terms === "-")
-            return this.change(b, true) - this.change(a, true);
-          return Token.sorter(a, b);
-        });
-    }
+    ...mapGetters([
+      "networkTokens",
+      "balanceFilters",
+      "displayCurrency",
+      "currentAccount",
+      'assetTokenInfo'
+    ]),
+    // sortedBalances() {
+    //   return this.balances
+    //     .filter(token => {
+    //       if (!this.terms.length) return true;
+    //       if (this.terms === "-")
+    //         return (
+    //           this.change(token) &&
+    //           !this.change(token).plus &&
+    //           token.fiatBalance(false)
+    //         );
+    //       if (this.terms === "+")
+    //         return (
+    //           this.change(token) &&
+    //           this.change(token).plus &&
+    //           token.fiatBalance(false)
+    //         );
+    //       if (this.terms.indexOf("::") > -1)
+    //         return (
+    //           `${token.contract.toLowerCase()}::${token.symbol.toLowerCase()}` ===
+    //           this.terms
+    //         );
+    //       if (isNaN(this.terms))
+    //         return (
+    //           token.symbol.toLowerCase().indexOf(this.terms) > -1 ||
+    //           token.contract.toLowerCase().indexOf(this.terms) > -1
+    //         );
+    //       return token.amount >= parseFloat(this.terms);
+    //     })
+    //     .sort((a, b) => {
+    //       if (this.terms === "+" || this.terms === "-")
+    //         return this.change(b, true) - this.change(a, true);
+    //       return Token.sorter(a, b);
+    //     });
+    // }
   },
   methods: {
-    selectToken(token) {
-      if (!token.unusable) {
-        this.tokenInfo = token;
-        this.isShow = true;
-      }
-    },
+    // selectToken(token) {
+    //   if (!token.unusable) {
+    //     this.tokenInfo = token;
+    //     this.isShow = true;
+    //   }
+    // },
 
-    getShowState(state) {
-      this.isShow = state;
-      this.tokenInfo = {};
-    },
-    change(token, numOnly = false) {
-      const dummy = { plus: false, perc: "0%" };
-      if (!this.priceData || !this.priceData.hasOwnProperty("today"))
-        return dummy;
-      if (token.unusable) return dummy;
-      const hour = this.priceData.today.latest;
-      const totaled = this.getTokensTotaled();
-      const latest = totaled[totaled.length - 1]
-        ? totaled[totaled.length - 1].data
-        : null;
-      const earliest = totaled[0] ? totaled[0].data : null;
-      if (
-        !latest ||
-        !earliest ||
-        !latest[token.uniqueWithChain()] ||
-        !earliest[token.uniqueWithChain()]
-      )
-        return "--";
-      const diff =
-        earliest[token.uniqueWithChain()] - latest[token.uniqueWithChain()];
-      const change = (diff / earliest[token.uniqueWithChain()]) * 100;
-      if (numOnly) return Math.abs(parseFloat(change).toFixed(2));
-      const symbol = change > 0 ? "-" : "+";
-      return {
-        plus: change <= 0,
-        perc: `${symbol}${Math.abs(parseFloat(change).toFixed(2))}%`
-      };
-    }
+    // getShowState(state) {
+    //   this.isShow = state;
+    //   this.tokenInfo = {};
+    // },
+    // change(token, numOnly = false) {
+    //   const dummy = { plus: false, perc: "0%" };
+    //   if (!this.priceData || !this.priceData.hasOwnProperty("today"))
+    //     return dummy;
+    //   if (token.unusable) return dummy;
+    //   const hour = this.priceData.today.latest;
+    //   const totaled = this.getTokensTotaled();
+    //   const latest = totaled[totaled.length - 1]
+    //     ? totaled[totaled.length - 1].data
+    //     : null;
+    //   const earliest = totaled[0] ? totaled[0].data : null;
+    //   if (
+    //     !latest ||
+    //     !earliest ||
+    //     !latest[token.uniqueWithChain()] ||
+    //     !earliest[token.uniqueWithChain()]
+    //   )
+    //     return "--";
+    //   const diff =
+    //     earliest[token.uniqueWithChain()] - latest[token.uniqueWithChain()];
+    //   const change = (diff / earliest[token.uniqueWithChain()]) * 100;
+    //   if (numOnly) return Math.abs(parseFloat(change).toFixed(2));
+    //   const symbol = change > 0 ? "-" : "+";
+    //   return {
+    //     plus: change <= 0,
+    //     perc: `${symbol}${Math.abs(parseFloat(change).toFixed(2))}%`
+    //   };
+    // }
   },
+  created() {
+    
+  },
+
+  mounted() {
+    this.$store.dispatch('INFO_WALLET', this.currentAccount)
+  },
+
   watch: {
     ["terms"]() {
       this.$emit("balances", this.sortedBalances);
+    },
+    ['currentAccount'] () {
+      console.log(this.currentAccount);
+       this.$store.dispatch('INFO_WALLET', this.currentAccount)
     }
   }
 };
@@ -369,8 +387,6 @@ export default {
     }
   }
 }
-
-
 
 // @import "../../../styles/variables";
 

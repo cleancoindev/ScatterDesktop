@@ -22,6 +22,8 @@ import i18n from '../tp/i18n/index'
 // import 'element-ui/lib/theme-chalk/index.css'
 import ElementUI from 'element-ui'
 
+import moment from 'dayjs'
+
 // import * as fundebug from 'fundebug-javascript'
 // import fundebugVue from 'fundebug-vue'
 // fundebug.apikey =
@@ -35,6 +37,9 @@ import ElementUI from 'element-ui'
 const PKG = require('../../package.json')
 
 Vue.config.productionTip = false
+
+
+Vue.prototype.$moment = moment
 
 export let router
 
