@@ -97,18 +97,20 @@ const Wallet = {
       })
     },
 
-    async GET_TRANSACTION_ACTION({ commit }, account) {
+    async GET_TRANSACTION_ACTION({ commit, rootState }, payload) {
+      const blockchainID = rootState.TP.chainTypes[payload.networkUnique]
+      const walletName = payload.name ? payload.name : payload.publicKey
       getTransactionAction({
         page: 1,
-        count: 100,
-        symbol: 'EOS',
-        search: '',
-        code: 'eosio.token',
-        account: 'wangsitu2134',
+        count: 1000,
+        symbol: payload.symbol,
+        search: payload.search,
+        code: payload.account,
+        account: walletName,
         //记录类型：0--全部， 1--转入， 2--转出
-        type: 0,
-        search: '',
-        blockchain_id: 4
+        type: payload.type,
+        // search: '',
+        blockchain_id: blockchainID
         // sort: 'desc',
         // new_way: 'new'
       }).then(res => {

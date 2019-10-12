@@ -1,7 +1,12 @@
 <template>
   <div class="TP-Assets">
-    <!-- <TokenList/> -->
-    <TokenTransferHistory/>
+    <TokenList v-if="assetType === 'TOKEN_LIST'" @token-info="getTokenInfo" />
+    <TokenTransferHistory
+      v-if="assetType === 'TOKEN_TRANSACTION'"
+      :token-info="tokenInfo"
+      @asset-type="type => assetType = type"
+    />
+    <TokenShadow/>
 
     <!-- <section class="tokens-header"> -->
     <!-- <section class="tokens-header-top"> -->
@@ -54,20 +59,24 @@
 import { mapGetters } from "vuex";
 import TokenList from "./TokenList";
 import TokenTransferHistory from "./TokenTransferHistory";
+import TokenShadow from "./TokenShadow";
 import BalanceService from "../../../services/blockchain/BalanceService";
 
 export default {
   name: "TPAssets",
   components: {
     TokenList,
-    TokenTransferHistory
+    TokenTransferHistory,
+    TokenShadow
   },
   data() {
     return {
       loadingBalances: false,
       searchTerms: "",
       assetInfo: {},
-      terms: ""
+      terms: "",
+      tokenInfo: {},
+      assetType: "TOKEN_LIST"
     };
   },
 
@@ -91,6 +100,11 @@ export default {
   },
 
   methods: {
+    getTokenInfo(token) {
+      this.tokenInfo = token;
+      this.assetType = "TOKEN_TRANSACTION";
+    },
+
     goTransfer(token) {
       this.$router.push({
         name: this.RouteNames.TRANSFER,
@@ -118,7 +132,6 @@ export default {
 </script>
 
 <style scoped lang="scss" rel="stylesheet/scss">
-
 // .btn-transfer {
 //     background: transparent;
 //     color: #fff;

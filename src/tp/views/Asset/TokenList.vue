@@ -1,7 +1,7 @@
 <template>
   <section class="TokenList">
     <div class="asset-header text-center">
-      <div class="asset-balance c-fff">$123,123.00</div>
+      <div class="asset-balance c-fff">${{assetTokenInfo.total_asset}}</div>
       <div class="asset-balance-text c-fff">Total Balance</div>
       <div class="asset-balance-view">
         <div class="asset-balance-btn staked">
@@ -16,10 +16,27 @@
     </div>
 
     <div class="asset-main">
-      <div class="asset-operation"></div>
+      <div class="asset-operation">
+        <span class="asset-token-title">Token</span>
+        <span style="display:flex;align-items:center;">
+          <el-input
+            class="asset-token-search"
+            placeholder="请输入内容"
+            prefix-icon="el-icon-search"
+            v-model="searchToken"
+          ></el-input>
+          <!-- <input class="asset-token-search" type="text" placeholder="Search"/> -->
+          <i class="asset-token-add"></i>
+        </span>
+      </div>
 
       <div class="asset-tokens">
-        <div class="asset-token-item" v-for="(item, index) in assetTokenInfo.tokens" :key="index">
+        <div
+          class="asset-token-item"
+          v-for="(item, index) in assetTokenInfo.tokens"
+          :key="index"
+          @click="goTransaction(item)"
+        >
           <img class="asset-token-logo" :src="item.icon_url" alt />
 
           <div class="asset-token-right">
@@ -36,78 +53,6 @@
 
           <i class="asset-arrow"></i>
         </div>
-
-        <!-- <div class="asset-token-item">
-          <img class="asset-token-logo" src="../../assets/images/platform/eos.png" alt />
-
-          <div class="asset-token-right">
-            <div class="asset-token-name">
-              <h5>EOS</h5>
-              <p class="ft-12">Liquid</p>
-            </div>
-
-            <div class="asset-token-balance">
-              <h5>123.1234</h5>
-              <p class="ft-14">≈$123.1234</p>
-            </div>
-          </div>
-
-          <i class="asset-arrow"></i>
-        </div> -->
-
-        <!-- <div class="asset-token-item">
-          <img class="asset-token-logo" src="../../assets/images/platform/eos.png" alt />
-
-          <div class="asset-token-right">
-            <div class="asset-token-name">
-              <h5>EOS</h5>
-              <p class="ft-12">Liquid</p>
-            </div>
-
-            <div class="asset-token-balance">
-              <h5>123.1234</h5>
-              <p class="ft-14">≈$123.1234</p>
-            </div>
-          </div>
-
-          <i class="asset-arrow"></i>
-        </div> -->
-
-        <!-- <div class="asset-token-item">
-          <img class="asset-token-logo" src="../../assets/images/platform/eos.png" alt />
-
-          <div class="asset-token-right">
-            <div class="asset-token-name">
-              <h5>EOS</h5>
-              <p class="ft-12">Liquid</p>
-            </div>
-
-            <div class="asset-token-balance">
-              <h5>123.1234</h5>
-              <p class="ft-14">≈$123.1234</p>
-            </div>
-          </div>
-
-          <i class="asset-arrow"></i>
-        </div> -->
-
-        <!-- <div class="asset-token-item">
-          <img class="asset-token-logo" src="../../assets/images/platform/eos.png" alt />
-
-          <div class="asset-token-right">
-            <div class="asset-token-name">
-              <h5>EOS</h5>
-              <p class="ft-12">Liquid</p>
-            </div>
-
-            <div class="asset-token-balance">
-              <h5>123.1234</h5>
-              <p class="ft-14">≈$123.1234</p>
-            </div>
-          </div>
-
-          <i class="asset-arrow"></i>
-        </div> -->
       </div>
     </div>
     <!-- <section class="tokens">
@@ -165,6 +110,7 @@ export default {
   // props: ["balances", "hoverable", "selected", "noSearch", "terms"],
   data() {
     return {
+      searchToken: "",
       tokenInfo: {},
       isShow: false
     };
@@ -176,8 +122,8 @@ export default {
       "balanceFilters",
       "displayCurrency",
       "currentAccount",
-      'assetTokenInfo'
-    ]),
+      "assetTokenInfo"
+    ])
     // sortedBalances() {
     //   return this.balances
     //     .filter(token => {
@@ -214,6 +160,10 @@ export default {
     // }
   },
   methods: {
+    goTransaction(token) {
+      console.log(token);
+      this.$emit("token-info", token);
+    }
     // selectToken(token) {
     //   if (!token.unusable) {
     //     this.tokenInfo = token;
@@ -254,32 +204,41 @@ export default {
     //   };
     // }
   },
-  created() {
-    
-  },
+  created() {},
 
   mounted() {
-    this.$store.dispatch('INFO_WALLET', this.currentAccount)
+    this.$store.dispatch("INFO_WALLET", this.currentAccount);
+    console.log(this.currentAccount);
   },
 
   watch: {
     ["terms"]() {
       this.$emit("balances", this.sortedBalances);
     },
-    ['currentAccount'] () {
+    ["currentAccount"]() {
       console.log(this.currentAccount);
-       this.$store.dispatch('INFO_WALLET', this.currentAccount)
+      this.$store.dispatch("INFO_WALLET", this.currentAccount);
     }
   }
 };
 </script>
 
 <style scoped lang="scss">
-.asset-header {
-  background: url(../../assets/images/myAssets/asset-bg.png) no-repeat 100% /
+.asset-arrow {
+  display: inline-block;
+  width: 7px;
+  height: 12px;
+  background: url(../../assets/images/myAssets/asset-arrow.png) no-repeat 100% /
     cover;
-  height: 300px;
+}
 
+.TokenList {
+  background: url(../../assets/images/myAssets/asset-bg.png) no-repeat 100% /
+    contain;
+  background-position: top;
+}
+
+.asset-header {
   .asset-balance {
     padding-top: 73px;
     font-size: 28px;
@@ -330,13 +289,46 @@ export default {
 
 .asset-main {
   width: 600px;
-  margin: 0 auto;
+  margin: 30px auto 0 auto;
   background: #fff;
-  position: relative;
-  top: -60px;
   border-radius: 8px;
   box-shadow: 0px 2px 40px 0px rgba(0, 0, 0, 0.03);
   border: 1px solid #f5f5f5;
+
+  .asset-operation {
+    display: flex;
+    align-items: center;
+    margin: 0 32px;
+    padding: 20px 0;
+    .asset-token-title {
+      font-size: 20px;
+      color: #101010;
+      font-weight: 500;
+      flex: 1;
+    }
+
+    /deep/ .asset-token-search input {
+      height: 30px;
+      line-height: 30px;
+      border: 1px solid #eee;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    /deep/ .el-input__icon {
+      line-height: 30px;
+    }
+
+    .asset-token-add {
+      margin-left: 20px;
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      background: url(../../assets/images/myAssets/asset-add.png) no-repeat 100% /
+        cover;
+    }
+  }
 
   .asset-token-item {
     margin-left: 32px;
@@ -387,118 +379,4 @@ export default {
     }
   }
 }
-
-// @import "../../../styles/variables";
-
-// .token-list {
-//   height: calc(100vh - 170px - 40px);
-//   overflow: auto;
-//   width: 100%;
-//   flex: 1;
-
-//   .search-and-filter {
-//     padding: 0 20px;
-//     border-bottom: 0;
-//   }
-
-//   .tokens {
-//     position: relative;
-//     overflow-y: auto;
-
-//     .single-asset {
-//       cursor: pointer;
-//       //   border-radius: $radius;
-//       background: transparent;
-//       border-bottom: 1px solid #e8ebf4;
-//       display: flex;
-//       flex-direction: column;
-//       padding: 25px 10px;
-//       justify-content: center;
-//       transition: all 0.5s ease-in-out;
-//       width: 100%;
-
-//       &.show {
-//         width: calc(100% - 287px);
-//       }
-
-//       .row {
-//         display: flex;
-//         justify-content: space-between;
-//       }
-
-//       .token-symbol {
-//         align-self: flex-start;
-//         line-height: 34px;
-//         font-size: 21px;
-//         font-weight: bold;
-//         padding-left: 15px;
-//         flex: 1;
-
-//         .symbol {
-//           float: left;
-//           font-size: 34px;
-//           margin-left: -8px;
-//         }
-//       }
-
-//       .icon-lock {
-//         float: left;
-//         color: #c4c7d2;
-//       }
-
-//       .token-value {
-//         align-self: center;
-//         font-weight: bold;
-//         padding-right: 15px;
-//         text-align: right;
-//         flex: 1;
-
-//         .fiat {
-//           color: #c4c7d2;
-//           font-weight: normal;
-//         }
-//       }
-
-//       .token-conversion {
-//         align-self: center;
-//         font-size: $medium;
-//         padding-left: 15px;
-
-//         .stake {
-//           color: $red;
-//         }
-//       }
-
-//       .token-change {
-//         align-self: center;
-//         padding-right: 15px;
-//         text-align: right;
-//       }
-
-//       &:hover,
-//       &:active,
-//       &.active {
-//         .token-symbol,
-//         .token-value,
-//         .token-conversion,
-//         .token-change {
-//           color: #2980fe;
-
-//           .value {
-//             color: #2980fe;
-//           }
-
-//           .fiat {
-//             color: #2980fe;
-//             // color: rgba(255, 255, 255, 0.7);
-//           }
-//         }
-
-//         .icon-lock {
-//           color: #2980fe;
-//         }
-//       }
-//     }
-//   }
-// }
 </style>

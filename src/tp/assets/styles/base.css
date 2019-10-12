@@ -1,11 +1,60 @@
-@charset "UTF-8";
-@import "./components";
+.tp-button {
+  position: relative;
+  width: 100%;
+  padding: 10px 15px;
+  background: linear-gradient(90deg, #2aadff 0%, #3774fa 100%);
+  border-radius: 6px;
+  opacity: 0.3;
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+.tp-button.on {
+  opacity: 0.9;
+}
+
+.tp-button.on:hover {
+  opacity: 1;
+}
+
+.tp-button.del {
+  background: #FA6464;
+  opacity: 0.9;
+}
+
+.tp-button.del:hover {
+  opacity: 1;
+}
+
+.tp-input {
+  outline: none !important;
+  box-shadow: none;
+  border: 0;
+  border-bottom: 1px solid #E5E6F2;
+  padding: 15px 0;
+  width: 100%;
+  font-size: 16px;
+}
+
+.tp-password-input {
+  background: #F5F8FA;
+  height: 40px;
+  border-radius: 6px;
+  width: 100%;
+  outline: none;
+  box-shadow: none;
+  border: 0;
+  padding: 0 1em;
+}
 
 html,
 body {
   -webkit-overflow-scrolling: touch;
   -webkit-touch-callout: none;
-  -webkit-tap-highlight-color: transparent; // ios点击阴影去除
+  -webkit-tap-highlight-color: transparent;
 }
 
 a {
@@ -171,18 +220,18 @@ a {
   position: relative;
   width: 14px;
   height: 14px;
+}
 
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 2px;
-    width: 10px;
-    height: 10px;
-    border-top: 2px solid #C4C7D2;
-    border-right: 2px solid #C4C7D2;
-    transform: rotate(45deg);
-  }
+.icon-right:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid #C4C7D2;
+  border-right: 2px solid #C4C7D2;
+  transform: rotate(45deg);
 }
 
 .g-over-text {

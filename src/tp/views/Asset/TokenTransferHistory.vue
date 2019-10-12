@@ -1,8 +1,9 @@
 <template>
   <div class="TokenTransferHistory">
-    <!-- <div class="asset-header">
-      <div class="asset-back c-fff">Back</div>
-    </div> -->
+    <div class="asset-back c-fff" @click="backTokenList">
+      <i class="asset-back-arrow"></i>
+      Back
+    </div>
 
     <div class="asset-main">
       <div class="transfer-info">
@@ -10,22 +11,34 @@
 
         <div class="transfer-info-right">
           <div class="transfer-text">
-            <h5>EOS</h5>
-            <p>eosio.token</p>
+            <h5>{{tokenInfo.symbol}}</h5>
+            <p>{{tokenInfo.account}}</p>
           </div>
 
           <div class="transfer-balance">
-            <h5>123,123.00</h5>
-            <p>≈ $800.12</p>
+            <h5>{{tokenInfo.balance}}</h5>
+            <p>≈ {{tokenInfo.price_usd ? tokenInfo.price_usd.toFixed(tokenInfo.precision) : 0}}</p>
           </div>
         </div>
       </div>
 
       <div class="transfer-operation">
         <div class="transfer-status">
-          <span class="transfer-status-item">全部</span>
-          <span class="transfer-status-item">转入</span>
-          <span class="transfer-status-item">转出</span>
+          <span
+            class="transfer-status-item"
+            :class="{'active': transactionTabStatus === 0}"
+            @click="changeTabStatus(0)"
+          >全部</span>
+          <span
+            class="transfer-status-item"
+            :class="{'active': transactionTabStatus === 1}"
+            @click="changeTabStatus(1)"
+          >转入</span>
+          <span
+            class="transfer-status-item"
+            :class="{'active': transactionTabStatus === 2}"
+            @click="changeTabStatus(2)"
+          >转出</span>
         </div>
 
         <div class="transfer-search">
@@ -43,7 +56,10 @@
               <p>{{$moment(item.timestamp * 1000).format('MM/DD HH:mm')}}</p>
             </div>
 
-            <div class="transfer-item-balance" :class="{'in': item.status === 1, 'out': item.status === 2}">
+            <div
+              class="transfer-item-balance"
+              :class="{'in': item.status === 1, 'out': item.status === 2}"
+            >
               <span v-if="item.status === 1">+</span>
               <span v-if="item.status === 2">-</span>
               <span>{{item.count}}</span>
@@ -52,6 +68,18 @@
           </div>
 
           <i class="transfer-arrow"></i>
+        </div>
+      </div>
+
+      <div class="transfer-in-out">
+        <div class="transfer-out">
+          <i></i>
+          转账
+        </div>
+
+        <div class="transfer-in">
+          <i></i>
+          收款
         </div>
       </div>
       <!-- </div> -->
@@ -63,14 +91,23 @@
 import { mapGetters } from "vuex";
 export default {
   name: "TokenTransferHistory",
+  props: {
+    tokenInfo: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
-    return {};
+    return {
+      transactionTabStatus: 0
+    };
   },
 
   computed: {
-    ...mapGetters(["transactionActionList"])
+    ...mapGetters(["currentAccount", "transactionActionList"])
   },
   methods: {
+    
     transactionImg(type) {
       switch (type) {
         case 1:
@@ -78,11 +115,22 @@ export default {
         case 2:
           return require("../../assets/images/myAssets/asset-out.png");
       }
+    },
+
+    changeTabStatus(status) {
+      this.transactionTabStatus = status;
+    },
+
+    backTokenList() {
+      this.$emit('asset-type', 'TOKEN_LIST');
     }
   },
 
   created() {
-    this.$store.dispatch("GET_TRANSACTION_ACTION");
+    this.$store.dispatch("GET_TRANSACTION_ACTION", {
+      ...this.tokenInfo,
+      ...this.currentAccount
+    });
   }
 };
 </script>
@@ -90,21 +138,43 @@ export default {
 <style lang="scss" scoped>
 .TokenTransferHistory {
   position: relative;
-  background: url(../../assets/images/myAssets/asset-bg.png) no-repeat 100% / contain;
+  background: url(../../assets/images/myAssets/asset-bg.png) no-repeat 100% /
+    contain;
   background-position: top;
-  padding-top: 75px;
+  // padding-top: 75px;
+}
+
+.asset-back {
+  font-size: 28px;
+  font-weight: 400;
+  // line-height: 40px;
+  position: relative;
+  width: 550px;
+  margin: 0 auto;
+  display:flex;
+  align-items: center;
+  padding-top: 20px;
+  .asset-back-arrow {
+    display: inline-block;
+    width: 11px;
+    height: 20px;
+    background: url(../../assets/images/myAssets/asset-back.png) no-repeat 100% / cover;
+    position: absolute;
+    left: -25px;
+  }
 }
 
 .transfer-arrow {
-    display: inline-block;
-    width: 7px;
-    height: 12px;
-    background: url(../../assets/images/myAssets/asset-arrow.png) no-repeat 100% / cover;
+  display: inline-block;
+  width: 7px;
+  height: 12px;
+  background: url(../../assets/images/myAssets/asset-arrow.png) no-repeat 100% /
+    cover;
 }
 
 .asset-main {
   width: 550px;
-  margin: 0 auto;
+  margin: 25px auto 0 auto;
   border-radius: 8px;
   box-shadow: 0px 2px 40px 0px rgba(0, 0, 0, 0.03);
   border: 1px solid #f5f5f5;
@@ -172,10 +242,9 @@ export default {
         font-size: 16px;
         font-weight: 400;
         border-bottom: 2px solid transparent;
-        &.active,
-        &:hover {
-          color: #2890FE;
-          border-bottom: 2px solid #2890FE;
+        &.active {
+          color: #2890fe;
+          border-bottom: 2px solid #2890fe;
         }
       }
     }
@@ -190,14 +259,16 @@ export default {
         border: 1px solid #eee;
         border-radius: 20px;
         &::--webkit-input-placeholder {
-          color: #C1C1C1;
+          color: #c1c1c1;
         }
       }
     }
   }
 
   .transfer-list {
-    margin-top:20px; 
+    margin-top: 20px;
+    height: calc(100vh - 363px);
+    overflow-y: auto;
     .transfer-item {
       display: flex;
       align-items: center;
@@ -251,6 +322,49 @@ export default {
             color: #57d4aa;
           }
         }
+      }
+    }
+  }
+
+  .transfer-in-out {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70px;
+    border-top: 1px solid #f5f5f5;
+    .transfer-in,
+    .transfer-out {
+      width: 230px;
+      height: 42px;
+      line-height: 42px;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+      text-align: center;
+      margin: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      i {
+        display:inline-block;
+        width: 22px;
+        height: 22px;
+        margin-right: 10px;
+      }
+    }
+
+    .transfer-out {
+      background: #57d4aa;
+      i {
+        background: url(../../assets/images/myAssets/asset-exchange.png) no-repeat 100% / contain;
+      }
+    }
+
+    .transfer-in {
+      background: #3590fe;
+      i {
+        background: url(../../assets/images/myAssets/asset-collection.png) no-repeat 100% / contain;
       }
     }
   }

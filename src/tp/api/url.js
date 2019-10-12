@@ -21,7 +21,8 @@ export const DApp = {
 }
 
 export const Wallet = {
-  ADD_WALLET: `/v1/wallet`,
+  ADD_WALLET: `/v1/wallet/str_id`,
   GET_TOKEN_LIST: `/v1/token/list`,
-  GET_TRANSACTION_ACTION: `/v1/transaction_action/universal_list`
+  GET_TRANSACTION_ACTION: `/v1/transaction_action/universal_list`,
+  GET_ALL_TOKEN_LIST: `/v1/all_token/list`
 }
