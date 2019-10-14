@@ -1,62 +1,184 @@
 <template>
-  <div class="Token-Add"></div>
+  <div class="Token-Add">
+    <div class="token-search">
+      <el-input
+        class="asset-token-search"
+        placeholder="请输入内容"
+        prefix-icon="el-icon-search"
+        v-model="allTokenForm.key"
+      ></el-input>
+    </div>
+
+    <div class="token-list">
+      <div class="token-list-item" v-for="(item, index) in allTokenList" :key="index">
+        <img :src="item.icon_url" alt class="token-logo" @error="getImgError" />
+        <span class="token-symbol">{{item.symbol}}</span>
+        <i
+          class="token-status"
+          :class="{'on': item.added === 1, 'off': item.added === 0}"
+          @click="changeAdded(item)"
+        ></i>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import { getAllTokenList } from "../../api/Wallet";
+import {
+  getAllTokenList,
+  addWalletToken,
+  delWalletToken
+} from "../../api/Wallet";
 export default {
   name: "TokenAdd",
-  props: {
-    title: {
-      type: String,
-      required: true
-    }
-  },
+  props: {},
   computed: {
-    ...mapGetters(["currentAccount"])
+    ...mapGetters(["currentAccount", "currentWalletId", "currentBlockChainId"])
   },
   data() {
     return {
       allTokenList: [],
       allTokenForm: {
         start: 0,
-        count: 100
-      }
+        count: 1000,
+        key: ""
+      },
+      searchToken: ""
     };
   },
   methods: {
-    getAllTokenList() {
-      getAllTokenList(this.allTokenForm).then(res => {
+    // nextPage() {
+    //   this.allTokenForm.start += 100;
+    // },
+
+    changeAdded(item) {
+      if (item.added === 0) this.addWalletToken(item);
+      if (item.added === 1) this.delWalletToken(item);
+    },
+
+    addWalletToken(item) {
+      addWalletToken({
+        wallet_id: this.currentWalletId,
+        token_id: item.hid
+      }).then(res => {
         if (res.result === 0) {
-          console.log(res.data);
+          this.getAllTokenList();
+          this.$store.dispatch("INFO_WALLET", this.currentAccount);
         }
       });
+    },
+
+    delWalletToken(item) {
+      delWalletToken({
+        token_id: item.hid,
+        wallet_id: this.currentWalletId
+      }).then(res => {
+        if (res.result === 0) {
+          this.getAllTokenList();
+          this.$store.dispatch("INFO_WALLET", this.currentAccount);
+        }
+      });
+    },
+
+    getAllTokenList(hasNext = false) {
+      getAllTokenList({
+        ...this.allTokenForm,
+        wallet_id: this.currentWalletId,
+        blockchain_id: this.currentBlockChainId
+      }).then(res => {
+        if (res.result === 0) {
+          this.allTokenList = [...res.data];
+          // console.log(res.data);
+        }
+      });
+    },
+
+    getImgError(el) {
+      let imgStyle = el.target.style;
+
+      switch (parseInt(this.currentBlockChainId)) {
+        case 4:
+          imgStyle.src = require("../../assets/images/platform/eos.png");
+          break;
+        case 10:
+          imgStyle.src = require("../../assets/images/platform/trx.png");
+          break;
+        case 1:
+          imgStyle.src = require("../../assets/images/platform/eth.png");
+          break;
+        default:
+          imgStyle.backgroundColor = "#ccc";
+      }
     }
   },
-  created() {}
+  created() {
+    this.getAllTokenList();
+  },
+  watch: {
+    "allTokenForm.key"() {
+      this.getAllTokenList();
+      // console.log(this.searchToken)
+    }
+  }
 };
 </script>
 
 <style scoped lang="scss">
-.Token-Add {
-  // margin-left: 25px;
-  // padding: 20px 25px 20px 0;
-  // display: flex;
-  // align-items: center;
-  // border-bottom: 1px solid #eee;
-  // span {
-  //   flex: 1;
-  //   font-size: 20px;
-  //   font-weight: 500;
-  // }
+.token-search {
+  margin: 15px 25px;
+  /deep/ .asset-token-search input {
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid #eee;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 400;
+  }
 
-  // i {
-  //   display: inline-block;
-  //   width: 9px;
-  //   height: 16px;
-  //   background: url(../../assets/images/myAssets/asset-arrow.png) no-repeat 100% /
-  //     contain;
-  // }
+  /deep/ .el-input__icon {
+    line-height: 30px;
+  }
+}
+
+.Token-Add {
+  height: calc(100vh - 40px - 70px);
+  overflow-y: auto;
+  .token-list-item {
+    display: flex;
+    align-items: center;
+    margin-left: 25px;
+    padding: 20px 25px 20px 0;
+    border-bottom: 1px solid #eee;
+    .token-logo {
+      width: 40px;
+      height: 40px;
+      // background: #ccc;
+      border-radius: 50%;
+    }
+
+    .token-symbol {
+      font-size: 18px;
+      font-weight: 500;
+      color: #101010;
+      flex: 1;
+      margin-left: 20px;
+    }
+
+    .token-status {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      &.on {
+        background: url(../../assets/images/myAssets/asset-check-on.png)
+          no-repeat 100% / contain;
+      }
+
+      &.off {
+        background: url(../../assets/images/myAssets/asset-check-off.png)
+          no-repeat 100% / contain;
+      }
+    }
+  }
 }
 </style>

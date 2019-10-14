@@ -21,13 +21,25 @@ const Wallet = {
       total_asset: 0,
       unit: '$'
     },
-    transactionActionList: []
+    transactionActionList: [],
+    currentWalletTokenInfo: {}
   },
 
   getters: {
     walletMaps: state => state.walletMaps,
     assetTokenInfo: state => state.assetTokenInfo,
-    transactionActionList: state => state.transactionActionList
+    transactionActionList: state => state.transactionActionList,
+    currentWalletId: (state, getters) => {
+      const walletName = getters.currentAccount.name
+        ? getters.currentAccount.name
+        : getters.currentAccount.publicKey
+
+      return Storage.GET_STORAGE(walletName)
+    },
+    currentBlockChainId: (state, getters) => {
+      return getters.chainTypes[getters.currentAccount.networkUnique]
+    },
+    currentWalletTokenInfo: state => state.currentWalletTokenInfo
   },
 
   mutations: {
@@ -46,6 +58,10 @@ const Wallet = {
 
     TRANSACTION_ACTION_LIST(state, transactionActionList) {
       state.transactionActionList = transactionActionList
+    },
+
+    CURRENT_WALLET_TOKEN_INFO(state, currentWalletTokenInfo) {
+      state.currentWalletTokenInfo = currentWalletTokenInfo
     }
   },
 

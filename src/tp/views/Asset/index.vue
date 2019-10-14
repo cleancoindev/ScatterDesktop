@@ -1,12 +1,24 @@
 <template>
   <div class="TP-Assets">
-    <TokenList v-if="assetType === 'TOKEN_LIST'" @token-info="getTokenInfo" />
+    <TokenList
+      v-if="assetType === 'TOKEN_LIST'"
+      @token-info="getTokenInfo"
+      @shadow-type="type => shadowType = type"
+    />
+
     <TokenTransferHistory
       v-if="assetType === 'TOKEN_TRANSACTION'"
       :token-info="tokenInfo"
       @asset-type="type => assetType = type"
+      @shadow-type="type => shadowType = type"
     />
-    <TokenShadow/>
+
+    <TokenShadow
+      v-if="shadowType"
+      :token-info="tokenInfo"
+      :type-info="shadowType"
+      @asset-type="type => shadowType = type"
+    />
 
     <!-- <section class="tokens-header"> -->
     <!-- <section class="tokens-header-top"> -->
@@ -76,7 +88,9 @@ export default {
       assetInfo: {},
       terms: "",
       tokenInfo: {},
-      assetType: "TOKEN_LIST"
+      assetType: "TOKEN_LIST",
+      shadowType: null
+      // assetType: ""
     };
   },
 

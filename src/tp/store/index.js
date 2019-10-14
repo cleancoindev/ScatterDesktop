@@ -39,7 +39,8 @@ const TP = {
     currentLanguage: state => state.currentLanguage,
     tpCurrentLanguage: (state, getters) => {
       return getters.currentLanguage === 'zh' ? 'zh-Hans' : 'en'
-    }
+    },
+    chainTypes: state => state.chainTypes
   },
 
   mutations: {

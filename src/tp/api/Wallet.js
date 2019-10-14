@@ -16,3 +16,12 @@ export function getAllTokenList(params) {
 export function getTransactionAction(params) {
   return fetch.get(Wallet.GET_TRANSACTION_ACTION, { params })
 }
+
+export function addWalletToken(data) {
+  return fetch.post(Wallet.ADD_WALLET_TOKEN, data)
+}
+
+export function delWalletToken (data) {
+  return fetch.post(Wallet.DEL_WALLET_TOKEN, data)
+}
+

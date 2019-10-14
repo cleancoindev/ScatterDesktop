@@ -26,7 +26,7 @@
             v-model="searchToken"
           ></el-input>
           <!-- <input class="asset-token-search" type="text" placeholder="Search"/> -->
-          <i class="asset-token-add"></i>
+          <i class="asset-token-add" @click="addToken"></i>
         </span>
       </div>
 
@@ -100,12 +100,10 @@
 import { mapState, mapGetters, mapActions } from "vuex";
 import * as Actions from "../../../store/constants";
 import Token from "../../../models/Token";
-import ExchangeToken from "./ExchangeToken";
 
 export default {
   name: "TokenList",
   components: {
-    ExchangeToken
   },
   // props: ["balances", "hoverable", "selected", "noSearch", "terms"],
   data() {
@@ -161,9 +159,14 @@ export default {
   },
   methods: {
     goTransaction(token) {
-      console.log(token);
+      // console.log(token);
+      this.$store.commit('CURRENT_WALLET_TOKEN_INFO', token)
       this.$emit("token-info", token);
-    }
+    },
+
+    addToken() {
+      this.$emit('shadow-type', 'TOKEN_ADD')
+    },
     // selectToken(token) {
     //   if (!token.unusable) {
     //     this.tokenInfo = token;

@@ -72,12 +72,12 @@
       </div>
 
       <div class="transfer-in-out">
-        <div class="transfer-out">
+        <div class="transfer-out" @click="changeShadow('TOKEN_EXCHANGE')">
           <i></i>
           转账
         </div>
 
-        <div class="transfer-in">
+        <div class="transfer-in" @click="changeShadow('TOKEN_QR_CODE')">
           <i></i>
           收款
         </div>
@@ -104,10 +104,9 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["currentAccount", "transactionActionList"])
+    ...mapGetters(["currentAccount","transactionActionList"])
   },
   methods: {
-    
     transactionImg(type) {
       switch (type) {
         case 1:
@@ -121,8 +120,12 @@ export default {
       this.transactionTabStatus = status;
     },
 
+    changeShadow(type) {
+      this.$emit("shadow-type", type);
+    },
+
     backTokenList() {
-      this.$emit('asset-type', 'TOKEN_LIST');
+      this.$emit("asset-type", "TOKEN_LIST");
     }
   },
 
@@ -151,14 +154,15 @@ export default {
   position: relative;
   width: 550px;
   margin: 0 auto;
-  display:flex;
+  display: flex;
   align-items: center;
   padding-top: 20px;
   .asset-back-arrow {
     display: inline-block;
     width: 11px;
     height: 20px;
-    background: url(../../assets/images/myAssets/asset-back.png) no-repeat 100% / cover;
+    background: url(../../assets/images/myAssets/asset-back.png) no-repeat 100% /
+      cover;
     position: absolute;
     left: -25px;
   }
@@ -347,7 +351,7 @@ export default {
       align-items: center;
       justify-content: center;
       i {
-        display:inline-block;
+        display: inline-block;
         width: 22px;
         height: 22px;
         margin-right: 10px;
@@ -357,14 +361,16 @@ export default {
     .transfer-out {
       background: #57d4aa;
       i {
-        background: url(../../assets/images/myAssets/asset-exchange.png) no-repeat 100% / contain;
+        background: url(../../assets/images/myAssets/asset-exchange.png)
+          no-repeat 100% / contain;
       }
     }
 
     .transfer-in {
       background: #3590fe;
       i {
-        background: url(../../assets/images/myAssets/asset-collection.png) no-repeat 100% / contain;
+        background: url(../../assets/images/myAssets/asset-collection.png)
+          no-repeat 100% / contain;
       }
     }
   }
