@@ -24,6 +24,7 @@ export const Wallet = {
   ADD_WALLET: `/v1/wallet/str_id`,
   GET_TOKEN_LIST: `/v1/token/list`,
   GET_TRANSACTION_ACTION: `/v1/transaction_action/universal_list`,
+  ADD_TRANSACTION_ACTION: `/v1/transaction_action/universal`,
   GET_ALL_TOKEN_LIST: `/v1/all_token/list`,
   ADD_WALLET_TOKEN: `/v1/wallet/token`,
   DEL_WALLET_TOKEN: `/v1/wallet/token/delete`,

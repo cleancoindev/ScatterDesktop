@@ -48,10 +48,6 @@ export default {
     };
   },
   methods: {
-    // nextPage() {
-    //   this.allTokenForm.start += 100;
-    // },
-
     changeAdded(item) {
       if (item.added === 0) this.addWalletToken(item);
       if (item.added === 1) this.delWalletToken(item);

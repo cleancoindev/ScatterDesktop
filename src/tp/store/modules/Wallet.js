@@ -72,8 +72,6 @@ const Wallet = {
       const walletID = Storage.GET_STORAGE(walletName)
 
       if (walletID) {
-        console.log(walletID)
-        // store.delete(walletName)
         dispatch('GET_TOKEN_LIST', walletID)
         return false
       }
@@ -123,16 +121,12 @@ const Wallet = {
         search: payload.search,
         code: payload.account,
         account: walletName,
-        //记录类型：0--全部， 1--转入， 2--转出
+        // 记录类型：0--全部， 1--转入， 2--转出
         type: payload.type,
-        // search: '',
         blockchain_id: blockchainID
-        // sort: 'desc',
-        // new_way: 'new'
       }).then(res => {
         if (res.result === 0) {
           commit('TRANSACTION_ACTION_LIST', res.data)
-          // console.log(res.data, 'transaction actions')
         }
       })
     }

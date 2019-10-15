@@ -25,7 +25,6 @@
             prefix-icon="el-icon-search"
             v-model="searchToken"
           ></el-input>
-          <!-- <input class="asset-token-search" type="text" placeholder="Search"/> -->
           <i class="asset-token-add" @click="addToken"></i>
         </span>
       </div>
@@ -33,7 +32,7 @@
       <div class="asset-tokens">
         <div
           class="asset-token-item"
-          v-for="(item, index) in assetTokenInfo.tokens"
+          v-for="(item, index) in assetTokenList"
           :key="index"
           @click="goTransaction(item)"
         >
@@ -55,44 +54,6 @@
         </div>
       </div>
     </div>
-    <!-- <section class="tokens">
-      <section
-        class="single-asset"
-        :class="{
-            'hoverable':hoverable, 
-            'active': tokenInfo.uniqueWithChain && tokenInfo.uniqueWithChain() === token.uniqueWithChain(),
-            'show': isShow
-            }"
-        v-for="(token, index) in sortedBalances"
-        :key="index"
-        @click="selectToken(token)"
-      >
-        <section class="row">
-          <section class="token-symbol">
-            <div
-              class="symbol"
-              :class="[{'iconed':token.symbolClass(), 'small':token && token.symbol.length >= 4, 'unusable':!!token.unusable}, token.symbolClass()]"
-            ></div>
-            <figure class="title ft-26">{{token.symbol}}</figure>
-          </section>
-          <section class="token-value" v-if="token.amount">
-            <figure class="value c-232538 ft-20">{{formatNumber(token.amount, true)}}</figure>
-            <figure
-              class="fiat c-232538 ft-14"
-              v-if="token.fiatBalance() && parseFloat(token.fiatBalance())"
-            >≈ {{fiatSymbol(displayCurrency)}}{{formatNumber(token.fiatBalance(false), true)}}</figure>
-          </section>
-        </section>
-
-        <section class="row">
-          <section class="token-conversion staked" v-if="token.unusable">
-            <figure class="locked icon-lock ft-14">{{token.unusable}}</figure>
-          </section>
-        </section>
-      </section>
-
-      <ExchangeToken :token-info="tokenInfo" :is-show="isShow" @showState="getShowState" />
-    </section>-->
   </section>
 </template>
 
@@ -103,123 +64,47 @@ import Token from "../../../models/Token";
 
 export default {
   name: "TokenList",
-  components: {
-  },
-  // props: ["balances", "hoverable", "selected", "noSearch", "terms"],
+  components: {},
   data() {
     return {
-      searchToken: "",
-      tokenInfo: {},
-      isShow: false
+      searchToken: ""
     };
   },
   computed: {
-    ...mapState([]),
-    ...mapGetters([
-      "networkTokens",
-      "balanceFilters",
-      "displayCurrency",
-      "currentAccount",
-      "assetTokenInfo"
-    ])
-    // sortedBalances() {
-    //   return this.balances
-    //     .filter(token => {
-    //       if (!this.terms.length) return true;
-    //       if (this.terms === "-")
-    //         return (
-    //           this.change(token) &&
-    //           !this.change(token).plus &&
-    //           token.fiatBalance(false)
-    //         );
-    //       if (this.terms === "+")
-    //         return (
-    //           this.change(token) &&
-    //           this.change(token).plus &&
-    //           token.fiatBalance(false)
-    //         );
-    //       if (this.terms.indexOf("::") > -1)
-    //         return (
-    //           `${token.contract.toLowerCase()}::${token.symbol.toLowerCase()}` ===
-    //           this.terms
-    //         );
-    //       if (isNaN(this.terms))
-    //         return (
-    //           token.symbol.toLowerCase().indexOf(this.terms) > -1 ||
-    //           token.contract.toLowerCase().indexOf(this.terms) > -1
-    //         );
-    //       return token.amount >= parseFloat(this.terms);
-    //     })
-    //     .sort((a, b) => {
-    //       if (this.terms === "+" || this.terms === "-")
-    //         return this.change(b, true) - this.change(a, true);
-    //       return Token.sorter(a, b);
-    //     });
-    // }
+    ...mapGetters(["currentAccount", "assetTokenInfo"]),
+    assetTokenList() {
+      if (this.assetTokenInfo.tokens) {
+        if (this.searchToken) {
+          return this.assetTokenInfo.tokens.filter(
+            token =>
+              token.symbol
+                .toLowerCase()
+                .indexOf(this.searchToken.toLowerCase()) !== -1
+          );
+        }
+        return this.assetTokenInfo.tokens;
+      }
+      return [];
+    }
   },
   methods: {
     goTransaction(token) {
-      // console.log(token);
-      this.$store.commit('CURRENT_WALLET_TOKEN_INFO', token)
+      this.$store.commit("CURRENT_WALLET_TOKEN_INFO", token);
       this.$emit("token-info", token);
     },
 
     addToken() {
-      this.$emit('shadow-type', 'TOKEN_ADD')
-    },
-    // selectToken(token) {
-    //   if (!token.unusable) {
-    //     this.tokenInfo = token;
-    //     this.isShow = true;
-    //   }
-    // },
-
-    // getShowState(state) {
-    //   this.isShow = state;
-    //   this.tokenInfo = {};
-    // },
-    // change(token, numOnly = false) {
-    //   const dummy = { plus: false, perc: "0%" };
-    //   if (!this.priceData || !this.priceData.hasOwnProperty("today"))
-    //     return dummy;
-    //   if (token.unusable) return dummy;
-    //   const hour = this.priceData.today.latest;
-    //   const totaled = this.getTokensTotaled();
-    //   const latest = totaled[totaled.length - 1]
-    //     ? totaled[totaled.length - 1].data
-    //     : null;
-    //   const earliest = totaled[0] ? totaled[0].data : null;
-    //   if (
-    //     !latest ||
-    //     !earliest ||
-    //     !latest[token.uniqueWithChain()] ||
-    //     !earliest[token.uniqueWithChain()]
-    //   )
-    //     return "--";
-    //   const diff =
-    //     earliest[token.uniqueWithChain()] - latest[token.uniqueWithChain()];
-    //   const change = (diff / earliest[token.uniqueWithChain()]) * 100;
-    //   if (numOnly) return Math.abs(parseFloat(change).toFixed(2));
-    //   const symbol = change > 0 ? "-" : "+";
-    //   return {
-    //     plus: change <= 0,
-    //     perc: `${symbol}${Math.abs(parseFloat(change).toFixed(2))}%`
-    //   };
-    // }
+      this.$emit("shadow-type", "TOKEN_ADD");
+    }
   },
   created() {},
 
   mounted() {
     this.$store.dispatch("INFO_WALLET", this.currentAccount);
-    console.log(this.currentAccount);
   },
 
   watch: {
-    ["terms"]() {
-      this.$emit("balances", this.sortedBalances);
-    },
-    ["currentAccount"]() {
-      console.log(this.currentAccount);
+    currentAccount() {
       this.$store.dispatch("INFO_WALLET", this.currentAccount);
     }
   }
@@ -232,7 +117,7 @@ export default {
   width: 7px;
   height: 12px;
   background: url(../../assets/images/myAssets/asset-arrow.png) no-repeat 100% /
-    cover;
+    contain;
 }
 
 .TokenList {
@@ -329,7 +214,7 @@ export default {
       width: 30px;
       height: 30px;
       background: url(../../assets/images/myAssets/asset-add.png) no-repeat 100% /
-        cover;
+        contain;
     }
   }
 
@@ -362,9 +247,6 @@ export default {
         color: #101010;
         font-weight: 500;
         line-height: 25px;
-      }
-
-      p {
       }
 
       .asset-token-name,

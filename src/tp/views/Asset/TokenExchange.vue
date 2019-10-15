@@ -1,21 +1,22 @@
 <template>
   <div class="TokenExchange">
-    <h5>{{$t('TP.TRANSFER.ReceiverAccount')}}</h5>
+    <h5>{{$t('TP.ASSETS.TRANSFER.ReceiverAccount')}}</h5>
     <input
       type="text"
       class="exchange-to"
-      :placeholder="$t('TP.TRANSFER.Receiver')"
+      :placeholder="$t('TP.ASSETS.TRANSFER.Receiver')"
       v-model="recipient"
     />
 
-    <h5>{{$t('TP.TRANSFER.Amount')}}</h5>
-    <input type="number" :placeholder="$t('TP.TRANSFER.AmountInput')" v-model.number="amount" />
-
-    <h5>{{$t('TP.TRANSFER.Balance')}}</h5>
-    <p>{{tokenInfo.amount}} {{tokenInfo.symbol}}</p>
+    <h5>{{$t('TP.ASSETS.TRANSFER.Amount')}}</h5>
+    <input
+      type="number"
+      :placeholder="$t('TP.ASSETS.TRANSFER.AmountInput')"
+      v-model.number="token.amount"
+    />
 
     <div v-if="hasMemo">
-      <h5>{{$t('TP.TRANSFER.Memo')}}</h5>
+      <h5>{{$t('TP.GENERIC.Memo')}}</h5>
       <textarea rows="5" v-model="memo"></textarea>
     </div>
 
@@ -25,15 +26,13 @@
       style="padding: 10px 0;"
       @click="send"
     >{{$t('TP.GENERIC.Confirm')}}</button>
-    <!-- </div> -->
-    <!-- <div class="exchange-close" @click="exchangeHidden">
-    <span class="TP-Font tp-font-arrow ft-20"></span>-->
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import Token from "../../../models/Token"
+import { addTransactionAction } from "../../api/Wallet";
+import Token from "../../../models/Token";
 import BalanceService from "../../../services/blockchain/BalanceService";
 import TransferService from "../../../services/blockchain/TransferService";
 import PasswordService from "../../../services/secure/PasswordService";
@@ -54,18 +53,20 @@ export default {
       something: "",
       memo: "",
       recipient: "",
-      toSend: {},
       sending: false,
-      token: null,
-      amount: null
+      token: {
+        amount: null
+      },
     };
   },
 
   computed: {
     ...mapGetters(["currentAccount", "currentWalletTokenInfo"]),
+
     canSend() {
-      return this.recipient && parseFloat(this.amount) > 0;
+      return this.recipient && parseFloat(this.token.amount) > 0;
     },
+
     hasMemo() {
       const blacklist = ["trx", "eth"];
       return !blacklist.includes(this.tokenInfo.blockchain);
@@ -74,33 +75,18 @@ export default {
 
   methods: {
     exchangeHidden() {
-      this.toSend = {};
       this.recipient = "";
-      this.amount = null;
+      this.token.amount = null;
       this.memo = "";
       this.$emit("showState", false);
     },
-    // setToken(token) {
-    //   PriceService.setPrices();
-    //   this.token = (() => {
-    //     const t = this.currentAccount
-    //       .tokens()
-    //       .find(x => x.uniqueWithChain() === token.uniqueWithChain());
-    //     if (t) return t.clone();
-    //     const clone = token.clone();
-    //     clone.amount = 0;
-    //     return clone;
-    //   })();
-    //   this.toSend = this.token.clone();
-    //   this.amount = 0;
-    // },
 
     async send() {
       if (!this.canSend) return false;
       const sent = await TransferService[this.currentAccount.blockchain()]({
         account: this.currentAccount,
         recipient: this.recipient,
-        amount: this.toSend.amount,
+        amount: this.token.amount,
         memo: this.memo,
         token: this.token,
         promptForSignature: false
@@ -110,18 +96,16 @@ export default {
 
       if (sent) {
         this.exchangeHidden();
-        setTimeout(() => {
-          BalanceService.loadBalancesFor(this.currentAccount);
-        }, 500);
       }
     }
   },
 
   created() {
-    const tokenInfo = this.currentWalletTokenInfo
-    const decimal = tokenInfo.decimal > 0 ? tokenInfo.decimal : tokenInfo.precision
-     const chainId = this.currentAccount.network().chainId 
-    
+    const tokenInfo = this.currentWalletTokenInfo;
+    const decimal =
+      tokenInfo.decimal > 0 ? tokenInfo.decimal : tokenInfo.precision;
+    const chainId = this.currentAccount.network().chainId;
+
     const token = new Token(
       this.currentAccount.blockchain(),
       tokenInfo.address,
@@ -129,26 +113,15 @@ export default {
       tokenInfo.symbol,
       decimal,
       chainId
-    )
-    
-    console.log(token);
-    
-    console.log(this.currentWalletTokenInfo, "currentWalletTokenInfo");
+    );
+
+    this.token = { ...this.token, ...token };
   },
   watch: {
     currentWalletTokenInfo() {
-      console.log(this.currentWalletTokenInfo, "currentWalletTokenInfo");
+      // console.log(this.currentWalletTokenInfo, "currentWalletTokenInfo");
       //   if (this.tokenInfo.uniqueWithChain) this.setToken(this.tokenInfo);
     }
-    // amount(val1, val2) {
-    //   if (
-    //     parseFloat(this.amount) > 0 &&
-    //     parseFloat(this.amount) > parseFloat(this.tokenInfo.amount)
-    //   ) {
-    //     this.amount = parseFloat(this.tokenInfo.amount);
-    //   }
-    //   this.toSend.amount = parseFloat(this.amount);
-    // }
   }
 };
 </script>

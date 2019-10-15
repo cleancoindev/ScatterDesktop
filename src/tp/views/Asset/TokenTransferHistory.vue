@@ -7,7 +7,7 @@
 
     <div class="asset-main">
       <div class="transfer-info">
-        <img class="transfer-logo" src="../../assets/images/platform/eos.png" alt />
+        <img class="transfer-logo" :src="tokenInfo.icon_url" alt />
 
         <div class="transfer-info-right">
           <div class="transfer-text">
@@ -42,26 +42,32 @@
         </div>
 
         <div class="transfer-search">
-          <input type="text" class="transfer-search-input" placeholder="搜索" />
+          <el-input
+            class="asset-token-search"
+            placeholder="请输入内容"
+            prefix-icon="el-icon-search"
+            v-model="searchAccountActions"
+          ></el-input>
         </div>
       </div>
 
       <div class="transfer-list">
         <div class="transfer-item" v-for="(item, index) in transactionActionList" :key="index">
-          <img :src="transactionImg(item.status)" alt class="transfer-item-logo" />
+          <img :src="transactionImg(item)" alt class="transfer-item-logo" />
 
           <div class="transfer-item-right">
             <div class="transfer-item-text">
-              <h5>{{item.from}}</h5>
+              <h5 v-if="item.to === currentName">{{spliceAccount(item.from)}}</h5>
+              <h5 v-if="item.from === currentName">{{spliceAccount(item.to)}}</h5>
               <p>{{$moment(item.timestamp * 1000).format('MM/DD HH:mm')}}</p>
             </div>
 
             <div
               class="transfer-item-balance"
-              :class="{'in': item.status === 1, 'out': item.status === 2}"
+              :class="{'in': item.to === currentName, 'out': item.from === currentName}"
             >
-              <span v-if="item.status === 1">+</span>
-              <span v-if="item.status === 2">-</span>
+              <span v-if="item.to === currentName">+</span>
+              <span v-if="item.from === currentName">-</span>
               <span>{{item.count}}</span>
               <span>{{item.symbol}}</span>
             </div>
@@ -99,25 +105,41 @@ export default {
   },
   data() {
     return {
-      transactionTabStatus: 0
+      transactionTabStatus: 0,
+      searchAccountActions: ""
     };
   },
 
   computed: {
-    ...mapGetters(["currentAccount","transactionActionList"])
+    ...mapGetters(["currentAccount", "transactionActionList"]),
+    currentName() {
+      return this.currentAccount.name
+        ? this.currentAccount.name
+        : this.currentAccount.publicKey;
+    }
   },
   methods: {
-    transactionImg(type) {
-      switch (type) {
-        case 1:
-          return require("../../assets/images/myAssets/asset-in.png");
-        case 2:
-          return require("../../assets/images/myAssets/asset-out.png");
+    transactionImg(item) {
+      if (item.to === this.currentName)
+        return require("../../assets/images/myAssets/asset-in.png");
+      if (item.from === this.currentName)
+        return require("../../assets/images/myAssets/asset-out.png");
+    },
+
+    spliceAccount(account) {
+      if (account.length > 30) {
+        return account.replace(account.substring(8, 24), "******");
       }
+      return account;
     },
 
     changeTabStatus(status) {
       this.transactionTabStatus = status;
+      this.$store.dispatch("GET_TRANSACTION_ACTION", {
+        type: status,
+        ...this.tokenInfo,
+        ...this.currentAccount
+      });
     },
 
     changeShadow(type) {
@@ -131,9 +153,21 @@ export default {
 
   created() {
     this.$store.dispatch("GET_TRANSACTION_ACTION", {
+      type: 0,
       ...this.tokenInfo,
       ...this.currentAccount
     });
+  },
+
+  watch: {
+    searchAccountActions() {
+      this.$store.dispatch("GET_TRANSACTION_ACTION", {
+        type: this.transactionTabStatus,
+        search: this.searchAccountActions,
+        ...this.tokenInfo,
+        ...this.currentAccount
+      });
+    }
   }
 };
 </script>
@@ -144,7 +178,19 @@ export default {
   background: url(../../assets/images/myAssets/asset-bg.png) no-repeat 100% /
     contain;
   background-position: top;
-  // padding-top: 75px;
+}
+
+/deep/ .asset-token-search input {
+  height: 30px;
+  line-height: 30px;
+  border: 1px solid #eee;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/deep/ .el-input__icon {
+  line-height: 30px;
 }
 
 .asset-back {
@@ -350,6 +396,11 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
+      opacity: 0.8;
+
+      &:hover {
+        opacity: 1;
+      }
       i {
         display: inline-block;
         width: 22px;

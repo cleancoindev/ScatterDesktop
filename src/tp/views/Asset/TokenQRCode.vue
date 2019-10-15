@@ -3,18 +3,24 @@
     <div class="qr-code-title">Receive Code</div>
 
     <div class="qr-code-img">
-      <img :src="qrcode" alt class />
+      <img :src="qrcode" />
     </div>
 
     <div class="qr-code-text">Your Account:</div>
 
     <div class="qr-code-account">{{accountNames}}</div>
+
+    <div class="qr-code-copy" @click="copyAccount">
+      <i></i>
+      Copy
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import QRcode from "qrcode";
+import ElectronHelpers from '../../../util/ElectronHelpers'
 export default {
   name: "TokenQRCode",
   props: {
@@ -35,19 +41,32 @@ export default {
     ...mapGetters(["currentAccount", "currentWalletTokenInfo"])
   },
 
-  mounted() {
-    // console.log(this.currentAccount);
+  methods: {
+    copyAccount() {
+      ElectronHelpers.copy(this.accountNames)
+    }
+  },
 
+  mounted() {
     this.accountNames = this.currentAccount.name
       ? this.currentAccount.name
       : this.currentAccount.publicKey;
+
     const decimal =
       this.currentWalletTokenInfo.decimal > 0
         ? this.currentWalletTokenInfo.decimal
         : this.currentWalletTokenInfo.precision;
-    // console.log(this.accountNames);
 
-    // console.log(this.tokenInfo)
+    const platform = blockchainId => {
+      switch (blockchainId) {
+        case 4:
+          return "EOS";
+        case 1:
+          return "ETH";
+        case 10:
+          return "TRON";
+      }
+    };
 
     QRcode.toDataURL(
       JSON.stringify({
@@ -55,14 +74,13 @@ export default {
         protocol: "ScanProtocol",
         symbol: this.currentWalletTokenInfo.symbol,
         address: this.currentAccount.publicKey,
-        blockchain: "EOS",
+        blockchain: platform(this.currentWalletTokenInfo.blockchain_id),
         action: "transfer",
         precision: decimal,
         contract: this.currentWalletTokenInfo.address
       })
     ).then(url => {
       this.qrcode = url;
-      // console.log(url);
     });
   }
 };
@@ -100,6 +118,32 @@ export default {
     img {
       width: 164px;
       height: 164px;
+    }
+  }
+
+  .qr-code-copy {
+    display: inline-block;
+    width: 198px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 16px;
+    margin-top: 15px;
+    border-radius: 8px;
+    color: #fff;
+    background: #2890fe;
+    opacity: 0.8;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    i {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      background: url(../../assets/images/myAssets/asset-copy.png) no-repeat
+        100% / contain;
+      vertical-align: middle;
     }
   }
 }
