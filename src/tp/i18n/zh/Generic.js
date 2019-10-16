@@ -92,5 +92,24 @@ export default {
   Blockchains: '底层',
   WhitelistNotificationsLabel: '白名单通知',
   WhitelistNotificationsDescription:
-    '当您对白名单交易进行自动签名时，在某些特定的操作系统上这些通知会出现。'
+    '当您对白名单交易进行自动签名时，在某些特定的操作系统上这些通知会出现。',
+
+  Staked: '抵押',
+  Token: '代币',
+
+  LOGIN: {
+    NOTICE: '提示',
+    PASSWORD_DESC: '请输入密码',
+    SET_PASSWORD_DESC: '请设置登录密码',
+    CONFIRM_PASSWORD_DESC: '请再次确认密码',
+    FORGET_PASSWORD: '忘记密码',
+    CANT_LOGIN: '无法登录',
+    CANT_LOGIN_DESC:
+      '如因忘记密码、版本升级或其他原因导致无法登入，可点击"确定"按钮重置钱包，重新导入私钥。',
+    CANT_LOGIN_NOTICE_1: '1. 重置钱包前请确保已备份好相关的私钥等重要信息。',
+    CANT_LOGIN_NOTICE_2: '2. 该操作将从计算机中删除所有身份和密钥对等数据。',
+    CANT_LOGIN_NOTICE_3: '3. 重置钱包不会删除或影响你在区块链上的账号数据。',
+    CANT_LOGIN_NOTICE_4: '设置钱包登录密码，以保护你的资产安全。',
+    DESC: 'YOUR UNIVERSAL DIGITAL WALLET'
+  }
 }

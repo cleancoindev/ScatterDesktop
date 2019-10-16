@@ -3,7 +3,7 @@
     <div class="token-search">
       <el-input
         class="asset-token-search"
-        placeholder="请输入内容"
+        :placeholder="$t('TP.GENERIC.Search')"
         prefix-icon="el-icon-search"
         v-model="allTokenForm.key"
       ></el-input>

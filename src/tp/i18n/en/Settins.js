@@ -18,5 +18,13 @@ export default {
     ChangePasswordButton: 'Change Password',
     Label: 'Password',
     Placeholder: 'Please Enter Your Password'
+  },
+
+  FIREWALL: {
+    TEXT1: 'Restriction Contract Actions',
+    TEXT2:
+      'These actions will not be allowed from external applications.',
+    TEXT3: 'Add a new restricted action',
+    TEXT4: 'Blacklisted Actions',
   }
 }

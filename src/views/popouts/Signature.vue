@@ -175,8 +175,8 @@
 
         <!-- 白名单 -->
         <section class="whitelist-bar" v-if="!isArbitrarySignature && !isDangerous && hasWhite">
-          <figure class="text" v-if="!whitelisted">{{$t('TP.POPOUT.SIGNATURE.offWhitelist')}}</figure>
-          <figure class="text blue" v-if="whitelisted">{{$t('TP.POPOUT.SIGNATURE.onWhitelist')}}</figure>
+          <figure class="text" v-if="!whitelisted">{{$t('TP.NOTOFICATION.POPOUT.SIGNATURE.offWhitelist')}}</figure>
+          <figure class="text blue" v-if="whitelisted">{{$t('TP.NOTOFICATION.POPOUT.SIGNATURE.onWhitelist')}}</figure>
           <Switcher :state="whitelisted" @click.native="whitelist" />
         </section>
       </section>

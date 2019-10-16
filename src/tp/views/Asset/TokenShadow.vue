@@ -44,8 +44,8 @@ export default {
     shadowTitle() {
       const titleMap = {
         TOKEN_ADD: "添加代币",
-        TOKEN_EXCHANGE: "转账",
-        TOKEN_QR_CODE: "收款"
+        TOKEN_EXCHANGE: this.$t('TP.ACCOUNT.TRANSFER.Send'),
+        TOKEN_QR_CODE: this.$t('TP.ACCOUNT.TRANSFER.Receive')
       };
       return titleMap[this.typeInfo]
     }

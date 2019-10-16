@@ -9,7 +9,7 @@
             class="ft-18"
             style="font-weight: normal;color: #666;margin-top:15px;"
             v-if="isNewScatter"
-          >{{$t('TP.LOGIN.CANT_LOGIN_NOTICE_4')}}</h5>
+          >{{$t('TP.GENERIC.LOGIN.CANT_LOGIN_NOTICE_4')}}</h5>
         </h3>
 
         <h4 class="ft-24 c-c4c7d2">{{$t('TP.GENERIC.Password')}}</h4>
@@ -19,7 +19,7 @@
           <input
             class="tp-input"
             type="password"
-            :placeholder="isNewScatter ? $t('TP.LOGIN.SET_PASSWORD_DESC') : $t('TP.LOGIN.PASSWORD_DESC')"
+            :placeholder="isNewScatter ? $t('TP.GENERIC.LOGIN.SET_PASSWORD_DESC') : $t('TP.GENERIC.LOGIN.PASSWORD_DESC')"
             v-model="password"
             @keyup.enter="unlock"
           />
@@ -30,7 +30,7 @@
           <input
             class="login-input"
             type="password"
-            :placeholder="$t('TP.LOGIN.CONFIRM_PASSWORD_DESC')"
+            :placeholder="$t('TP.GENERIC.LOGIN.CONFIRM_PASSWORD_DESC')"
             @keyup.enter="checkPassword"
             v-model="confirmation"
           />
@@ -65,7 +65,7 @@
             class="ft-14 pointer"
             style="color: #2980FE;margin-top: 24px;display: inline-block"
             @click="forgetPwd"
-          >{{$t('TP.LOGIN.CANT_LOGIN')}}?</span>
+          >{{$t('TP.GENERIC.LOGIN.CANT_LOGIN')}}?</span>
         </figure>
       </section>
 
@@ -92,13 +92,13 @@
 
     <!-- 忘记密码 -->
     <el-dialog :visible.sync="dialogVisible" width="40%">
-      <h3 class="text-center c-333 ft-20">{{$t('TP.LOGIN.NOTICE')}}</h3>
-      <p class="c-333 ft-16" style="line-height: 1.5">{{$t('TP.LOGIN.CANT_LOGIN_DESC')}}</p>
+      <h3 class="text-center c-333 ft-20">{{$t('TP.GENERIC.LOGIN.NOTICE')}}</h3>
+      <p class="c-333 ft-16" style="line-height: 1.5">{{$t('TP.GENERIC.LOGIN.CANT_LOGIN_DESC')}}</p>
       <br />
-      <p class="c-333 ft-14" style="line-height: 1.5">{{$t('TP.LOGIN.NOTICE')}}：</p>
-      <p class="c-333 ft-14" style="line-height: 1.5">{{$t('TP.LOGIN.CANT_LOGIN_NOTICE_1')}}</p>
-      <p class="c-333 ft-14" style="line-height: 1.5">{{$t('TP.LOGIN.CANT_LOGIN_NOTICE_2')}}</p>
-      <p class="c-333 ft-14" style="line-height: 1.5">{{$t('TP.LOGIN.CANT_LOGIN_NOTICE_3')}}</p>
+      <p class="c-333 ft-14" style="line-height: 1.5">{{$t('TP.GENERIC.LOGIN.NOTICE')}}：</p>
+      <p class="c-333 ft-14" style="line-height: 1.5">{{$t('TP.GENERIC.LOGIN.CANT_LOGIN_NOTICE_1')}}</p>
+      <p class="c-333 ft-14" style="line-height: 1.5">{{$t('TP.GENERIC.LOGIN.CANT_LOGIN_NOTICE_2')}}</p>
+      <p class="c-333 ft-14" style="line-height: 1.5">{{$t('TP.GENERIC.LOGIN.CANT_LOGIN_NOTICE_3')}}</p>
       <br />
       <br />
 
@@ -110,105 +110,6 @@
         >{{$t('TP.GENERIC.Confirm')}}</button>
       </div>
     </el-dialog>
-
-    <!--        <section class="entry" v-if="state === STATES.NEW_OR_LOGIN" :class="{'success':success}">-->
-    <!--            <figure class="login-bg">-->
-    <!--                <img src="../../../assets/login_bg.png" />-->
-    <!--            </figure>-->
-    <!--            <section class="meteors">-->
-    <!--                <section class="rotator">-->
-    <!--                    <figure class="shooting_star" v-for="i in new Array(20).keys()"></figure>-->
-    <!--                </section>-->
-    <!--            </section>-->
-
-    <!--            <section class="head">-->
-    <!--                <section class="details">-->
-    <!--                    <figure class="logo scatter-logologo"></figure>-->
-    <!--                    <figure class="version">meteoric</figure>-->
-    <!--                </section>-->
-    <!--            </section>-->
-
-    <!-------------------------->
-    <!------ NEW SCATTER ------->
-    <!-------------------------->
-    <!--            <section class="body">-->
-    <!--                <section v-if="isNewScatter">-->
-    <!--                    <LoginButton-->
-    <!--                            @click.native="state = STATES.CREATE_NEW"-->
-    <!--                            primary="1"-->
-    <!--                            title="I'm new to blockchain"-->
-    <!--                            description="We'll set you up with a new blockchain account" />-->
-    <!--                    <LoginButton-->
-    <!--                            @click.native="state = STATES.IMPORT_KEYS"-->
-    <!--                            title="I have my own private keys"-->
-    <!--                            description="Import your accounts manually" />-->
-    <!--                </section>-->
-
-    <!-------------------------->
-    <!---- EXISTING SCATTER ---->
-    <!-------------------------->
-    <!--                <section v-if="!isNewScatter">-->
-    <!--                    <Input class="welcome-password" :focus="true" big="1" for-login="1"-->
-    <!--                           placeholder="Enter your password"-->
-    <!--                           type="password" :disabled="opening || isLockedOut"-->
-    <!--                           :loader-on-dynamic="opening && !success"-->
-    <!--                           :text="password" v-on:enter="unlock" v-on:dynamic="unlock" v-on:changed="x => password = x"-->
-    <!--                           :dynamic-button="badPassword ? 'icon-cancel' : success ? 'icon-check' : isLockedOut ? '' : 'icon-right-open-big'" :hide-dynamic-button="!password.length" />-->
-
-    <!--                </section>-->
-    <!--            </section>-->
-
-    <!--            <section class="tail">-->
-    <!--                &lt;!&ndash;<section class="terms">&ndash;&gt;-->
-    <!--                &lt;!&ndash;Use of Scatter is limited to our <u>Terms of Use</u>.<br>&ndash;&gt;-->
-    <!--                &lt;!&ndash;Please make sure to also read our <u>Privacy Policy</u>.&ndash;&gt;-->
-    <!--                &lt;!&ndash;</section>&ndash;&gt;-->
-    <!--                <section class="actions">-->
-    <!--                    <section class="action" @click="destroy" v-if="!isNewScatter">-->
-    <!--                        <Reset class="logo" />-->
-    <!--                        <figure class="text">Reset</figure>-->
-    <!--                    </section>-->
-    <!--                    <section class="action" @click="importBackup" v-if="isNewScatter">-->
-    <!--                        <Restore class="logo" />-->
-    <!--                        <figure class="text">Restore</figure>-->
-    <!--                    </section>-->
-    <!--                    <section class="action" @click="goToSupport">-->
-    <!--                        <Support class="logo" />-->
-    <!--                        <figure class="text">Support</figure>-->
-    <!--                    </section>-->
-    <!--                </section>-->
-    <!--            </section>-->
-
-    <!--        </section>-->
-
-    <!-------------------------->
-    <!-- CREATING NEW SCATTER (No keys) -->
-    <!-------------------------->
-    <!--        <section class="onboard" v-if="state === STATES.CREATE_NEW">-->
-    <!--            <ProgressBubbles :total="steps" :index="step" />-->
-
-    <!--            <section class="panel">-->
-    <!--                <Terms v-if="step === 1" v-on:back="stepBack" v-on:next="stepForward" />-->
-    <!--                <SetPassword v-if="step === 2" v-on:back="stepBack" v-on:next="stepForward" />-->
-    <!--                &lt;!&ndash;<SelectBackupLocation v-if="step === 3" v-on:back="stepBack" v-on:next="stepForward" />&ndash;&gt;-->
-    <!--                <Welcome v-if="step === 3" />-->
-    <!--            </section>-->
-
-    <!--        </section>-->
-
-    <!-------------------------->
-    <!-- CREATING NEW SCATTER (Has keys) -->
-    <!--        &lt;!&ndash;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
-    <!--        <section class="onboard" v-if="state === STATES.IMPORT_KEYS">-->
-    <!--            <ProgressBubbles :total="steps" :index="step" />-->
-
-    <!--            <section class="panel">-->
-    <!--                <Terms v-if="step === 1" v-on:back="stepBack" v-on:next="stepForward" />-->
-    <!--                <SetPassword v-if="step === 2" v-on:back="stepBack" v-on:next="importKeypair" />-->
-    <!--                <Welcome v-if="step === 4" />-->
-    <!--            </section>-->
-
-    <!--        </section>-->
   </section>
 </template>
 
@@ -216,36 +117,34 @@
 import { mapActions, mapGetters, mapState } from "vuex";
 import * as Actions from "../../../store/constants";
 
-import ProgressBubbles from "../../../components/reusable/ProgressBubbles";
-import ActionBar from "../../../components/reusable/ActionBar";
-import LoginButton from "../../../components/login/LoginButton";
-import Terms from "../../../components/login/Terms";
-import SetPassword from "../../../components/login/SetPassword";
-import SelectBackupLocation from "../../../components/login/SelectBackupLocation";
-import Welcome from "../../../components/login/Welcome";
 import PopupService from "../../../services/utility/PopupService";
 import PasswordService from "../../../services/secure/PasswordService";
-import StoreService from "../../../services/utility/StoreService";
-import { Popup } from "../../../models/popups/Popup";
-
-import SpaceBackground from "../../../components/backgrounds/SpaceBackground";
-import Reset from "../../../components/svgs/login/Reset";
-import Restore from "../../../components/svgs/login/Restore";
-import Support from "../../../components/svgs/login/Support";
-import ElectronHelpers from "../../../util/ElectronHelpers";
 import BackupService from "../../../services/utility/BackupService";
-
-import SocketService from "../../../services/utility/SocketService";
-import StorageService from "../../../services/utility/StorageService";
-
+import { Popup } from "../../../models/popups/Popup";
 import { RouteNames } from "../../../vue/Routing";
 
-const STATES = {
-  NEW_OR_LOGIN: "newOrLogin",
-  CREATE_NEW: "createNew",
-  IMPORT_KEYS: "importKeys",
-  IMPORT_BACKUP: "importBackup"
-};
+// import ElectronHelpers from "../../../util/ElectronHelpers";
+// import StoreService from "../../../services/utility/StoreService";
+// import ProgressBubbles from "../../../components/reusable/ProgressBubbles";
+// import ActionBar from "../../../components/reusable/ActionBar";
+// import LoginButton from "../../../components/login/LoginButton";
+// import Terms from "../../../components/login/Terms";
+// import SetPassword from "../../../components/login/SetPassword";
+// import SelectBackupLocation from "../../../components/login/SelectBackupLocation";
+// import Welcome from "../../../components/login/Welcome";
+// import SpaceBackground from "../../../components/backgrounds/SpaceBackground";
+// import Reset from "../../../components/svgs/login/Reset";
+// import Restore from "../../../components/svgs/login/Restore";
+// import Support from "../../../components/svgs/login/Support";
+// import SocketService from "../../../services/utility/SocketService";
+// import StorageService from "../../../services/utility/StorageService";
+
+// const STATES = {
+//   NEW_OR_LOGIN: "newOrLogin",
+//   CREATE_NEW: "createNew",
+//   IMPORT_KEYS: "importKeys",
+//   IMPORT_BACKUP: "importBackup"
+// };
 
 const lockoutTime = 1000 * 60 * 5;
 const resetLockout = () => window.localStorage.removeItem("lockout");
@@ -266,25 +165,24 @@ const setLockout = () => {
 
 export default {
   components: {
-    SpaceBackground,
-    Welcome,
-    SelectBackupLocation,
-    ActionBar,
-    ProgressBubbles,
-    LoginButton,
-    SetPassword,
-    Terms,
-
-    Reset,
-    Restore,
-    Support
+    // SpaceBackground,
+    // Welcome,
+    // SelectBackupLocation,
+    // ActionBar,
+    // ProgressBubbles,
+    // LoginButton,
+    // SetPassword,
+    // Terms,
+    // Reset,
+    // Restore,
+    // Support
   },
   data() {
     return {
-      state: STATES.NEW_OR_LOGIN,
-      STATES,
+      // state: STATES.NEW_OR_LOGIN,
+      // STATES,
 
-      step: 2,
+      // step: 2,
       // password: "",
       // confirmation: "",
       password: "123123123",
@@ -297,31 +195,30 @@ export default {
     };
   },
   created() {
-    this.unlock();
-    // console.log(this.scatter);
+    if (this.scatter) this.unlock();
   },
   computed: {
     ...mapState(["scatter"]),
     ...mapGetters(["tpAccounts", "currentLanguage", "currentAccount"]),
     isNewScatter() {
       return !this.scatter;
-    },
-    steps() {
-      switch (this.state) {
-        case STATES.CREATE_NEW:
-          return 3;
-        case STATES.IMPORT_KEYS:
-          return 4;
-        case STATES.IMPORT_BACKUP:
-          return 3;
-      }
-    },
-    lockedTimeLeft() {
-      return (this.lockedOutTime - this.now) / 1000;
-    },
-    isLockedOut() {
-      return this.lockedTimeLeft > 0 && this.lockedOutTime > 0;
     }
+    // steps() {
+    //   switch (this.state) {
+    //     case STATES.CREATE_NEW:
+    //       return 3;
+    //     case STATES.IMPORT_KEYS:
+    //       return 4;
+    //     case STATES.IMPORT_BACKUP:
+    //       return 3;
+    //   }
+    // },
+    // lockedTimeLeft() {
+    //   return (this.lockedOutTime - this.now) / 1000;
+    // },
+    // isLockedOut() {
+    //   return this.lockedTimeLeft > 0 && this.lockedOutTime > 0;
+    // }
   },
   methods: {
     forgetPwd() {

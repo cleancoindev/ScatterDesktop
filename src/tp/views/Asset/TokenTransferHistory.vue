@@ -2,7 +2,7 @@
   <div class="TokenTransferHistory">
     <div class="asset-back c-fff" @click="backTokenList">
       <i class="asset-back-arrow"></i>
-      Back
+      {{$t('TP.GENERIC.Back')}}
     </div>
 
     <div class="asset-main">
@@ -17,7 +17,7 @@
 
           <div class="transfer-balance">
             <h5>{{tokenInfo.balance}}</h5>
-            <p>≈ {{tokenInfo.price_usd ? tokenInfo.price_usd.toFixed(tokenInfo.precision) : 0}}</p>
+            <p>≈ $ {{tokenInfo.price_usd ? tokenInfo.price_usd.toFixed(tokenInfo.precision) : 0}}</p>
           </div>
         </div>
       </div>
@@ -28,23 +28,23 @@
             class="transfer-status-item"
             :class="{'active': transactionTabStatus === 0}"
             @click="changeTabStatus(0)"
-          >全部</span>
+          >{{$t('TP.GENERIC.All')}}</span>
           <span
             class="transfer-status-item"
             :class="{'active': transactionTabStatus === 1}"
             @click="changeTabStatus(1)"
-          >转入</span>
+          >{{$t('TP.ACCOUNT.TRANSFER.In')}}</span>
           <span
             class="transfer-status-item"
             :class="{'active': transactionTabStatus === 2}"
             @click="changeTabStatus(2)"
-          >转出</span>
+          >{{$t('TP.ACCOUNT.TRANSFER.Out')}}</span>
         </div>
 
         <div class="transfer-search">
           <el-input
             class="asset-token-search"
-            placeholder="请输入内容"
+            :placeholder="$t('TP.GENERIC.Search')"
             prefix-icon="el-icon-search"
             v-model="searchAccountActions"
           ></el-input>
@@ -80,15 +80,14 @@
       <div class="transfer-in-out">
         <div class="transfer-out" @click="changeShadow('TOKEN_EXCHANGE')">
           <i></i>
-          转账
+          {{$t('TP.ACCOUNT.TRANSFER.Send')}}
         </div>
 
         <div class="transfer-in" @click="changeShadow('TOKEN_QR_CODE')">
           <i></i>
-          收款
+          {{$t('TP.ACCOUNT.TRANSFER.Receive')}}
         </div>
       </div>
-      <!-- </div> -->
     </div>
   </div>
 </template>

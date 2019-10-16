@@ -3,11 +3,11 @@
         <Key/>
         <br>
         <br>
-        <h2>{{$t('TP.KEYS.IMPORT.TextTitle')}}</h2>
+        <h2>{{$t('TP.ACCOUNT.KEYS.IMPORT.TextTitle')}}</h2>
 
         <br>
 
-        <input class="center" type="password" v-model="privateKey" :placeholder="$t('TP.KEYS.IMPORT.TextDescription')"/>
+        <input class="center" type="password" v-model="privateKey" :placeholder="$t('TP.ACCOUNT.KEYS.IMPORT.TextDescription')"/>
 
         <br>
         <br>

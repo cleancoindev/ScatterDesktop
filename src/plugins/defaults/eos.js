@@ -77,7 +77,7 @@ class EosTokenAccountAPI {
 }
 
 let cachedInstances = {};
-const getCachedInstance = network => {
+export const getCachedInstance = network => {
 	if(cachedInstances.hasOwnProperty(network.unique())) return cachedInstances[network.unique()];
 	else {
 		const eos = Eos({httpEndpoint:`${network.fullhost()}`, chainId:network.chainId});

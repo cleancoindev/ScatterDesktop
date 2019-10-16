@@ -1,27 +1,40 @@
 <template>
   <section class="TokenList">
+    <div class="asset-nav">
+      <img
+        src="../../assets/images/myAssets/asset-refresh.png"
+        alt
+        class="refresh rotate"
+        @click="initAccountToken"
+      />
+    </div>
+
     <div class="asset-header text-center">
-      <div class="asset-balance c-fff">${{assetTokenInfo.total_asset}}</div>
-      <div class="asset-balance-text c-fff">Total Balance</div>
-      <div class="asset-balance-view">
+      <div
+        class="asset-balance c-fff"
+      >{{assetTokenInfo.unit}} {{filterDecimal(assetTokenInfo.total_asset || 0)}}</div>
+
+      <div class="asset-balance-text c-fff">{{$t('TP.ACCOUNT.ASSET.TotalBalance')}}</div>
+
+      <div class="asset-balance-view" v-if="isEos">
         <div class="asset-balance-btn staked">
-          <h5>20459.9724</h5>
-          <p>Staked (EOS)</p>
+          <h5>{{accountStaked}}</h5>
+          <p>{{$t('TP.GENERIC.Staked')}}</p>
         </div>
         <div class="asset-balance-btn rex">
-          <h5>0.0000</h5>
-          <p>REX (EOS)</p>
+          <h5>{{rexBalance}}</h5>
+          <p>REX</p>
         </div>
       </div>
     </div>
 
     <div class="asset-main">
       <div class="asset-operation">
-        <span class="asset-token-title">Token</span>
+        <span class="asset-token-title">{{$t('TP.GENERIC.Token')}}</span>
         <span style="display:flex;align-items:center;">
           <el-input
             class="asset-token-search"
-            placeholder="请输入内容"
+            :placeholder="$t('TP.GENERIC.Search')"
             prefix-icon="el-icon-search"
             v-model="searchToken"
           ></el-input>
@@ -41,12 +54,13 @@
           <div class="asset-token-right">
             <div class="asset-token-name">
               <h5>{{item.symbol}}</h5>
-              <!-- <p class="ft-12">Liquid</p> -->
             </div>
 
             <div class="asset-token-balance">
               <h5>{{item.balance}}</h5>
-              <p class="ft-14">≈ {{item.price_usd ? item.price_usd.toFixed(item.precision) : 0}}</p>
+              <p
+                class="ft-14"
+              >≈ {{assetTokenInfo.unit}} {{item.price_usd ? item.price_usd.toFixed(item.precision) : 0}}</p>
             </div>
           </div>
 
@@ -58,18 +72,20 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from "vuex";
-import * as Actions from "../../../store/constants";
-import Token from "../../../models/Token";
+import { mapGetters } from "vuex";
+import { getCachedInstance } from "../../../plugins/defaults/eos";
 
 export default {
   name: "TokenList",
   components: {},
   data() {
     return {
-      searchToken: ""
+      searchToken: "",
+      accountStaked: 0,
+      rexBalance: 0
     };
   },
+
   computed: {
     ...mapGetters(["currentAccount", "assetTokenInfo"]),
     assetTokenList() {
@@ -85,8 +101,13 @@ export default {
         return this.assetTokenInfo.tokens;
       }
       return [];
+    },
+
+    isEos() {
+      return this.currentAccount.blockchain() === "eos";
     }
   },
+
   methods: {
     goTransaction(token) {
       this.$store.commit("CURRENT_WALLET_TOKEN_INFO", token);
@@ -95,23 +116,101 @@ export default {
 
     addToken() {
       this.$emit("shadow-type", "TOKEN_ADD");
+    },
+
+    initAccountToken() {
+      this.$store.dispatch("INFO_WALLET", this.currentAccount);
+      this.getAccountStaked();
+    },
+
+    getAccountStaked() {
+      if (this.isEos) {
+        const eos = getCachedInstance(this.currentAccount.network());
+        eos.getAccount(this.currentAccount.name).then(res => {
+          if (res.self_delegated_bandwidth) {
+            this.accountStaked = res.self_delegated_bandwidth.cpu_weight;
+          }
+        });
+
+        eos
+          .getTableRows({
+            code: "eosio",
+            json: true,
+            limit: 1,
+            lower_bound: this.currentAccount.name,
+            scope: "eosio",
+            table: "rexbal",
+            table_key: "",
+            upper_bound: this.currentAccount.name
+          })
+          .then(res => {
+            if (res.rows.length > 0) {
+              this.rexBalance = parseFloat(res.rows[0].rex_balance);
+            } else {
+              this.rexBalance = 0;
+            }
+          });
+      }
+    },
+
+    filterDecimal(balance) {
+      const blockchain = this.currentAccount.blockchain();
+      if (blockchain === "eos") {
+        return parseFloat(balance).toFixed(4);
+      }
+
+      if (blockchain === "eth") {
+        return parseFloat(balance).toFixed(18);
+      }
+
+      if (blockchain == "trx") {
+        return parseFloat(balance).toFixed(6);
+      }
     }
   },
   created() {},
 
   mounted() {
-    this.$store.dispatch("INFO_WALLET", this.currentAccount);
+    this.initAccountToken();
   },
 
   watch: {
     currentAccount() {
-      this.$store.dispatch("INFO_WALLET", this.currentAccount);
+      this.initAccountToken();
     }
   }
 };
 </script>
 
 <style scoped lang="scss">
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.asset-nav {
+  width: 600px;
+  margin: 0 auto;
+  padding: 15px 0;
+  text-align: right;
+
+  img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .refresh {
+    // &.rotate {
+    // animation: rotation 3s linear infinite;
+    // }
+  }
+}
+
 .asset-arrow {
   display: inline-block;
   width: 7px;
@@ -128,7 +227,7 @@ export default {
 
 .asset-header {
   .asset-balance {
-    padding-top: 73px;
+    // padding-top: 73px;
     font-size: 28px;
     font-weight: 500;
     line-height: 40px;

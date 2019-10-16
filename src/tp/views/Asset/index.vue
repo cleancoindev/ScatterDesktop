@@ -27,7 +27,7 @@ import { mapGetters } from "vuex";
 import TokenList from "./TokenList";
 import TokenTransferHistory from "./TokenTransferHistory";
 import TokenShadow from "./TokenShadow";
-import BalanceService from "../../../services/blockchain/BalanceService";
+// import BalanceService from "../../../services/blockchain/BalanceService";
 
 export default {
   name: "TPAssets",
@@ -55,8 +55,7 @@ export default {
     }
   },
 
-  mounted() {
-  },
+  mounted() {},
 
   methods: {
     getTokenInfo(token) {
@@ -84,5 +83,4 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 </style>

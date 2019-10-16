@@ -89,34 +89,9 @@ export default {
       return categoryList;
     }
   },
-  watch: {
-    async language() {
-      // await this.$store.dispatch('GET_CATEGORY_LIST')
-      // await this.$store.dispatch('GET_DAPP_LIST', { nextPage: false })
-    }
-
-    // dappKey() {
-    //   if (!urlReg(this.dappKey)) {
-    //     this.$emit('dapp-key', this.dappKey)
-    //   }
-    // }
-  },
+  watch: {},
   methods: {
-    async moreDapp() {
-      // await this.$store.dispatch('GET_CATEGORY_LIST')
-      // this.$store.dispatch('GET_DAPP_LIST', { nextPage: true })
-    },
-
-    goDetail(id) {
-      //   CreateDAppWebView(
-      //     `https://dapp.mytokenpocket.vip/detail/index.html#/dapp/${id}`
-      //   );
-      // ElectronHelpers.openLinkInBrowser('https://dapp.mytokenpocket.vip/detail/index.html#/dapp/' + id);
-    },
-
     goGame(item) {
-      // console.log(item)
-      // return false
       if (item.platform.trx === 1) {
         ipc.send("goGame", {
           data: item,

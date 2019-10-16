@@ -31,12 +31,13 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { addTransactionAction } from "../../api/Wallet";
 import Token from "../../../models/Token";
-import BalanceService from "../../../services/blockchain/BalanceService";
 import TransferService from "../../../services/blockchain/TransferService";
-import PasswordService from "../../../services/secure/PasswordService";
-import PriceService from "../../../services/apis/PriceService";
+
+// import { addTransactionAction } from "../../api/Wallet";
+// import BalanceService from "../../../services/blockchain/BalanceService";
+// import PasswordService from "../../../services/secure/PasswordService";
+// import PriceService from "../../../services/apis/PriceService";
 export default {
   name: "ExchangeToken",
   props: {
@@ -56,7 +57,7 @@ export default {
       sending: false,
       token: {
         amount: null
-      },
+      }
     };
   },
 
