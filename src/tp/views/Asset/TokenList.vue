@@ -12,7 +12,7 @@
     <div class="asset-header text-center">
       <div
         class="asset-balance c-fff"
-      >{{assetTokenInfo.unit}} {{filterDecimal(assetTokenInfo.total_asset || 0)}}</div>
+      >{{assetTokenInfo.balance || '0.00'}}</div>
 
       <div class="asset-balance-text c-fff">{{$t('TP.ACCOUNT.ASSET.TotalBalance')}}</div>
 
@@ -60,7 +60,7 @@
               <h5>{{item.balance}}</h5>
               <p
                 class="ft-14"
-              >≈ {{assetTokenInfo.unit}} {{item.price_usd ? item.price_usd.toFixed(item.precision) : 0}}</p>
+              >≈ {{assetTokenInfo.unit}} {{item.price_usd || 0}}</p>
             </div>
           </div>
 
@@ -74,6 +74,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { getCachedInstance } from "../../../plugins/defaults/eos";
+// import { getAllTokenList, searchTokenList } from "../../api/Wallet";
 
 export default {
   name: "TokenList",
@@ -81,13 +82,23 @@ export default {
   data() {
     return {
       searchToken: "",
+      searchTokenForm: {
+        key: "",
+        start: 0,
+        count: 1000
+      },
       accountStaked: 0,
       rexBalance: 0
     };
   },
 
   computed: {
-    ...mapGetters(["currentAccount", "assetTokenInfo"]),
+    ...mapGetters([
+      "currentAccount",
+      "currentBlockChainId",
+      "currentWalletId ",
+      "assetTokenInfo"
+    ]),
     assetTokenList() {
       if (this.assetTokenInfo.tokens) {
         if (this.searchToken) {
@@ -150,21 +161,6 @@ export default {
               this.rexBalance = 0;
             }
           });
-      }
-    },
-
-    filterDecimal(balance) {
-      const blockchain = this.currentAccount.blockchain();
-      if (blockchain === "eos") {
-        return parseFloat(balance).toFixed(4);
-      }
-
-      if (blockchain === "eth") {
-        return parseFloat(balance).toFixed(18);
-      }
-
-      if (blockchain == "trx") {
-        return parseFloat(balance).toFixed(6);
       }
     }
   },

@@ -7,7 +7,11 @@
       </div>
 
       <TokenAdd v-if="typeInfo === 'TOKEN_ADD'" />
-      <TokenExchange v-show="typeInfo === 'TOKEN_EXCHANGE'" :token-info="tokenInfo" />
+      <TokenExchange
+        v-show="typeInfo === 'TOKEN_EXCHANGE'"
+        :token-info="tokenInfo"
+        @transfer-state="$emit('asset-type', '')"
+      />
       <TokenQRCode v-if="typeInfo === 'TOKEN_QR_CODE'" />
     </div>
   </div>
@@ -28,7 +32,7 @@ export default {
     tokenInfo: {
       type: Object,
       default: () => {
-        return {}
+        return {};
       }
     },
     typeInfo: {
@@ -43,19 +47,16 @@ export default {
   computed: {
     shadowTitle() {
       const titleMap = {
-        TOKEN_ADD: "添加代币",
-        TOKEN_EXCHANGE: this.$t('TP.ACCOUNT.TRANSFER.Send'),
-        TOKEN_QR_CODE: this.$t('TP.ACCOUNT.TRANSFER.Receive')
+        TOKEN_ADD: this.$t("TP.ACCOUNT.ASSET.AddToken"),
+        TOKEN_EXCHANGE: this.$t("TP.ACCOUNT.TRANSFER.Send"),
+        TOKEN_QR_CODE: this.$t("TP.ACCOUNT.TRANSFER.Receive")
       };
-      return titleMap[this.typeInfo]
+      return titleMap[this.typeInfo];
     }
   },
-  methods: {
-    
-  },
+  methods: {},
 
-  created() {
-  }
+  created() {}
 };
 </script>
 
@@ -83,7 +84,7 @@ export default {
   }
 
   .shadow-header {
-    display:flex;
+    display: flex;
     align-items: center;
     font-size: 20px;
     font-weight: 500;
@@ -97,10 +98,11 @@ export default {
       flex: 1;
     }
     i {
-      display:inline-block;
+      display: inline-block;
       width: 9px;
       height: 16px;
-      background: url(../../assets/images/myAssets/asset-arrow.png) no-repeat 100% / contain;
+      background: url(../../assets/images/myAssets/asset-arrow.png) no-repeat
+        100% / contain;
     }
   }
 }

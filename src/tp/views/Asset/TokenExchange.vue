@@ -1,17 +1,17 @@
 <template>
   <div class="TokenExchange">
-    <h5>{{$t('TP.ASSETS.TRANSFER.ReceiverAccount')}}</h5>
+    <h5>{{$t('TP.ACCOUNT.TRANSFER.ReceiverAccount')}}</h5>
     <input
       type="text"
       class="exchange-to"
-      :placeholder="$t('TP.ASSETS.TRANSFER.Receiver')"
+      :placeholder="$t('TP.ACCOUNT.TRANSFER.Receiver')"
       v-model="recipient"
     />
 
-    <h5>{{$t('TP.ASSETS.TRANSFER.Amount')}}</h5>
+    <h5>{{$t('TP.ACCOUNT.TRANSFER.Amount')}}</h5>
     <input
       type="number"
-      :placeholder="$t('TP.ASSETS.TRANSFER.AmountInput')"
+      :placeholder="$t('TP.ACCOUNT.TRANSFER.AmountInput')"
       v-model.number="token.amount"
     />
 
@@ -21,7 +21,7 @@
     </div>
 
     <button
-      class="tp-button ft-14"
+      class="confirm-btn tp-button ft-14"
       :class="{'on': canSend}"
       style="padding: 10px 0;"
       @click="send"
@@ -34,10 +34,6 @@ import { mapGetters } from "vuex";
 import Token from "../../../models/Token";
 import TransferService from "../../../services/blockchain/TransferService";
 
-// import { addTransactionAction } from "../../api/Wallet";
-// import BalanceService from "../../../services/blockchain/BalanceService";
-// import PasswordService from "../../../services/secure/PasswordService";
-// import PriceService from "../../../services/apis/PriceService";
 export default {
   name: "ExchangeToken",
   props: {
@@ -93,10 +89,12 @@ export default {
         promptForSignature: false
       }).catch(err => {
         console.log(err);
+         this.$emit('transfer-state')
       });
 
       if (sent) {
         this.exchangeHidden();
+        this.$emit('transfer-state')
       }
     }
   },
@@ -116,7 +114,7 @@ export default {
       chainId
     );
 
-    this.token = { ...this.token, ...token };
+    this.token = { ...this.token, ...token, amount: null };
   },
   watch: {
     currentWalletTokenInfo() {

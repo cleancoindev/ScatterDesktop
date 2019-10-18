@@ -34,9 +34,9 @@ export default {
     }
   },
 
-
   ASSET: {
     TotalBalance: 'Total Balance',
+    AddToken: 'Add Token'
   },
 
   TRANSFER: {
@@ -44,8 +44,10 @@ export default {
     Out: 'Out',
     Send: 'Send',
     Receive: 'Receive',
-    ReceiverAccount: 'Receiver Account',
     Receiver: 'Receiver',
+    ReceiverAccount: 'Receiver Account',
+    ReceiveCode: 'Receive Code',
+    YourAccount: 'Your Account',
     Amount: 'Amount',
     AmountInput: 'Input transfer amount',
     Balance: 'Balance',

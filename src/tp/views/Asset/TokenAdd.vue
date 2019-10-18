@@ -27,6 +27,7 @@
 import { mapGetters } from "vuex";
 import {
   getAllTokenList,
+  searchTokenList,
   addWalletToken,
   delWalletToken
 } from "../../api/Wallet";
@@ -84,8 +85,19 @@ export default {
         blockchain_id: this.currentBlockChainId
       }).then(res => {
         if (res.result === 0) {
-          this.allTokenList = [...res.data];
-          // console.log(res.data);
+          this.allTokenList = res.data;
+        }
+      });
+    },
+
+    getSearchToken() {
+      searchTokenList({
+        ...this.allTokenForm,
+        blockchain_id: this.currentBlockChainId,
+        wallet_id: this.currentWalletId
+      }).then(res => {
+        if (res.result === 0) {
+          this.allTokenList = res.data;
         }
       });
     },
@@ -113,8 +125,7 @@ export default {
   },
   watch: {
     "allTokenForm.key"() {
-      this.getAllTokenList();
-      // console.log(this.searchToken)
+      this.allTokenForm.key ? this.getSearchToken() : this.getAllTokenList();
     }
   }
 };

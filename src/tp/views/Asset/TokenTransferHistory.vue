@@ -17,7 +17,7 @@
 
           <div class="transfer-balance">
             <h5>{{tokenInfo.balance}}</h5>
-            <p>≈ $ {{tokenInfo.price_usd ? tokenInfo.price_usd.toFixed(tokenInfo.precision) : 0}}</p>
+            <p>≈ $ {{tokenInfo.price_usd || 0}}</p>
           </div>
         </div>
       </div>
@@ -52,28 +52,39 @@
       </div>
 
       <div class="transfer-list">
-        <div class="transfer-item" v-for="(item, index) in transactionActionList" :key="index">
-          <img :src="transactionImg(item)" alt class="transfer-item-logo" />
+        <div class v-if="hasTransactions">
+          <div
+            class="transfer-item"
+            v-for="(item, index) in transactionActionList"
+            :key="index"
+            @click="goTransferDetail(item)"
+          >
+            <img :src="transactionImg(item)" alt class="transfer-item-logo" />
 
-          <div class="transfer-item-right">
-            <div class="transfer-item-text">
-              <h5 v-if="item.to === currentName">{{spliceAccount(item.from)}}</h5>
-              <h5 v-if="item.from === currentName">{{spliceAccount(item.to)}}</h5>
-              <p>{{$moment(item.timestamp * 1000).format('MM/DD HH:mm')}}</p>
+            <div class="transfer-item-right">
+              <div class="transfer-item-text">
+                <h5 v-if="item.to === currentName">{{spliceAccount(item.from)}}</h5>
+                <h5 v-if="item.from === currentName">{{spliceAccount(item.to)}}</h5>
+                <p>{{$moment(item.timestamp * 1000).format('MM/DD HH:mm')}}</p>
+              </div>
+
+              <div
+                class="transfer-item-balance"
+                :class="{'in': item.to === currentName, 'out': item.from === currentName}"
+              >
+                <span v-if="item.to === currentName">+</span>
+                <span v-if="item.from === currentName">-</span>
+                <span>{{item.quantity}}</span>
+                <span>{{item.symbol}}</span>
+              </div>
             </div>
 
-            <div
-              class="transfer-item-balance"
-              :class="{'in': item.to === currentName, 'out': item.from === currentName}"
-            >
-              <span v-if="item.to === currentName">+</span>
-              <span v-if="item.from === currentName">-</span>
-              <span>{{item.count}}</span>
-              <span>{{item.symbol}}</span>
-            </div>
+            <i class="transfer-arrow"></i>
           </div>
+        </div>
 
-          <i class="transfer-arrow"></i>
+        <div class="transfer-placeholder" v-if="!hasTransactions">
+          <img src="../../assets/images/myAssets/asset-empty.png" alt class />
         </div>
       </div>
 
@@ -94,6 +105,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import ElectronHelpers from "../../../util/ElectronHelpers";
 export default {
   name: "TokenTransferHistory",
   props: {
@@ -110,11 +122,20 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["currentAccount", "transactionActionList"]),
+    ...mapGetters([
+      "currentAccount",
+      "transactionActionList",
+      "currentBlockChainId"
+    ]),
     currentName() {
       return this.currentAccount.name
         ? this.currentAccount.name
         : this.currentAccount.publicKey;
+    },
+    hasTransactions() {
+      // console.log([this.transactionActionList]);
+      const list = this.transactionActionList;
+      return Array.isArray(list) ? list.length > 0 : false;
     }
   },
   methods: {
@@ -136,9 +157,34 @@ export default {
       this.transactionTabStatus = status;
       this.$store.dispatch("GET_TRANSACTION_ACTION", {
         type: status,
+        search: this.searchAccountActions,
         ...this.tokenInfo,
         ...this.currentAccount
       });
+    },
+
+    goTransferDetail(item) {
+      const blockchainId = this.currentBlockChainId;
+
+      switch (blockchainId) {
+        case 1:
+          break;
+        case 4:
+          ElectronHelpers.openLinkInBrowser(
+            `https://www.eosx.io/tx/${item.hid}`
+          );
+          break;
+        case 6:
+          ElectronHelpers.openLinkInBrowser(
+            `https://bos.eosx.io/tx/${item.hid}`
+          );
+          break;
+        case 10:
+          ElectronHelpers.openLinkInBrowser(
+            `https://tronscan.org/#/transaction/${item.trx_id}`
+          );
+          break;
+      }
     },
 
     changeShadow(type) {
@@ -160,6 +206,8 @@ export default {
 
   watch: {
     searchAccountActions() {
+      console.log(this.transactionActionList);
+
       this.$store.dispatch("GET_TRANSACTION_ACTION", {
         type: this.transactionTabStatus,
         search: this.searchAccountActions,
@@ -316,8 +364,17 @@ export default {
 
   .transfer-list {
     margin-top: 20px;
-    height: calc(100vh - 363px);
+    height: calc(100vh - 371px);
     overflow-y: auto;
+
+    .transfer-placeholder {
+      text-align: center;
+      margin-top: 50px;
+      img {
+        width: 300px;
+      }
+    }
+
     .transfer-item {
       display: flex;
       align-items: center;

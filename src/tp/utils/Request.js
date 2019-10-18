@@ -60,8 +60,8 @@ function checkConfig(config) {
 
 const service = axios.create({
     timeout: 1000 * 15,
-    baseURL: 'https://betaserver.mytokenpocket.vip'
-    // baseURL: 'https://testserver.mytokenpocket.vip'
+    // baseURL: 'https://betaserver.mytokenpocket.vip'
+    baseURL: 'https://testserver.mytokenpocket.vip'
 });
 
 // request interceptor

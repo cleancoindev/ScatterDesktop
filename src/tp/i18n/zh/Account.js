@@ -34,7 +34,8 @@ export default {
   },
 
   ASSET: {
-    TotalBalance: '我的资产'
+    TotalBalance: '我的资产',
+    AddToken: '添加代币'
   },
 
   TRANSFER: {
@@ -42,8 +43,10 @@ export default {
     Out: '转出',
     Send: '转账',
     Receive: '收款',
-    ReceiverAccount: '收款账号',
     Receiver: '接收方',
+    ReceiverAccount: '收款账号',
+    ReceiveCode: '扫一扫，向我支付',
+    YourAccount: '账号',
     Amount: '转账数量',
     AmountInput: '输入转出金额',
     Balance: '余额',

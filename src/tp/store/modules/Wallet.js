@@ -13,6 +13,11 @@ const getUUid = () => {
   return s.join('')
 }
 
+const precision = item => {
+  if (item.decimal > 0) return item.decimal
+  if (item.precision > 0) return item.precision
+}
+
 const Wallet = {
   state: {
     walletMaps: {},
@@ -106,27 +111,77 @@ const Wallet = {
         wallet_id: walletID
       }).then(res => {
         if (res.result === 0) {
+          // if (res.data.tokens) {
+
+          // }
+          res.data.tokens.forEach(token => {
+            token.precision = precision(token)
+            token.balance = token.balance / `1e${token.precision}`
+            token.price_usd = parseFloat(token.price_usd).toFixed(2)
+          })
+
+          res.balance = `${res.unit} ${res.total_asset}`
+
           commit('ASSET_TOKEN_INFO', res.data)
         }
       })
     },
 
-    async GET_TRANSACTION_ACTION({ commit, rootState }, payload) {
+    async GET_TRANSACTION_ACTION({ commit, rootState, rootGetters }, payload) {
       const blockchainID = rootState.TP.chainTypes[payload.networkUnique]
       const walletName = payload.name ? payload.name : payload.publicKey
-      getTransactionAction({
+
+      const form = {
         page: 1,
         count: 1000,
         symbol: payload.symbol,
         search: payload.search,
         code: payload.account,
         account: walletName,
+        address: walletName,
         // 记录类型：0--全部， 1--转入， 2--转出
         type: payload.type,
         blockchain_id: blockchainID
-      }).then(res => {
-        if (res.result === 0) {
-          commit('TRANSACTION_ACTION_LIST', res.data)
+      }
+
+      if (rootGetters.currentBlockChainId === 1) {
+        delete form.account
+      } else {
+        delete form.address
+      }
+
+      getTransactionAction(form).then(res => {
+        if (res.result === 0 && res.data) {
+          const filterAction = action => {
+            switch (rootGetters.currentBlockChainId) {
+              case 1:
+                action.quantity = action.value / `1e${action.decimal}`
+                action.browser_url = `https://cn.etherscan.com/tx/${
+                  action.hash
+                }`
+                break
+              case 4:
+                action.quantity = action.count
+                action.browser_url = `https://www.eosx.io/tx/${action.hid}`
+                break
+              case 6:
+                action.quantity = action.count
+                action.browser_url = `https://bos.eosx.io/tx/${action.hid}`
+                break
+              case 10:
+                action.quantity = action.asset_nmount / `1e${action.decimal}`
+
+                action.browser_url = `https://tronscan.org/#/transaction/${
+                  action.trx_id
+                }`
+                break
+            }
+            return action
+          }
+
+          const actionList = res.data.map(action => filterAction(action))
+
+          commit('TRANSACTION_ACTION_LIST', actionList)
         }
       })
     }

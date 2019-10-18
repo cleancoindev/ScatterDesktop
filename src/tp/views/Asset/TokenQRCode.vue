@@ -1,18 +1,18 @@
 <template>
   <div class="Token-QR-Code">
-    <div class="qr-code-title">Receive Code</div>
+    <div class="qr-code-title">{{$t('TP.ACCOUNT.TRANSFER.ReceiveCode')}}</div>
 
     <div class="qr-code-img">
       <img :src="qrcode" />
     </div>
 
-    <div class="qr-code-text">Your Account:</div>
+    <div class="qr-code-text">{{$t('TP.ACCOUNT.TRANSFER.YourAccount')}}:</div>
 
     <div class="qr-code-account">{{accountNames}}</div>
 
     <div class="qr-code-copy" @click="copyAccount">
       <i></i>
-      Copy
+      {{$t('TP.GENERIC.Copy')}}
     </div>
   </div>
 </template>

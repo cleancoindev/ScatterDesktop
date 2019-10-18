@@ -13,6 +13,10 @@ export function getAllTokenList(params) {
   return fetch.get(Wallet.GET_ALL_TOKEN_LIST, { params })
 }
 
+export function searchTokenList (params) {
+  return fetch.get(Wallet.TOKEN_SEARCH, { params })
+}
+
 export function getTransactionAction(params) {
   return fetch.get(Wallet.GET_TRANSACTION_ACTION, { params })
 }
