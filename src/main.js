@@ -84,6 +84,8 @@ class Main {
       else next()
     }
 
+    console.log(Routing.routes())
+
     new VueInitializer(
       Routing.routes(),
       components,

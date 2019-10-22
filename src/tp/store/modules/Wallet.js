@@ -18,6 +18,11 @@ const precision = item => {
   if (item.precision > 0) return item.precision
 }
 
+const toNonExponential = num => {
+  var m = num.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/)
+  return num.toFixed(Math.max(0, (m[1] || '').length - m[2]))
+}
+
 const Wallet = {
   state: {
     walletMaps: {},
@@ -104,23 +109,28 @@ const Wallet = {
       })
     },
 
-    async GET_TOKEN_LIST({ commit }, walletID) {
+    async GET_TOKEN_LIST({ commit, rootGetters }, walletID) {
       getTokenList({
         start: 0,
         count: 2000,
         wallet_id: walletID
       }).then(res => {
         if (res.result === 0) {
-          // if (res.data.tokens) {
-
-          // }
           res.data.tokens.forEach(token => {
             token.precision = precision(token)
-            token.balance = token.balance / `1e${token.precision}`
+            if (
+              rootGetters.currentBlockChainId === 1 ||
+              rootGetters.currentBlockChainId === 10
+            ) {
+              token.balance = toNonExponential(
+                parseFloat(token.balance / `1e${token.precision}`)
+              )
+            }
+
             token.price_usd = parseFloat(token.price_usd).toFixed(2)
           })
 
-          res.balance = `${res.unit} ${res.total_asset}`
+          res.data.balance = `${res.data.unit} ${res.data.total_asset.toFixed(2)}`
 
           commit('ASSET_TOKEN_INFO', res.data)
         }
@@ -155,7 +165,9 @@ const Wallet = {
           const filterAction = action => {
             switch (rootGetters.currentBlockChainId) {
               case 1:
-                action.quantity = action.value / `1e${action.decimal}`
+                action.quantity = toNonExponential(
+                  parseFloat(action.value / `1e${action.decimal}`)
+                )
                 action.browser_url = `https://cn.etherscan.com/tx/${
                   action.hash
                 }`

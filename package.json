@@ -34,6 +34,7 @@
     "bip39": "^2.5.0",
     "chartist": "^0.11.0",
     "dayjs": "^1.8.16",
+    "electron-baidu-tongji": "^1.0.2",
     "electron-icon-builder": "^1.0.1",
     "electron-reload": "^1.5.0",
     "electron-store": "^3.2.0",
