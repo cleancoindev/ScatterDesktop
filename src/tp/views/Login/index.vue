@@ -118,7 +118,7 @@ import { mapActions, mapGetters, mapState } from "vuex";
 import * as Actions from "../../../store/constants";
 
 import PopupService from "../../../services/utility/PopupService";
-import PasswordService from "../../../services/secure/PasswordService";
+// import PasswordService from "../../../services/secure/PasswordService";
 import BackupService from "../../../services/utility/BackupService";
 import { Popup } from "../../../models/popups/Popup";
 import { RouteNames } from "../../../vue/Routing";
@@ -195,7 +195,7 @@ export default {
     };
   },
   created() {
-    if (this.scatter) this.unlock();
+    // if (this.scatter) this.unlock();
   },
   computed: {
     ...mapState(["scatter"]),
@@ -234,7 +234,10 @@ export default {
       if (this.tpAccounts.length === 0) {
         this.importKeypair();
       } else {
-        this.$store.dispatch("INIT_USER_INFO", this.currentAccount);
+        if (this.currentAccount.blockchain() === "eos") {
+          this.$store.dispatch("INIT_USER_INFO", this.currentAccount);
+        }
+
         this.$router.push({ name: this.RouteNames.DAPP });
       }
     },
@@ -252,10 +255,12 @@ export default {
     },
 
     async checkPassword() {
-      if (!PasswordService.isValidPassword(this.password, this.confirmation))
-        return false;
-      await this[Actions.CREATE_SCATTER](this.password);
-      this.go();
+      if (this.password) {
+        await this[Actions.CREATE_SCATTER](this.password);
+        this.go();
+      }
+      // if (!PasswordService.isValidPassword(this.password, this.confirmation))
+      //   return false;
     },
 
     async unlock(usingLocalStorage = false) {
@@ -317,7 +322,7 @@ export default {
           if (!usingLocalStorage) return this.unlock(true);
           this.opening = false;
           this.badPassword = true;
-          PopupService.push(Popup.snackbarBadPassword());
+          PopupService.push(Popup.snackbarBadPassword(this.$t('TP.GENERIC.PasswordError')));
           setLockout();
           this.workLoading = false;
         }

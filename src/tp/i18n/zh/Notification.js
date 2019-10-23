@@ -10,6 +10,10 @@ export default {
     LINKAPP: {
       Notices:
         '请确保该应用程序是您当前正在使用的那个应用程序。请勿轻易使用未知的应用程序，否则存在安全风险。'
+    },
+
+    DAPP: {
+      SupportPlatform: '当前DApp只支持{platform}'
     }
   }
 }

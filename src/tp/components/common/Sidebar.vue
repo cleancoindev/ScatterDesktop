@@ -13,18 +13,23 @@
         </section>
       </section>
 
-      <!--            {{tpAccounts}}-->
       <!-- tab 列表 -->
       <section class="tab-wrap">
-        <section class="tab-list p-10" v-for="(item, index) in tabList" :key="index">
-          <div class="tab-ctr pointer" :class="{'on': isActive(item.url)}" @click="tabChange(item)">
+        <div v-for="(item, index) in tabList" :key="index">
+          <section class="tab-list p-10" v-if="item.isShow">
             <div
-              class="TP-Font ft-20"
-              :class="[item.icon, `${isActive(item.url) ? 'c-fff' : 'c-818394'}`]"
-            ></div>
-            <span>{{item.title}}</span>
-          </div>
-        </section>
+              class="tab-ctr pointer"
+              :class="{'on': isActive(item.url)}"
+              @click="tabChange(item)"
+            >
+              <div
+                class="TP-Font ft-20"
+                :class="[item.icon, `${isActive(item.url) ? 'c-fff' : 'c-818394'}`]"
+              ></div>
+              <span>{{item.title}}</span>
+            </div>
+          </section>
+        </div>
       </section>
     </section>
 
@@ -86,10 +91,10 @@
 
 <script>
 import { mapGetters, mapState, mapActions } from "vuex";
-import * as Actions from "../../../store/constants";
+// import * as Actions from "../../../store/constants";
 import { RouteNames } from "../../../vue/Routing";
-import PopupService from "../../../services/utility/PopupService";
-import { Popup } from "../../../models/popups/Popup";
+// import PopupService from "../../../services/utility/PopupService";
+// import { Popup } from "../../../models/popups/Popup";
 // const ElectronStore = window.require('electron-store')
 
 // const store = new ElectronStore()
@@ -113,27 +118,36 @@ export default {
 
     tabList() {
       return [
-        { title: "DApp", icon: "tp-font-dqpps", url: RouteNames.DAPP },
+        {
+          title: "DApp",
+          icon: "tp-font-dqpps",
+          url: RouteNames.DAPP,
+          isShow: true
+        },
         {
           title: this.$t("TP.GENERIC.Chat"),
           icon: "tp-font-chat",
-          url: RouteNames.CHAT
+          url: RouteNames.CHAT,
+          isShow: this.currentAccount.blockchain() === "eos"
         },
         {
           title: this.$t("TP.GENERIC.Asset"),
           icon: "tp-font-asset",
-          url: RouteNames.ASSET
+          url: RouteNames.ASSET,
+          isShow: true
         },
         {
           title: this.$t("TP.GENERIC.Wallet"),
           icon: "tp-font-wallet",
-          url: RouteNames.WALLET
+          url: RouteNames.WALLET,
+          isShow: true
         },
         // { title: this.$t('TP.GENERIC.Wallet'), icon: 'tp-font-wallet', url: RouteNames.WALLETS },
         {
           title: this.$t("TP.GENERIC.Setting"),
           icon: "tp-font-settings",
-          url: RouteNames.SETTINGS
+          url: RouteNames.SETTINGS,
+          isShow: true
         }
       ];
     },

@@ -64,6 +64,8 @@ export default {
   Browse: '浏览',
   MyAsset: '我的资产',
   Password: '密码',
+  ChangePassword: '修改密码',
+  PasswordError: '密码错误',
   Asset: '资产',
   Wallet: '钱包',
   Setting: '设置',
@@ -96,6 +98,7 @@ export default {
 
   Staked: '抵押',
   Token: '代币',
+  EndpointSetting: '节点',
 
   LOGIN: {
     NOTICE: '提示',

@@ -28,7 +28,7 @@ import moment from 'dayjs'
 // import fundebugVue from 'fundebug-vue'
 // fundebug.apikey =
 //     '063876b2e596cab10dbb6ddb2c61376b4c6656ff7ca1b8a2479b0b6d905b8821'
-  
+
 // if (process.env.NODE_ENV !== 'production') {
 //   fundebugVue(fundebug, Vue)
 //   require('fundebug-revideo')
@@ -37,7 +37,6 @@ import moment from 'dayjs'
 const PKG = require('../../package.json')
 
 Vue.config.productionTip = false
-
 
 Vue.prototype.$moment = moment
 
@@ -80,6 +79,33 @@ export default class VueInitializer {
           },
           methods: {
             blockchainName,
+            blockchainPlatform(blockchainID) {
+              const id = parseInt(blockchainID)
+              switch (id) {
+                case 1:
+                  return 'ETH'
+                case 2:
+                  return '井通'
+                case 3:
+                  return '墨客'
+                case 4:
+                  return 'EOS'
+                case 5:
+                  return 'ENU'
+                case 6:
+                  return 'BOS'
+                case 7:
+                  return 'IOST'
+                case 8:
+                  return 'COSMOS'
+                case 9:
+                  return 'BINANCE'
+                case 10:
+                  return 'TRON'
+                case 11:
+                  return 'BTC'
+              }
+            },
             back() {
               this.$router.back()
             },

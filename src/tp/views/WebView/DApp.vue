@@ -89,7 +89,7 @@ export default {
       webview.src = loadURL;
 
       webview.addEventListener("did-finish-load", res => {
-        // webview.openDevTools();
+        webview.openDevTools();
         this.canGoBack = webview.canGoBack();
         this.canGoForward = webview.canGoForward();
         webview.executeJavaScript(this.inject, true).then(result => {

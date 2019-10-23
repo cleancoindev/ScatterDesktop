@@ -18,7 +18,7 @@ import WindowService from './services/utility/WindowService'
 
 ElectronHelpers.bindContextMenu()
 
-import MenuBar from './components/MenuBar.vue'
+// import MenuBar from './components/MenuBar.vue'
 
 import ViewBase from './tp/components/common/ViewBase.vue'
 // import ViewBase from './components/ViewBase.vue'
@@ -84,13 +84,14 @@ class Main {
       else next()
     }
 
-    console.log(Routing.routes())
+    // console.log(Routing.routes())
 
     new VueInitializer(
       Routing.routes(),
       components,
       middleware,
       async (router, store) => {
+        console.log(router)
         // SocketService.initialize();
       }
     )

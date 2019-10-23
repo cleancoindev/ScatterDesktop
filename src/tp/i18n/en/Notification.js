@@ -11,6 +11,10 @@ export default {
     LINKAPP: {
       Notices:
         "Please make sure that the application is the one you're interacting with right now. Beware that interact with an unknown application is unsafe."
+    },
+
+    DAPP: {
+      SupportPlatform: 'Current DApp only supports {platform}'
     }
   }
 }

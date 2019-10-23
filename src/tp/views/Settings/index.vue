@@ -166,7 +166,7 @@ export default {
               data: SETTINGS_OPTIONS.LANGUAGE
             },
             {
-              title: this.$t("TP.GENERIC.Networks"),
+              title: this.$t("TP.GENERIC.EndpointSetting"),
               icon: "network",
               data: SETTINGS_OPTIONS.NETWORK
             }
@@ -176,12 +176,12 @@ export default {
           title: this.$t("TP.GENERIC.Security"),
           list: [
             {
-              title: this.$t("TP.GENERIC.Password"),
+              title: this.$t("TP.GENERIC.ChangePassword"),
               icon: "password",
               data: SETTINGS_OPTIONS.PASSWORD
             },
             {
-                title: this.$t("TP.GENERIC.Firewall"),
+              title: this.$t("TP.GENERIC.Firewall"),
               // title: "FIREWALL",
               icon: "password",
               data: SETTINGS_OPTIONS.FIREWALL

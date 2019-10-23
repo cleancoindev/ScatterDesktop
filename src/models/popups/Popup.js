@@ -130,8 +130,8 @@ export class Popup {
   /*********      SNACKBARS      ***********/
   /*****************************************/
 
-  static snackbarBadPassword(timeout = 3000) {
-    const message = localizedState(LANG_KEYS.SNACKBARS.BadPassword)
+  static snackbarBadPassword(message, timeout = 3000) {
+    // const message = localizedState(LANG_KEYS.SNACKBARS.BadPassword)
     return new Popup(
       PopupDisplayTypes.SNACKBAR,
       new PopupData('', { message, icon: 'attention', timeout })

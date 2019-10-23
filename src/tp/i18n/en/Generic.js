@@ -64,6 +64,8 @@ export default {
   Browse: 'Browse',
   MyAsset: 'My Asset',
   Password: 'Password',
+  ChangePassword: 'Change Password',
+  PasswordError: 'Password Error ',
   Asset: 'Asset',
   Wallet: 'Wallet',
   Setting: 'Setting',
@@ -95,8 +97,9 @@ export default {
   WhitelistNotificationsDescription:
     'These notifications appear on certain operating systems when you auto-sign whitelisted transactions.',
 
-  Staked: 'Staked',  
+  Staked: 'Staked',
   Token: 'Token',
+  EndpointSetting: 'Networks',
 
   LOGIN: {
     NOTICE: 'Noticed',

@@ -39,6 +39,8 @@
 
 <script>
 import { mapGetters } from "vuex";
+import PopupService from "../../../services/utility/PopupService";
+import { Popup } from "../../../models/popups/Popup";
 import ElectronHelpers from "../../../util/ElectronHelpers";
 import { urlReg } from "../../utils/RegExp";
 const ipc = window.require("electron").ipcRenderer;
@@ -91,8 +93,23 @@ export default {
   },
   watch: {},
   methods: {
+    isSupport(platform) {
+      return Object.keys(platform).filter(data => platform[data] === 1).join(',').toUpperCase()
+    },
+
     goGame(item) {
       if (item.platform.trx === 1) {
+        if (this.currentAccount.blockchain() !== 'trx') {
+          PopupService.push(
+            Popup.snackbarBadPassword(
+              this.$t(
+                'TP.NOTOFICATION.POPOUT.DAPP.SupportPlatform', 
+                { platform: this.isSupport(item.platform) }
+                )
+              )
+            )
+          return false
+        }
         ipc.send("goGame", {
           data: item,
           account: {
