@@ -169,12 +169,9 @@ export default {
       // const copy = `Public: ${pub}\r\nPrivate: ${prv}`;
       const copy = prv;
       ElectronHelpers.copy(copy);
-      this.$message({
-        message: "复制成功",
-        offset: 60,
-        // center: true,
-        type: 'success'
-      });
+      PopupService.push(
+        Popup.snackbarBadPassword(this.$t("TP.NOTOFICATION.POPOUT.CopySuccess"))
+      );
     },
 
     async createQR() {

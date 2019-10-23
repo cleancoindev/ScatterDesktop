@@ -1,6 +1,7 @@
 export default {
   POPOUT: {
     SelectAccount: 'Select Account',
+    CopySuccess: 'Copy Success',
     WHITELIST: {
       offWhitelist:
         'When the whitelist is opened, the next time you perform the same operation, you can avoid entering the password.',

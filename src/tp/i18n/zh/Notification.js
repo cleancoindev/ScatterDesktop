@@ -1,6 +1,7 @@
 export default {
   POPOUT: {
     SelectAccount: '选择账号',
+    CopySuccess: '复制成功',
     WHITELIST: {
       offWhitelist: '开启白名单后，下次再执行相同操作时可以免输密码。',
       onWhitelist:
