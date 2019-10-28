@@ -7,6 +7,10 @@ var WebviewTronWeb = require('tronweb')
 var { HttpProvider } = WebviewTronWeb.providers
 var WebViewendPoint = 'https://api.trongrid.io'
 
+if (typeof module === 'object') {
+  window.jQuery = window.$ = module.exports
+}
+
 class ProxiedProvider extends HttpProvider {
   constructor() {
     super('http://127.0.0.1')
@@ -105,7 +109,7 @@ const trxHook = {
     ipcMain.on('CONTACT_TRON_WEB', async (event, account) => {
       // console.log(account, 'CONTACT_TRON_WEB')
       await this._bindTronWeb()
-      
+
       this.setAddress({
         address: account.publicKey,
         name: account.name || '',

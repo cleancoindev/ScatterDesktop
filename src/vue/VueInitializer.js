@@ -24,6 +24,9 @@ import ElementUI from 'element-ui'
 
 import moment from 'dayjs'
 
+const { ipcRenderer } = window.require('electron')
+const { ebtRenderer } = require('electron-baidu-tongji')
+
 // import * as fundebug from 'fundebug-javascript'
 // import fundebugVue from 'fundebug-vue'
 // fundebug.apikey =
@@ -235,8 +238,9 @@ export default class VueInitializer {
 
   setupRouting(routes, middleware) {
     const router = new VueRouter({ routes })
+    ebtRenderer(ipcRenderer, '2cacf7cb588a61cc6fd2adb2d351eccd', router)
     router.beforeEach((to, from, next) => {
-      StoreService.get().dispatch(Actions.SET_SEARCH_TERMS, '')
+      // StoreService.get().dispatch(Actions.SET_SEARCH_TERMS, '')
       return middleware(to, next, StoreService.get())
     })
     return router

@@ -8,6 +8,10 @@ const fs = require('fs')
 // console.log(fs.readFileSync('./insert/trx.js').toString())
 
 const isDev = process.mainModule.filename.indexOf('app.asar') === -1
+// import { ipcMain } from 'electron'
+const { ebtMain } = require('electron-baidu-tongji')
+
+ebtMain(ipcMain)
 
 // console.log(process.mainModule)
 let icon = isDev
@@ -522,7 +526,7 @@ ipcMain.on('goGame', (event, arg) => {
     titleBarStyle: 'hiddenInset',
     webPreferences: {
       nodeIntegration: true,
-      webviewTag: true,
+      webviewTag: true
     }
   })
 
