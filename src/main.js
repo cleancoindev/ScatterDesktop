@@ -37,6 +37,11 @@ import PopOutHead from './components/popouts/PopOutHead.vue'
 // import SocketService from './services/utility/SocketService'
 // import SingletonService from './services/utility/SingletonService'
 
+import Tracker from './util/Tracker/tracker.js'
+const tracker = new Tracker()
+
+tracker.config({ per: 0.9 }).install()
+
 // if (process.env.NODE_ENV !== 'production') {
 // f12 to open console from anywhere.
 document.addEventListener('keydown', e => {
