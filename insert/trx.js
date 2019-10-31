@@ -9,6 +9,8 @@ var WebViewendPoint = 'https://api.trongrid.io'
 
 if (typeof module === 'object') {
   window.jQuery = window.$ = module.exports
+  console.log(window.jQuery)
+  console.log(window.$)
 }
 
 class ProxiedProvider extends HttpProvider {

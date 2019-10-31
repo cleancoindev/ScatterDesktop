@@ -44,7 +44,7 @@ const Wallet = {
         ? getters.currentAccount.name
         : getters.currentAccount.publicKey
 
-      return Storage.GET_STORAGE(walletName)
+      return Storage.GET_STORAGE(walletName, 'sessionStorage')
     },
     currentBlockChainId: (state, getters) => {
       return getters.chainTypes[getters.currentAccount.networkUnique]
@@ -56,10 +56,13 @@ const Wallet = {
     WALLET_MAPS(state, payload) {
       const { walletID, walletName } = payload
 
-      Storage.SET_STORAGE({
-        key: walletName,
-        value: walletID
-      })
+      Storage.SET_STORAGE(
+        {
+          key: walletName,
+          value: walletID
+        },
+        'sessionStorage'
+      )
     },
 
     ASSET_TOKEN_INFO(state, assetTokenInfo) {
@@ -79,7 +82,7 @@ const Wallet = {
     async INFO_WALLET({ commit, dispatch, rootState }, account) {
       const blockchainID = rootState.TP.chainTypes[account.networkUnique]
       const walletName = account.name ? account.name : account.publicKey
-      const walletID = Storage.GET_STORAGE(walletName)
+      const walletID = Storage.GET_STORAGE(walletName, 'sessionStorage')
 
       if (walletID) {
         dispatch('GET_TOKEN_LIST', walletID)
@@ -130,7 +133,9 @@ const Wallet = {
             token.price_usd = parseFloat(token.price_usd).toFixed(2)
           })
 
-          res.data.balance = `${res.data.unit} ${res.data.total_asset.toFixed(2)}`
+          res.data.balance = `${res.data.unit} ${res.data.total_asset.toFixed(
+            2
+          )}`
 
           commit('ASSET_TOKEN_INFO', res.data)
         }

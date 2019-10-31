@@ -8,7 +8,7 @@ const DApp = {
     dappList: [],
     dappForm: {
       start: 0,
-      count: 100,
+      count: 40,
       // key: '',
       status: 0,
       // category_id: this.categoryId,
@@ -33,13 +33,13 @@ const DApp = {
         case 'reset':
           state.dappForm = {
             start: 0,
-            count: 100,
+            count: 40,
             status: 0,
             version: '10.0.0'
           }
           break
         case 'update':
-          state.dappForm.start += 100
+          state.dappForm.start += 40
           break
       }
     },

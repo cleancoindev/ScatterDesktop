@@ -42,7 +42,7 @@ export default {
       allTokenList: [],
       allTokenForm: {
         start: 0,
-        count: 1000,
+        count: 200,
         key: ""
       },
       searchToken: ""

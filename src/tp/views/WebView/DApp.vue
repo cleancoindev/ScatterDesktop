@@ -44,6 +44,14 @@ const ipc = window.require("electron").ipcRenderer;
 const remote = window.require("electron").remote;
 const { ipcMain } = remote;
 
+// console.log(remote.app.getAppPath(), 'getAppPath')
+// const jq = require('path').resolve('./jquery.min.js');
+
+// console.log(jq)
+// const file = `file://${jq}`
+// console.log(__dirname);
+
+
 export default {
   name: "WebViewDApp",
   data() {
@@ -87,9 +95,11 @@ export default {
       this.webview = webview;
 
       webview.src = loadURL;
+      // webview.src = 'https://jquery.com/';
+      // webview.setAttribute('preload', file);
 
       webview.addEventListener("did-finish-load", res => {
-        webview.openDevTools();
+        // webview.openDevTools();
         this.canGoBack = webview.canGoBack();
         this.canGoForward = webview.canGoForward();
         webview.executeJavaScript(this.inject, true).then(result => {
