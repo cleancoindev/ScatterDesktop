@@ -50,9 +50,9 @@ export const actions = {
         if(await PasswordService.verifyPassword(null, forceLocal)){
             const scatter = state.scatter.clone();
 
-            if(!RUNNING_TESTS){
-	            await require('../migrations/migrator').default(scatter);
-            }
+            // if(!RUNNING_TESTS){
+	        //     await require('../migrations/migrator').default(scatter);
+            // }
 
             scatter.meta.regenerateVersion();
             await dispatch(Actions.SET_SCATTER, scatter);

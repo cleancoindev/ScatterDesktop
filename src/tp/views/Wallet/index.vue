@@ -80,10 +80,10 @@
       <div v-if="accountInfo.account.blockchain && accountInfo.account.blockchain() === 'eos'">
         <p class="ft-20 c-fff m-bottom-15">{{accountInfo.name}}</p>
 
-        <p class="ft-14 c-828494 m-bottom-15">{{$t('TP.WALLET.UNLINK_ACCOUNT.SubDesc')}}</p>
+        <p class="ft-14 c-828494 m-bottom-15">{{$t('TP.ACCOUNT.WALLET.UNLINK_ACCOUNT.SubDesc')}}</p>
         <p
           class="ft-12 c-fff m-bottom-15 text-left"
-        >{{$t('TP.WALLET.UNLINK_ACCOUNT.AuthoritiesLabel')}}</p>
+        >{{$t('TP.ACCOUNT.WALLET.UNLINK_ACCOUNT.AuthoritiesLabel')}}</p>
 
         <!-- 权限 -->
         <section>
