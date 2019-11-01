@@ -1,7 +1,11 @@
 <template>
   <div class="Token-Shadow">
     <div class="shadow-operations">
-      <div class="shadow-header" @click="$emit('asset-type', '')">
+      <div
+        class="shadow-header"
+        @click="$emit('asset-type', '')"
+        :class="{'border': typeInfo !== 'TOKEN_ADD' }"
+      >
         <span>{{shadowTitle}}</span>
         <i></i>
       </div>
@@ -93,9 +97,12 @@ export default {
     margin-left: 25px;
     height: 70px;
     line-height: 70px;
-    border-bottom: 1px solid #eee;
+
     span {
       flex: 1;
+    }
+    &.border {
+      border-bottom: 1px solid #eee;
     }
     i {
       display: inline-block;

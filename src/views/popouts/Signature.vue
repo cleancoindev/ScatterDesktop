@@ -3,11 +3,11 @@
     <section class="multi-pane popout-window">
       <!-- MAIN PANEL -->
       <section class="main-panel">
-        <PopOutApp :app="appData" />
-        <figure
+        <!-- <PopOutApp :app="appData" /> -->
+        <!-- <figure
           class="has-more"
           v-if="limitedMessages.total > 1"
-        >{{locale(langKeys.POPOUTS.SIGNATURE.ActionsTotal,limitedMessages.total)}}</figure>
+        >{{locale(langKeys.POPOUTS.SIGNATURE.ActionsTotal,limitedMessages.total)}}</figure> -->
 
         <section class="participants" v-if="participantAccounts">
           <section v-if="!participantsAsSelector">
@@ -175,8 +175,8 @@
 
         <!-- 白名单 -->
         <section class="whitelist-bar" v-if="!isArbitrarySignature && !isDangerous && hasWhite">
-          <figure class="text" v-if="!whitelisted">{{$t('TP.NOTOFICATION.POPOUT.SIGNATURE.offWhitelist')}}</figure>
-          <figure class="text blue" v-if="whitelisted">{{$t('TP.NOTOFICATION.POPOUT.SIGNATURE.onWhitelist')}}</figure>
+          <figure class="text" v-if="!whitelisted">{{$t('TP.NOTOFICATION.POPOUT.WHITELIST.offWhitelist')}}</figure>
+          <figure class="text blue" v-if="whitelisted">{{$t('TP.NOTOFICATION.POPOUT.WHITELIST.onWhitelist')}}</figure>
           <Switcher :state="whitelisted" @click.native="whitelist" />
         </section>
       </section>

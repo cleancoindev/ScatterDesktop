@@ -10,9 +10,7 @@
     </div>
 
     <div class="asset-header text-center">
-      <div
-        class="asset-balance c-fff"
-      >{{assetTokenInfo.balance || '0.00'}}</div>
+      <div class="asset-balance c-fff">{{assetTokenInfo.balance || '0.00'}}</div>
 
       <div class="asset-balance-text c-fff">{{$t('TP.ACCOUNT.ASSET.TotalBalance')}}</div>
 
@@ -21,7 +19,7 @@
           <h5>{{accountStaked}}</h5>
           <p>{{$t('TP.GENERIC.Staked')}}</p>
         </div>
-        <div class="asset-balance-btn rex">
+        <div class="asset-balance-btn rex" @click="goRex">
           <h5>{{rexBalance}}</h5>
           <p>REX</p>
         </div>
@@ -58,9 +56,7 @@
 
             <div class="asset-token-balance">
               <h5>{{item.balance}}</h5>
-              <p
-                class="ft-14"
-              >≈ {{assetTokenInfo.unit}} {{item.price_usd || 0}}</p>
+              <p class="ft-14">≈ {{assetTokenInfo.unit}} {{item.asset ? item.asset.toFixed(2) : 0}}</p>
             </div>
           </div>
 
@@ -74,6 +70,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { getCachedInstance } from "../../../plugins/defaults/eos";
+import ElectronHelpers from "../../../util/ElectronHelpers";
 // import { getAllTokenList, searchTokenList } from "../../api/Wallet";
 
 export default {
@@ -120,6 +117,18 @@ export default {
   },
 
   methods: {
+    goRex() {
+      if (this.currentBlockChainId === 4) {
+        ElectronHelpers.openLinkInBrowser(
+          "https://eos-rex.gz.bcebos.com/index.html#/"
+        );
+      }
+
+      if (this.currentBlockChainId === 6) {
+        ElectronHelpers.openLinkInBrowser("https://bos-rex.tokenpocket.pro/#/");
+      }
+    },
+
     goTransaction(token) {
       this.$store.commit("CURRENT_WALLET_TOKEN_INFO", token);
       this.$emit("token-info", token);

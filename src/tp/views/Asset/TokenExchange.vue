@@ -12,8 +12,12 @@
     <input
       type="number"
       :placeholder="$t('TP.ACCOUNT.TRANSFER.AmountInput')"
-      v-model.number="token.amount"
+      v-model.number="amount"
     />
+
+    <h5
+      style="font-size:12px;color:#2890FE;"
+    >{{$t('TP.ACCOUNT.TRANSFER.Balance')}}: {{currentWalletTokenInfo.balance}} {{currentWalletTokenInfo.symbol}}</h5>
 
     <div v-if="hasMemo">
       <h5>{{$t('TP.GENERIC.Memo')}}</h5>
@@ -51,6 +55,7 @@ export default {
       memo: "",
       recipient: "",
       sending: false,
+      amount: null,
       token: {
         amount: null
       }
@@ -61,60 +66,73 @@ export default {
     ...mapGetters(["currentAccount", "currentWalletTokenInfo"]),
 
     canSend() {
-      return this.recipient && parseFloat(this.token.amount) > 0;
+      return this.recipient && parseFloat(this.amount) > 0;
     },
 
     hasMemo() {
-      const blacklist = ["trx", "eth"];
-      return !blacklist.includes(this.tokenInfo.blockchain);
+      const blacklist = [1, 10];
+      return !blacklist.includes(this.currentWalletTokenInfo.blockchain_id);
     }
+
+    // totalBalance() {
+    //   if (!isNaN(this.token.amount)) {
+    //     return this.currentWalletTokenInfo.balance - this.token.amount;
+    //   }
+    //   return this.currentWalletTokenInfo.balance;
+    // }
   },
 
   methods: {
     exchangeHidden() {
       this.recipient = "";
-      this.token.amount = null;
+      this.amount = null;
       this.memo = "";
       this.$emit("showState", false);
     },
 
     async send() {
       if (!this.canSend) return false;
+
+      const tokenInfo = this.currentWalletTokenInfo;
+
+      const decimal =
+        tokenInfo.decimal > 0 ? tokenInfo.decimal : tokenInfo.precision;
+      const chainId = this.currentAccount.network().chainId;
+
+      const token = new Token(
+        this.currentAccount.blockchain(),
+        tokenInfo.address,
+        tokenInfo.symbol,
+        tokenInfo.symbol,
+        decimal,
+        chainId
+      );
+
+      token.amount = this.amount;
+
       const sent = await TransferService[this.currentAccount.blockchain()]({
         account: this.currentAccount,
         recipient: this.recipient,
-        amount: this.token.amount,
+        amount: token.amount,
         memo: this.memo,
-        token: this.token,
+        token: token,
         promptForSignature: false
       }).catch(err => {
         console.log(err);
-         this.$emit('transfer-state')
+        this.$emit("transfer-state");
       });
 
       if (sent) {
         this.exchangeHidden();
-        this.$emit('transfer-state')
+        this.$emit("transfer-state");
       }
     }
   },
 
   created() {
-    const tokenInfo = this.currentWalletTokenInfo;
-    const decimal =
-      tokenInfo.decimal > 0 ? tokenInfo.decimal : tokenInfo.precision;
-    const chainId = this.currentAccount.network().chainId;
+    console.log(this.currentWalletTokenInfo);
 
-    const token = new Token(
-      this.currentAccount.blockchain(),
-      tokenInfo.address,
-      tokenInfo.symbol,
-      tokenInfo.symbol,
-      decimal,
-      chainId
-    );
-
-    this.token = { ...this.token, ...token, amount: null };
+    // this.token = { ...this.token, ...token, amount: null };
   },
   watch: {
     currentWalletTokenInfo() {

@@ -9,7 +9,13 @@
       ></el-input>
     </div>
 
-    <div class="token-list">
+    <div
+      class="token-list"
+      v-infinite-scroll="loadBottom"
+      :infinite-scroll-delay="500"
+      :infinite-scroll-immediate="false"
+      style="overflow:auto;    height: calc(100vh - 40px - 130px);"
+    >
       <div class="token-list-item" v-for="(item, index) in allTokenList" :key="index">
         <img :src="item.icon_url" alt class="token-logo" @error="getImgError" />
         <span class="token-symbol">{{item.symbol}}</span>
@@ -42,13 +48,18 @@ export default {
       allTokenList: [],
       allTokenForm: {
         start: 0,
-        count: 200,
+        count: 20,
         key: ""
       },
       searchToken: ""
     };
   },
   methods: {
+    loadBottom() {
+      this.allTokenForm.start += 20;
+      this.getAllTokenList();
+    },
+
     changeAdded(item) {
       if (item.added === 0) this.addWalletToken(item);
       if (item.added === 1) this.delWalletToken(item);
@@ -85,7 +96,11 @@ export default {
         blockchain_id: this.currentBlockChainId
       }).then(res => {
         if (res.result === 0) {
-          this.allTokenList = res.data;
+          if (this.allTokenForm.start > 0) {
+            if (res.data.length > 0) this.allTokenList = [...this.allTokenList, ...res.data];
+          } else {
+            this.allTokenList = res.data;
+          }
         }
       });
     },

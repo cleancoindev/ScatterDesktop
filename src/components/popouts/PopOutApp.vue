@@ -3,14 +3,14 @@
 	<!------------ APP DETAILS ------------>
 	<!------------------------------------->
 	<section class="app-details">
-		<figure class="logo border" v-if="!untrusted">
+		<!-- <figure class="logo border" v-if="!untrusted"> -->
 			<!-- <Scatter v-if="app.applink === 'Scatter'" /> -->
-			<img v-if="app.img" :src="app.img" />
-			<span v-else>No Image</span>
-		</figure>
-		<figure class="logo scam" v-else>
-			<i class="icon-attention"></i>
-		</figure>
+			<!-- <img v-if="app.img" :src="app.img" /> -->
+			<!-- <span v-else>No Image</span> -->
+		<!-- </figure> -->
+		<!-- <figure class="logo scam" v-else> -->
+			<!-- <i class="icon-attention"></i> -->
+		<!-- </figure> -->
 		<section v-if="ridlEnabled && app.applink !== 'Scatter'">
 			<figure class="reputation" v-if="appReputation === false"><i class="icon-spin4 animate-spin"></i> loading reputation</figure>
 			<section v-else>

@@ -51,7 +51,7 @@
         </div>
       </div>
 
-      <div class="transfer-list">
+      <div class="transfer-list" v-infinite-scroll="loadBottom">
         <div class v-if="hasTransactions">
           <div
             class="transfer-item"
@@ -106,6 +106,13 @@
 <script>
 import { mapGetters } from "vuex";
 import ElectronHelpers from "../../../util/ElectronHelpers";
+import { getTransactionAction } from "../../api/Wallet";
+
+const toNonExponential = num => {
+  var m = num.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/);
+  return num.toFixed(Math.max(0, (m[1] || '').length - m[2]))
+};
+
 export default {
   name: "TokenTransferHistory",
   props: {
@@ -117,15 +124,17 @@ export default {
   data() {
     return {
       transactionTabStatus: 0,
-      searchAccountActions: ""
+      searchAccountActions: "",
+      actionPage: 0,
+      transactionActionList: []
     };
   },
 
   computed: {
     ...mapGetters([
       "currentAccount",
-      "transactionActionList",
-      "currentBlockChainId"
+      "currentBlockChainId",
+      "currentWalletName"
     ]),
     currentName() {
       return this.currentAccount.name
@@ -133,12 +142,38 @@ export default {
         : this.currentAccount.publicKey;
     },
     hasTransactions() {
-      // console.log([this.transactionActionList]);
       const list = this.transactionActionList;
       return Array.isArray(list) ? list.length > 0 : false;
+    },
+    actionForm() {
+      const form = {
+        page: this.actionPage,
+        count: 20,
+        symbol: this.tokenInfo.symbol,
+        search: this.searchAccountActions,
+        code: this.tokenInfo.account,
+        account: this.currentWalletName,
+        address: this.currentWalletName,
+        // 记录类型：0--全部， 1--转入， 2--转出
+        type: this.transactionTabStatus,
+        blockchain_id: this.currentBlockChainId
+      };
+
+      if (this.currentBlockChainId === 1) {
+        delete form.account;
+      } else {
+        delete form.address;
+      }
+
+      return form;
     }
   },
   methods: {
+    loadBottom() {
+      this.actionPage += 20;
+      this.getTransactionAction(this.transactionTabStatus);
+    },
+
     transactionImg(item) {
       if (item.to === this.currentName)
         return require("../../assets/images/myAssets/asset-in.png");
@@ -147,20 +182,23 @@ export default {
     },
 
     spliceAccount(account) {
-      if (account.length > 30) {
-        return account.replace(account.substring(8, 24), "******");
+      if (account.length > 32) {
+        return account.replace(account.substring(8, 32), "******");
       }
       return account;
     },
 
     changeTabStatus(status) {
+      this.actionPage = 0;
       this.transactionTabStatus = status;
-      this.$store.dispatch("GET_TRANSACTION_ACTION", {
-        type: status,
-        search: this.searchAccountActions,
-        ...this.tokenInfo,
-        ...this.currentAccount
-      });
+      this.transactionActionList = [];
+      this.getTransactionAction(status);
+      // this.$store.dispatch("GET_TRANSACTION_ACTION", {
+      //   type: status,
+      //   search: this.searchAccountActions,
+      //   ...this.tokenInfo,
+      //   ...this.currentAccount
+      // });
     },
 
     goTransferDetail(item) {
@@ -168,6 +206,9 @@ export default {
 
       switch (blockchainId) {
         case 1:
+          ElectronHelpers.openLinkInBrowser(
+            `https://cn.etherscan.com/tx/${item.hash}`
+          );
           break;
         case 4:
           ElectronHelpers.openLinkInBrowser(
@@ -193,27 +234,65 @@ export default {
 
     backTokenList() {
       this.$emit("asset-type", "TOKEN_LIST");
+    },
+
+    getTransactionAction(status = 0) {
+      this.transactionTabStatus = status;
+      getTransactionAction(this.actionForm).then(res => {
+        if (res.result === 0 && res.data) {
+          const filterAction = action => {
+
+            switch (this.currentBlockChainId) {
+              case 1:
+                action.quantity = toNonExponential(
+                  parseFloat(action.value / `1e${action.decimal}`)
+                );
+                action.browser_url = `https://cn.etherscan.com/tx/${action.hash}`;
+                break;
+              case 4:
+                action.quantity = action.count;
+                action.browser_url = `https://www.eosx.io/tx/${action.hid}`;
+                break;
+              case 6:
+                action.quantity = action.count;
+                action.browser_url = `https://bos.eosx.io/tx/${action.hid}`;
+                break;
+              case 10:
+                action.quantity = action.asset_nmount / `1e${action.decimal}`;
+                action.browser_url = `https://tronscan.org/#/transaction/${action.trx_id}`;
+                break;
+            }
+            return action;
+          };
+
+          const actionList = res.data.map(action => filterAction(action));
+
+          if (this.actionPage > 0) {
+            this.transactionActionList = [
+              ...this.transactionActionList,
+              ...actionList
+            ];
+          } else {
+            this.transactionActionList = actionList;
+          }
+        }
+      });
     }
   },
 
   created() {
-    this.$store.dispatch("GET_TRANSACTION_ACTION", {
-      type: 0,
-      ...this.tokenInfo,
-      ...this.currentAccount
-    });
+    this.getTransactionAction();
   },
 
   watch: {
     searchAccountActions() {
-      console.log(this.transactionActionList);
-
-      this.$store.dispatch("GET_TRANSACTION_ACTION", {
-        type: this.transactionTabStatus,
-        search: this.searchAccountActions,
-        ...this.tokenInfo,
-        ...this.currentAccount
-      });
+      this.getTransactionAction(this.transactionTabStatus);
+      // this.$store.dispatch("GET_TRANSACTION_ACTION", {
+      //   type: this.transactionTabStatus,
+      //   search: this.searchAccountActions,
+      //   ...this.tokenInfo,
+      //   ...this.currentAccount
+      // });
     }
   }
 };

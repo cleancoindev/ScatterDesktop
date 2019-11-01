@@ -38,7 +38,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["currentAccount", "currentWalletTokenInfo"])
+    ...mapGetters(["currentAccount", "currentWalletTokenInfo", 'currentWalletName'])
   },
 
   methods: {
@@ -73,7 +73,7 @@ export default {
         amount: 0,
         protocol: "ScanProtocol",
         symbol: this.currentWalletTokenInfo.symbol,
-        address: this.currentAccount.publicKey,
+        address: this.currentWalletName,
         blockchain: platform(this.currentWalletTokenInfo.blockchain_id),
         action: "transfer",
         precision: decimal,

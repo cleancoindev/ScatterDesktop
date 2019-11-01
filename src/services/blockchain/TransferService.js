@@ -13,10 +13,13 @@ export default class TransferService {
   }
 
   static async [Blockchains.ETH](params) {
+    console.log(params, 'eth')
+
     return this.baseTransfer(params)
   }
 
-  static async [Blockchains.TRX](params) {
+  static async [Blockchains.TRX] (params) {
+     console.log(params, 'trx')
     return this.baseTransfer(params)
   }
 
