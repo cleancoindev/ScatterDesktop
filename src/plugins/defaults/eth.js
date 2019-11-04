@@ -251,10 +251,16 @@ export default class ETH extends Plugin {
     )
   }
 
-  async transfer({ account, to, amount, token, promptForSignature = true }) {
+  async transfer({
+    account,
+    to,
+    amount,
+    token,
+    promptForSignature = true,
+    type
+  }) {
     const { contract, symbol } = token
-    const isEth =
-      token.uniqueWithChain() === this.defaultToken().uniqueWithChain()
+    const isEth = type === 0
     return new Promise(async (resolve, reject) => {
       const wallet = new ScatterEthereumWallet(
         account,
@@ -265,6 +271,7 @@ export default class ETH extends Plugin {
             network: account.network(),
             requiredFields: {},
             abi: isEth ? null : erc20abi
+            // abi: erc20abi
           }
           const signatures = promptForSignature
             ? await this.signerWithPopup(

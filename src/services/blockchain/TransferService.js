@@ -13,13 +13,10 @@ export default class TransferService {
   }
 
   static async [Blockchains.ETH](params) {
-    console.log(params, 'eth')
-
     return this.baseTransfer(params)
   }
 
-  static async [Blockchains.TRX] (params) {
-     console.log(params, 'trx')
+  static async [Blockchains.TRX](params) {
     return this.baseTransfer(params)
   }
 
@@ -29,7 +26,7 @@ export default class TransferService {
   }
 
   static async baseTransfer(params) {
-    let { account, recipient, amount, memo, token } = params
+    let { account, recipient, amount, memo, token, type } = params
 
     const transfer = await PluginRepository.plugin(account.blockchain())
       .transfer({
@@ -37,7 +34,8 @@ export default class TransferService {
         to: recipient,
         amount,
         token,
-        memo
+        memo,
+        type
       })
       .catch(x => x)
 

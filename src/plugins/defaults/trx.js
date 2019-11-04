@@ -229,7 +229,14 @@ export default class TRX extends Plugin {
     return payload.transaction.participants
   }
 
-  async transfer({ account, to, amount, token, promptForSignature = true }) {
+  async transfer({
+    account,
+    to,
+    amount,
+    token,
+    promptForSignature = true,
+    type
+  }) {
     amount = TokenService.formatAmount(amount, token)
     const { symbol } = token
     return new Promise(async (resolve, reject) => {
@@ -254,7 +261,8 @@ export default class TRX extends Plugin {
       let unsignedTransaction
 
       // SENDING TRX
-      if (token.unique() === this.defaultToken().unique()) {
+      // if (token.unique() === this.defaultToken().unique()) {
+      if (type === 0) {
         unsignedTransaction = await tron.transactionBuilder.sendTrx(
           to,
           amount,

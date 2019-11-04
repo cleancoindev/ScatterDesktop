@@ -113,12 +113,13 @@ export default {
       const sent = await TransferService[this.currentAccount.blockchain()]({
         account: this.currentAccount,
         recipient: this.recipient,
-        amount: token.amount,
+        amount: parseFloat(token.amount),
         memo: this.memo,
         token: token,
-        promptForSignature: false
+        promptForSignature: false,
+        type: this.currentWalletTokenInfo.token_type
       }).catch(err => {
-        console.log(err);
+        // console.log(err);
         this.$emit("transfer-state");
       });
 
@@ -130,7 +131,24 @@ export default {
   },
 
   created() {
-    console.log(this.currentWalletTokenInfo);
+    // console.log(this.currentWalletTokenInfo);
+
+    // const tokenInfo = this.currentWalletTokenInfo;
+
+    // const decimal =
+    //   tokenInfo.decimal > 0 ? tokenInfo.decimal : tokenInfo.precision;
+    // const chainId = this.currentAccount.network().chainId;
+
+    // const token = new Token(
+    //   this.currentAccount.blockchain(),
+    //   tokenInfo.address,
+    //   tokenInfo.symbol,
+    //   tokenInfo.symbol,
+    //   decimal,
+    //   chainId
+    // );
+
+    // console.log(token);
 
     // this.token = { ...this.token, ...token, amount: null };
   },

@@ -96,7 +96,7 @@ class Main {
       components,
       middleware,
       async (router, store) => {
-        console.log(router)
+        // console.log(router)
         // SocketService.initialize();
       }
     )

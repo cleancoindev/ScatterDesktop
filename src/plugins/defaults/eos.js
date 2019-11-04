@@ -37,7 +37,7 @@ class EosTokenAccountAPI {
 				if(!res.eos) return null;
 				const rawAccounts = res.eos.accounts;
 				let accounts = [];
-				Object.keys(rawAccounts).map(name => {
+				Object.keys(rawAccounts).forEach(name => {
 					rawAccounts[name]
 						.filter(acc => {
 							return acc.auth.keys.some(({pubkey}) => pubkey === publicKey);
