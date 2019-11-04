@@ -76,7 +76,7 @@
     "cross-spawn": "^5.0.1",
     "css-loader": "^2.1.1",
     "electron": "^5.0.6",
-    "electron-builder": "^20.39.0",
+    "electron-builder": "^20.44.4",
     "electron-rebuild": "^1.8.4",
     "element-ui": "^2.10.0",
     "eosjs": "^16.0.9",
@@ -182,32 +182,21 @@
       "buildResources": "build",
       "output": "release"
     },
-    "dmg": {
+    "mac": {
       "icon": "static/icon.png",
-      "contents": [
-        {
-          "x": 134,
-          "y": 190
-        },
-        {
-          "x": 344,
-          "y": 190,
-          "type": "link",
-          "path": "/Applications"
-        }
+      "target": [
+        "pkg"
       ]
     },
     "win": {
       "icon": "static/icons/icon.ico",
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        }
-      ]
+      "target": [{
+        "target": "nsis",
+        "arch": [
+          "x64",
+          "ia32"
+        ]
+      }]
     },
     "linux": {
       "category": "Network",
