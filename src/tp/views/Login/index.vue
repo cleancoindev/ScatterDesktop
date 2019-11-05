@@ -183,10 +183,10 @@ export default {
       // STATES,
 
       // step: 2,
-      password: "",
-      confirmation: "",
-      // password: "123123123",
-      // confirmation: "123123123",
+      // password: "",
+      // confirmation: "",
+      password: "123123123",
+      confirmation: "123123123",
       opening: false,
       success: false,
       badPassword: false,
@@ -195,7 +195,7 @@ export default {
     };
   },
   created() {
-    // if (this.scatter) this.unlock();
+    if (this.scatter) this.unlock();
   },
   computed: {
     ...mapState(["scatter"]),

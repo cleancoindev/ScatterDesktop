@@ -229,6 +229,48 @@ export default class TRX extends Plugin {
     return payload.transaction.participants
   }
 
+  sendTRC20(tron, params) {
+    return new Promise((resolve, reject) => {
+      const { from, to, contract, amount } = params
+      const functionSelector = 'transfer(address,uint256)'
+      const defaultOptions = {
+        from: from,
+        feeLimit: 1000000000,
+        callValue: 0,
+        userFeePercentage: 100,
+        shouldPollResponse: false // Only used for sign()
+      }
+
+      const parameters = [
+        { type: 'address', value: to },
+        { type: 'uint256', value: amount }
+      ]
+
+      tron.transactionBuilder
+        .triggerSmartContract(
+          contract,
+          functionSelector,
+          defaultOptions,
+          parameters,
+          from
+        )
+        .then(res => {
+          resolve(res.transaction)
+        })
+    })
+  }
+
+  signTronTx(account, params) {
+    const tron = getCachedInstance(account.network())
+    // var paramsJson = JSON.parse(params)
+    // console.log(JSON.stringify(paramsJson))
+    // var callid = paramsJson.callid
+    var privateKey = paramsJson.privateKey
+    var tx = paramsJson.tx
+    var useTronHeader = paramsJson.useTronHeader
+    tron.trx.sign(tx, privateKey, useTronHeader)
+  }
+
   async transfer({
     account,
     to,
@@ -238,7 +280,7 @@ export default class TRX extends Plugin {
     type
   }) {
     amount = TokenService.formatAmount(amount, token)
-    const { symbol } = token
+    const { symbol, contract } = token
     return new Promise(async (resolve, reject) => {
       const tron = getCachedInstance(account.network())
 
@@ -273,11 +315,21 @@ export default class TRX extends Plugin {
       // SENDING ALT TOKEN
       else {
         tron.setAddress(account.sendable())
-        unsignedTransaction = await tron.transactionBuilder.sendToken(
-          to,
-          amount,
-          symbol
-        )
+        if (contract.length >= 34) {
+          unsignedTransaction = await this.sendTRC20(tron, {
+            to,
+            amount,
+            from: account.publicKey,
+            contract
+          })
+        } else {
+          unsignedTransaction = await tron.transactionBuilder.sendAsset(
+            to,
+            amount,
+            symbol
+          )
+        }
+        // const tokenId =  ? contract : symbol
       }
 
       const signed = await tron.trx
@@ -285,8 +337,9 @@ export default class TRX extends Plugin {
         .then(x => ({ success: true, result: x }))
         .catch(error => ({ success: false, result: error }))
 
-      if (!signed.success) return resolve({ error: signed.result })
-      else {
+      if (!signed.success) {
+        return resolve({ error: signed.result })
+      } else {
         const sent = await tron.trx
           .sendRawTransaction(signed.result)
           .then(x => x.result)
@@ -448,7 +501,7 @@ export default class TRX extends Plugin {
         data = tron.utils.abi.decodeParams(names, types, data.data, true)
         data = Object.assign(data, quantity)
 
-        Object.keys(data).map(key => {
+        Object.keys(data).forEach(key => {
           if (tron.utils.isBigNumber(data[key]))
             data[key] = data[key].toString()
         })

@@ -225,9 +225,9 @@ export default {
 }
 
 .TokenList {
-  background: url(../../assets/images/myAssets/asset-bg.png) no-repeat 100% /
-    contain;
+  background: url(../../assets/images/myAssets/asset-bg.png) no-repeat 100%;
   background-position: top;
+  background-size: 100% 300px;
 }
 
 .asset-header {

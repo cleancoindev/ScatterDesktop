@@ -310,7 +310,21 @@ export default class ETH extends Plugin {
             )
             .on('error', error => finished({ error }))
         } else {
-          const value = strtodec(amount.toString(), token.decimals)
+          function goInt(num, squareNum = 2) {
+            const len = num.toString().split('.').length
+            if (len <= 2) {
+              if (!Number.isNaN(num)) {
+                // 是数字
+                const baseNum = Math.pow(10, squareNum + 1)
+                const tempNum = Math.round(num * baseNum)
+                return parseInt(tempNum / 10)
+              }
+            }
+          }
+
+          // const value = strtodec(amount.toString(), token.decimals)
+          const value = goInt(amount, token.decimals)
+          // console.log(web3.toWei(amount))
           const contract = new web3.eth.Contract(erc20abi, token.contract, {
             from: account.sendable()
           })
@@ -357,7 +371,7 @@ export default class ETH extends Plugin {
       payload.identityKey = StoreService.get().state.scatter.keychain.identities[0].publicKey
       payload.participants = [account]
       payload.network = account.network()
-      payload.origin = 'Scatter'
+      payload.origin = 'TokenPocket'
       const request = {
         payload,
         origin: payload.origin,
@@ -377,12 +391,13 @@ export default class ETH extends Plugin {
             let signature = null
             if (KeyPairService.isHardware(account.publicKey)) {
               signature = await HardwareService.sign(account, payload)
-            } else
+            } else {
               signature = await this.signer(
                 payload.transaction,
                 account.publicKey,
                 true
               )
+            }
 
             if (!signature)
               return rejector({ error: 'Could not get signature' })

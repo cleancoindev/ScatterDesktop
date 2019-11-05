@@ -133,22 +133,22 @@ export default {
   created() {
     // console.log(this.currentWalletTokenInfo);
 
-    // const tokenInfo = this.currentWalletTokenInfo;
+    const tokenInfo = this.currentWalletTokenInfo;
 
-    // const decimal =
-    //   tokenInfo.decimal > 0 ? tokenInfo.decimal : tokenInfo.precision;
-    // const chainId = this.currentAccount.network().chainId;
+    const decimal =
+      tokenInfo.decimal > 0 ? tokenInfo.decimal : tokenInfo.precision;
+    const chainId = this.currentAccount.network().chainId;
 
-    // const token = new Token(
-    //   this.currentAccount.blockchain(),
-    //   tokenInfo.address,
-    //   tokenInfo.symbol,
-    //   tokenInfo.symbol,
-    //   decimal,
-    //   chainId
-    // );
+    const token = new Token(
+      this.currentAccount.blockchain(),
+      tokenInfo.address,
+      tokenInfo.symbol,
+      tokenInfo.symbol,
+      decimal,
+      chainId
+    );
 
-    // console.log(token);
+    console.log(token);
 
     // this.token = { ...this.token, ...token, amount: null };
   },
