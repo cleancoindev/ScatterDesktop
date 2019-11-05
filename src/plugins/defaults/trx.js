@@ -296,7 +296,7 @@ export default class TRX extends Plugin {
           requiredFields: {}
         }
         return promptForSignature
-          ? await this.signerWithPopup(payload, account, reject)
+          ? await this.signerWithPopup(payload, account, reject, token)
           : await this.signer(payload, account.publicKey, false, false, account)
       }
 
@@ -326,7 +326,7 @@ export default class TRX extends Plugin {
           unsignedTransaction = await tron.transactionBuilder.sendAsset(
             to,
             amount,
-            symbol
+            contract
           )
         }
         // const tokenId =  ? contract : symbol
