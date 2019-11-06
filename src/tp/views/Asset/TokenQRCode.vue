@@ -20,7 +20,7 @@
 <script>
 import { mapGetters } from "vuex";
 import QRcode from "qrcode";
-import ElectronHelpers from '../../../util/ElectronHelpers'
+import ElectronHelpers from "../../../util/ElectronHelpers";
 export default {
   name: "TokenQRCode",
   props: {
@@ -38,12 +38,16 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["currentAccount", "currentWalletTokenInfo", 'currentWalletName'])
+    ...mapGetters([
+      "currentAccount",
+      "currentWalletTokenInfo",
+      "currentWalletName"
+    ])
   },
 
   methods: {
     copyAccount() {
-      ElectronHelpers.copy(this.accountNames)
+      ElectronHelpers.copy(this.accountNames);
     }
   },
 
@@ -52,34 +56,53 @@ export default {
       ? this.currentAccount.name
       : this.currentAccount.publicKey;
 
-    const decimal =
-      this.currentWalletTokenInfo.decimal > 0
-        ? this.currentWalletTokenInfo.decimal
-        : this.currentWalletTokenInfo.precision;
+    const { decimal, precision } = this.currentWalletTokenInfo;
+    // this.currentWalletTokenInfo.decimal > 0
+    //   ? this.currentWalletTokenInfo.decimal
+    //   : this.currentWalletTokenInfo.precision;
 
     const platform = blockchainId => {
       switch (blockchainId) {
-        case 4:
-          return "EOS";
         case 1:
           return "ETH";
+        case 4:
+          return "EOS";
+        case 6:
+          return "BOS";
         case 10:
           return "TRON";
       }
     };
 
-    QRcode.toDataURL(
-      JSON.stringify({
-        amount: 0,
-        protocol: "ScanProtocol",
-        symbol: this.currentWalletTokenInfo.symbol,
-        address: this.currentWalletName,
-        blockchain: platform(this.currentWalletTokenInfo.blockchain_id),
-        action: "transfer",
-        precision: decimal,
-        contract: this.currentWalletTokenInfo.address
-      })
-    ).then(url => {
+    const isPrecision = ["EOS", "BOS"].includes(
+      platform(this.currentWalletTokenInfo.blockchain_id)
+    );
+
+    const isDecimal = ["ETH", "TRON"].includes(
+      platform(this.currentWalletTokenInfo.blockchain_id)
+    );
+
+    const form = {
+      amount: 0,
+      protocol: "ScanProtocol",
+      symbol: this.currentWalletTokenInfo.symbol,
+      address: this.currentWalletName,
+      blockchain: platform(this.currentWalletTokenInfo.blockchain_id),
+      action: "transfer",
+      precision,
+      decimal,
+      contract: this.currentWalletTokenInfo.address
+    };
+
+    if (isPrecision) {
+      delete form.decimal;
+    }
+
+    if (isDecimal) {
+      delete form.precision;
+    }
+
+    QRcode.toDataURL(JSON.stringify(form)).then(url => {
       this.qrcode = url;
     });
   }

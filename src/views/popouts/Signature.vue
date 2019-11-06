@@ -7,7 +7,7 @@
         <!-- <figure
           class="has-more"
           v-if="limitedMessages.total > 1"
-        >{{locale(langKeys.POPOUTS.SIGNATURE.ActionsTotal,limitedMessages.total)}}</figure> -->
+        >{{locale(langKeys.POPOUTS.SIGNATURE.ActionsTotal,limitedMessages.total)}}</figure>-->
 
         <section class="participants" v-if="participantAccounts">
           <section v-if="!participantsAsSelector">
@@ -175,8 +175,14 @@
 
         <!-- 白名单 -->
         <section class="whitelist-bar" v-if="!isArbitrarySignature && !isDangerous && hasWhite">
-          <figure class="text" v-if="!whitelisted">{{$t('TP.NOTOFICATION.POPOUT.WHITELIST.offWhitelist')}}</figure>
-          <figure class="text blue" v-if="whitelisted">{{$t('TP.NOTOFICATION.POPOUT.WHITELIST.onWhitelist')}}</figure>
+          <figure
+            class="text"
+            v-if="!whitelisted"
+          >{{$t('TP.NOTOFICATION.POPOUT.WHITELIST.offWhitelist')}}</figure>
+          <figure
+            class="text blue"
+            v-if="whitelisted"
+          >{{$t('TP.NOTOFICATION.POPOUT.WHITELIST.onWhitelist')}}</figure>
           <Switcher :state="whitelisted" @click.native="whitelist" />
         </section>
       </section>
@@ -268,7 +274,7 @@ export default {
     this.clonedLocation = this.selectedLocation.clone();
 
     this.participantAccounts.map(async acc => {
-    //   console.log(acc);
+      //   console.log(acc);
       if (ResourceService.usesResources(acc)) {
         const resources = await ResourceService.getResourcesFor(acc);
         this[Actions.ADD_RESOURCES]({
@@ -375,17 +381,17 @@ export default {
       }
       return false;
     },
-    currentPropNetwork () {
-        return this.payload.network
+    currentPropNetwork() {
+      return this.payload.network;
     },
 
-    hasWhite () {
-        return this.currentPropNetwork.blockchain === 'eos'
+    hasWhite() {
+      return this.currentPropNetwork.blockchain === "eos";
     }
   },
   methods: {
     returnResult(result) {
-    //   console.log(result, "return Result");
+      //   console.log(result, "return Result");
 
       this.$emit("returned", result);
     },
@@ -469,20 +475,6 @@ export default {
       this.messages.map(message => {
         if (!this.isPreviouslyWhitelisted(message)) this.addWhitelist(message);
       });
-      // this.hideCloseButton = true;
-      // const finish = bool => {
-      // 	this.whitelisted = bool;
-      // 	this.hideCloseButton = false;
-      // 	this.messages.map(message => {
-      // 		if(!this.isPreviouslyWhitelisted(message)) this.addWhitelist(message);
-      // 	})
-      // };
-      //
-      // if(this.whitelisted) return finish(false);
-      //
-      // PopupService.push(Popup.enableWhitelist(accepted => {
-      // 	finish(accepted);
-      // }));
     },
 
     getMessageUnique(message, action) {

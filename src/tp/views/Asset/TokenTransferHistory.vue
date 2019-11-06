@@ -17,7 +17,7 @@
 
           <div class="transfer-balance">
             <h5>{{tokenInfo.balance}}</h5>
-            <p>≈ $ {{tokenInfo.price_usd || 0}}</p>
+            <p>≈ $ {{tokenAsset}}</p>
           </div>
         </div>
       </div>
@@ -110,7 +110,7 @@ import { getTransactionAction } from "../../api/Wallet";
 
 const toNonExponential = num => {
   var m = num.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/);
-  return num.toFixed(Math.max(0, (m[1] || '').length - m[2]))
+  return num.toFixed(Math.max(0, (m[1] || "").length - m[2]));
 };
 
 export default {
@@ -118,7 +118,10 @@ export default {
   props: {
     tokenInfo: {
       type: Object,
-      required: true
+      required: true,
+      default: () => {
+        return {};
+      }
     }
   },
   data() {
@@ -126,7 +129,13 @@ export default {
       transactionTabStatus: 0,
       searchAccountActions: "",
       actionPage: 0,
-      transactionActionList: []
+      transactionActionList: [],
+      tokenInformation: {
+        account: "",
+        balance: "",
+        symbol: "",
+        icon_url: ""
+      }
     };
   },
 
@@ -146,26 +155,43 @@ export default {
       return Array.isArray(list) ? list.length > 0 : false;
     },
     actionForm() {
+      const isTrx =
+        this.tokenInfo.blockchain_id === 10 && this.tokenInfo.token_type === 0;
       const form = {
         page: this.actionPage,
         count: 20,
         symbol: this.tokenInfo.symbol,
         search: this.searchAccountActions,
-        code: this.tokenInfo.account,
+        code: isTrx ? "trx" : this.tokenInfo.address,
         account: this.currentWalletName,
         address: this.currentWalletName,
         // 记录类型：0--全部， 1--转入， 2--转出
         type: this.transactionTabStatus,
-        blockchain_id: this.currentBlockChainId
+        blockchain_id: this.currentBlockChainId,
+        contract_address:
+          this.tokenInfo.token_type === 1 ? this.tokenInfo.address : "",
+        // code: this.tokenInfo.address,
+        new_way: "new",
+        sort: "desc"
       };
 
+      // address=0x40e5A542087FA4b966209707177b103d158Fd3A4&blockchain_id=1&contract_address=&count=20&lang=zh-Hans&new_way=new&page=20&search=&sort=desc&type=0
+      // address=0x40e5A542087FA4b966209707177b103d158Fd3A4&blockchain_id=1&contract_address=0xdac17f958d2ee523a2206206994597c13d831ec7&count=20&lang=zh-Hans&new_way=new&page=0&search=&sort=desc&type=0
       if (this.currentBlockChainId === 1) {
         delete form.account;
-      } else {
+        delete form.code;
+      }
+
+      if (this.currentBlockChainId === 10) {
         delete form.address;
+        delete form.contract_address;
       }
 
       return form;
+    },
+
+    tokenAsset() {
+      return this.tokenInfo.asset ? this.tokenInfo.asset.toFixed(2) : 0;
     }
   },
   methods: {
@@ -241,7 +267,6 @@ export default {
       getTransactionAction(this.actionForm).then(res => {
         if (res.result === 0 && res.data) {
           const filterAction = action => {
-
             switch (this.currentBlockChainId) {
               case 1:
                 action.quantity = toNonExponential(
@@ -282,6 +307,18 @@ export default {
 
   created() {
     this.getTransactionAction();
+    Object.keys(this.tokenInfo).forEach(info => {
+      // console.log(info);
+      if (this.tokenInformation[info] != undefined) {
+        this.tokenInformation[info] = this.tokenInfo[info];
+      }
+    });
+
+    // this.tokenInformation.assets =
+
+    // for (const key of this.tokenInfo) {
+    //   console.log(key)
+    // }
   },
 
   watch: {
@@ -294,6 +331,9 @@ export default {
       //   ...this.currentAccount
       // });
     }
+    // tokenInfo() {
+    // if (this.tokenInfo.asset) this.
+    // }
   }
 };
 </script>
