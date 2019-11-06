@@ -269,9 +269,18 @@ export default {
           const filterAction = action => {
             switch (this.currentBlockChainId) {
               case 1:
-                action.quantity = toNonExponential(
-                  parseFloat(action.value / `1e${action.decimal}`)
-                );
+                if (this.tokenInfo.token_type === 0) {
+                  action.quantity = toNonExponential(
+                    parseFloat(action.value / `1e${action.decimal}`)
+                  );
+                }
+
+                if (this.tokenInfo.token_type === 1) {
+                  action.quantity = toNonExponential(
+                    parseFloat(action.token_value / `1e${action.decimal}`)
+                  );
+                }
+
                 action.browser_url = `https://cn.etherscan.com/tx/${action.hash}`;
                 break;
               case 4:

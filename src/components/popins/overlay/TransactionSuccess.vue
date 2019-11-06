@@ -48,7 +48,9 @@ export default {
       this[Actions.RELEASE_POPUP](this.popin);
     },
     open() {
-      ElectronHelpers.openLinkInBrowser(this.explorer.transaction(this.tx));
+      ElectronHelpers.openLinkInBrowser(
+        `https://cn.etherscan.com/tx/${this.tx}`
+      );
     },
     ...mapActions([Actions.RELEASE_POPUP])
   }

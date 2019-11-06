@@ -110,9 +110,11 @@ const Wallet = {
             ...account
           })
 
-          setTimeout(() => {
-            dispatch('GET_TOKEN_LIST', res.data)
-          }, 2000)
+          dispatch('GET_TOKEN_LIST', res.data)
+
+          // setTimeout(() => {
+          //   dispatch('GET_TOKEN_LIST', res.data)
+          // }, 2000)
         }
       })
     },
@@ -120,7 +122,7 @@ const Wallet = {
     async GET_TOKEN_LIST({ commit, rootGetters }, walletID) {
       getTokenList({
         start: 0,
-        count: 2000,
+        count: 200,
         wallet_id: walletID
       }).then(res => {
         if (res.result === 0) {

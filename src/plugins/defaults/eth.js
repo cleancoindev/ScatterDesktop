@@ -60,9 +60,9 @@ const killCachedInstance = (network, wallet = null) => {
 
 const EXPLORER = {
   name: 'Etherscan',
-  account: 'https://etherscan.io/address/{x}',
-  transaction: 'https://etherscan.io/tx/{x}',
-  block: 'https://etherscan.io/block/{x}'
+  account: 'https://cn.etherscan.com/address/{x}',
+  transaction: 'https://cn.etherscan.com/tx/{x}',
+  block: 'https://cn.etherscan.com/block/{x}'
 }
 
 const strtodec = (amount, dec) => {

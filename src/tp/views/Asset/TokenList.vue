@@ -17,11 +17,11 @@
       <div class="asset-balance-view" v-if="isEos">
         <div class="asset-balance-btn staked">
           <h5>{{accountStaked}}</h5>
-          <p>{{$t('TP.GENERIC.Staked')}}</p>
+          <p>{{$t('TP.GENERIC.Staked')}}({{tokenUnit}})</p>
         </div>
         <div class="asset-balance-btn rex" @click="goRex">
-          <h5>{{rexBalance}}</h5>
-          <p>REX</p>
+          <h5>{{rexToken}}</h5>
+          <p>REX({{tokenUnit}})</p>
         </div>
       </div>
     </div>
@@ -85,7 +85,8 @@ export default {
         count: 1000
       },
       accountStaked: 0,
-      rexBalance: 0
+      rexBalance: 0,
+      rexToken: 0
     };
   },
 
@@ -113,6 +114,14 @@ export default {
 
     isEos() {
       return this.currentAccount.blockchain() === "eos";
+    },
+
+    tokenUnit() {
+      const tokenUnit = {
+        '4': 'EOS',
+        '6': 'BOS'
+      }
+      return tokenUnit[this.currentBlockChainId];
     }
   },
 
@@ -143,16 +152,16 @@ export default {
       this.getAccountStaked();
     },
 
-    getAccountStaked() {
+    async getAccountStaked() {
       if (this.isEos) {
         const eos = getCachedInstance(this.currentAccount.network());
         eos.getAccount(this.currentAccount.name).then(res => {
           if (res.self_delegated_bandwidth) {
-            this.accountStaked = res.self_delegated_bandwidth.cpu_weight;
+            this.accountStaked = parseFloat(res.self_delegated_bandwidth.cpu_weight);
           }
         });
 
-        eos
+        await eos
           .getTableRows({
             code: "eosio",
             json: true,
@@ -168,6 +177,23 @@ export default {
               this.rexBalance = parseFloat(res.rows[0].rex_balance);
             } else {
               this.rexBalance = 0;
+            }
+          });
+
+        eos
+          .getTableRows({
+            code: "eosio",
+            json: true,
+            limit: 1,
+            scope: "eosio",
+            table: "rexpool"
+          })
+          .then(res => {
+            if (res.rows.length > 0) {
+              const row = res.rows[0];
+              const price =
+                parseFloat(row.total_lendable) / parseFloat(row.total_rex);
+              this.rexToken = (this.rexBalance * price).toFixed(4)
             }
           });
       }

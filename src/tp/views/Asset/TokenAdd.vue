@@ -97,7 +97,8 @@ export default {
       }).then(res => {
         if (res.result === 0) {
           if (this.allTokenForm.start > 0) {
-            if (res.data.length > 0) this.allTokenList = [...this.allTokenList, ...res.data];
+            if (res.data.length > 0)
+              this.allTokenList = [...this.allTokenList, ...res.data];
           } else {
             this.allTokenList = res.data;
           }
@@ -140,7 +141,12 @@ export default {
   },
   watch: {
     "allTokenForm.key"() {
-      this.allTokenForm.key ? this.getSearchToken() : this.getAllTokenList();
+      if (this.allTokenForm.key) {
+        this.allTokenForm.start = 0;
+        this.getSearchToken();
+      } else {
+        this.getAllTokenList();
+      }
     }
   }
 };
