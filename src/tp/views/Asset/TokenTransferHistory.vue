@@ -65,7 +65,7 @@
               <div class="transfer-item-text">
                 <h5 v-if="item.to === currentName">{{spliceAccount(item.from)}}</h5>
                 <h5 v-if="item.from === currentName">{{spliceAccount(item.to)}}</h5>
-                <p>{{$moment(item.timestamp * 1000).format('MM/DD HH:mm')}}</p>
+                <p>{{item.time}}</p>
               </div>
 
               <div
@@ -175,11 +175,11 @@ export default {
         sort: "desc"
       };
 
-      // address=0x40e5A542087FA4b966209707177b103d158Fd3A4&blockchain_id=1&contract_address=&count=20&lang=zh-Hans&new_way=new&page=20&search=&sort=desc&type=0
-      // address=0x40e5A542087FA4b966209707177b103d158Fd3A4&blockchain_id=1&contract_address=0xdac17f958d2ee523a2206206994597c13d831ec7&count=20&lang=zh-Hans&new_way=new&page=0&search=&sort=desc&type=0
       if (this.currentBlockChainId === 1) {
         delete form.account;
         delete form.code;
+      } else {
+        delete form.new_way;
       }
 
       if (this.currentBlockChainId === 10) {
@@ -267,6 +267,16 @@ export default {
       getTransactionAction(this.actionForm).then(res => {
         if (res.result === 0 && res.data) {
           const filterAction = action => {
+            if (this.currentBlockChainId === 10) {
+              action.time = this.$moment(action.timestamp).format(
+                "MM/DD HH:mm"
+              );
+            } else {
+              action.time = this.$moment(action.timestamp * 1000).format(
+                "MM/DD HH:mm"
+              );
+            }
+
             switch (this.currentBlockChainId) {
               case 1:
                 if (this.tokenInfo.token_type === 0) {
