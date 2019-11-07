@@ -342,7 +342,9 @@ export default {
 
   watch: {
     searchAccountActions() {
-      this.getTransactionAction(this.transactionTabStatus);
+      // this.actionPage = 1;
+      this.changeTabStatus(this.transactionTabStatus);
+      // this.getTransactionAction(this.transactionTabStatus);
       // this.$store.dispatch("GET_TRANSACTION_ACTION", {
       //   type: this.transactionTabStatus,
       //   search: this.searchAccountActions,
@@ -509,7 +511,7 @@ export default {
       text-align: center;
       margin-top: 50px;
       img {
-        width: 300px;
+        width: 200px;
       }
     }
 

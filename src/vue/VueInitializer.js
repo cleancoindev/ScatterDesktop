@@ -238,7 +238,9 @@ export default class VueInitializer {
 
   setupRouting(routes, middleware) {
     const router = new VueRouter({ routes })
-    ebtRenderer(ipcRenderer, '2cacf7cb588a61cc6fd2adb2d351eccd', router)
+    // ebtRenderer(ipcRenderer, '2cacf7cb588a61cc6fd2adb2d351eccd', router)
+    // TP tongji
+    ebtRenderer(ipcRenderer, '2c72b28afab2ed22fb3c228d54869085', router)
     router.beforeEach((to, from, next) => {
       // StoreService.get().dispatch(Actions.SET_SEARCH_TERMS, '')
       return middleware(to, next, StoreService.get())
