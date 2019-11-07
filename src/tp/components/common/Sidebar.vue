@@ -2,7 +2,7 @@
   <section class="tp-sidebar">
     <section class="Tabs">
       <!-- 账号 -->
-      <section ref="account" style="padding: 0 10px;">
+      <section ref="account">
         <section class="account text-center">
           <h4
             class="ft-16 c-fff pointer"
@@ -246,9 +246,9 @@ export default {
 .account {
   display: flex;
   align-items: center;
-  background: rgba(101, 106, 128, 1);
-  border-radius: 6px;
-  padding: 5px;
+  background: #2F324E;
+  // border-radius: 6px;
+  padding: 10px 5px;
   h4 {
     margin: 0;
     opacity: 0.9;
@@ -346,7 +346,7 @@ export default {
   color: #818394;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
+  // border-radius: 4px;
 }
 
 .tab-ctr.on {

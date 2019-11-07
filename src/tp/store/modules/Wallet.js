@@ -19,8 +19,13 @@ const precision = item => {
 }
 
 const toNonExponential = num => {
-  var m = num.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/)
-  return num.toFixed(Math.max(0, (m[1] || '').length - m[2]))
+  // console.log(num, 'num')
+  if (!isNaN(num)) {
+    const numbers = parseFloat(num)
+    const m = numbers.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/)
+    return num.toFixed(Math.max(0, (m[1] || '').length - m[2]))
+  }
+  return num
 }
 
 const Wallet = {
@@ -132,9 +137,13 @@ const Wallet = {
               rootGetters.currentBlockChainId === 1 ||
               rootGetters.currentBlockChainId === 10
             ) {
-              token.balance = toNonExponential(
-                parseFloat(token.balance / `1e${token.precision}`)
-              )
+              if (token.balance) {
+                token.balance = toNonExponential(
+                  parseFloat(token.balance / `1e${token.precision}`)
+                )
+              } else {
+                token.balance = 0
+              }
             }
 
             token.price_usd = parseFloat(token.price_usd).toFixed(2)

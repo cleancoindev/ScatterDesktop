@@ -40,7 +40,7 @@
         </span>
       </div>
 
-      <div class="asset-tokens">
+      <div class="asset-tokens" :style="{height: !isEos? 'calc(100vh - 357px + 76px)' : 'calc(100vh - 357px)'}">
         <div
           class="asset-token-item"
           v-for="(item, index) in assetTokenList"
@@ -71,6 +71,7 @@
 import { mapGetters } from "vuex";
 import { getCachedInstance } from "../../../plugins/defaults/eos";
 import ElectronHelpers from "../../../util/ElectronHelpers";
+import PluginRepository from "../../../plugins/PluginRepository";
 // import { getAllTokenList, searchTokenList } from "../../api/Wallet";
 
 export default {
@@ -118,9 +119,9 @@ export default {
 
     tokenUnit() {
       const tokenUnit = {
-        '4': 'EOS',
-        '6': 'BOS'
-      }
+        "4": "EOS",
+        "6": "BOS"
+      };
       return tokenUnit[this.currentBlockChainId];
     }
   },
@@ -157,7 +158,9 @@ export default {
         const eos = getCachedInstance(this.currentAccount.network());
         eos.getAccount(this.currentAccount.name).then(res => {
           if (res.self_delegated_bandwidth) {
-            this.accountStaked = parseFloat(res.self_delegated_bandwidth.cpu_weight);
+            this.accountStaked =
+              parseFloat(res.self_delegated_bandwidth.cpu_weight) +
+              parseFloat(res.self_delegated_bandwidth.net_weight);
           }
         });
 
@@ -193,7 +196,7 @@ export default {
               const row = res.rows[0];
               const price =
                 parseFloat(row.total_lendable) / parseFloat(row.total_rex);
-              this.rexToken = (this.rexBalance * price).toFixed(4)
+              this.rexToken = (this.rexBalance * price).toFixed(4);
             }
           });
       }
@@ -348,12 +351,20 @@ export default {
     }
   }
 
+  .asset-tokens {
+    height: calc(100vh - 357px);
+    overflow-y: auto;
+  }
+
   .asset-token-item {
     margin-left: 32px;
     padding: 20px 32px 20px 0;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #eee;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid #eee;
+    }
 
     .asset-token-logo {
       width: 50px;

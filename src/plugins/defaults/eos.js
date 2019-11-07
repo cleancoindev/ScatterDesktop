@@ -132,8 +132,6 @@ const getAccountsFromPublicKey = async (publicKey, network, process, progressDel
 	])
 };
 
-
-
 const popupError = result => {
 	const json = JSON.parse(result);
 	let error;
@@ -144,17 +142,12 @@ const popupError = result => {
 	PopupService.push(Popup.prompt('Transaction Error', error));
 }
 
-
-
 const EXPLORER = {
 	"name":"Bloks",
-	"account":"https://bloks.io/account/{x}",
-	"transaction":"https://bloks.io/transaction/{x}",
-	"block":"https://bloks.io/block/{x}"
+	"account":"https://www.eosx.io/account/{x}",
+	"transaction":"https://www.eosx.io/transaction/{x}",
+	"block":"https://www.eosx.io/block/{x}"
 };
-
-
-
 
 export default class EOS extends Plugin {
 
