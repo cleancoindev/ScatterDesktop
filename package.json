@@ -76,7 +76,7 @@
     "cross-spawn": "^5.0.1",
     "css-loader": "^2.1.1",
     "electron": "^5.0.12",
-    "electron-builder": "^20.44.4",
+    "electron-builder": "^22.1.0",
     "electron-rebuild": "^1.8.4",
     "element-ui": "^2.10.0",
     "eosjs": "^16.0.9",
@@ -185,7 +185,7 @@
     "mac": {
       "icon": "static/icon.png",
       "target": [
-        "pkg"
+        "dmg"
       ]
     },
     "win": {
