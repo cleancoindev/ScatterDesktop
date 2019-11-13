@@ -199,7 +199,6 @@ export default {
       this.actionPage += 20;
       this.getTransactionAction(this.transactionTabStatus);
     },
-
     transactionImg(item) {
       if (item.to === this.currentName)
         return require("../../assets/images/myAssets/asset-in.png");
