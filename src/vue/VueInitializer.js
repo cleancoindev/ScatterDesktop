@@ -1,19 +1,34 @@
 import Vue from 'vue'
-import { mapState, mapActions } from 'vuex'
+import {
+  mapState,
+  mapActions
+} from 'vuex'
 import VTooltip from 'v-tooltip'
 import VueQrcodeReader from 'vue-qrcode-reader'
 
 import VueRouter from 'vue-router'
-import { RouteNames, Routing } from './Routing'
+import {
+  RouteNames,
+  Routing
+} from './Routing'
 import * as Actions from '../store/constants'
-import { blockchainName, Blockchains } from '../models/Blockchains'
-import { SETTINGS_OPTIONS } from '../models/Settings'
+import {
+  blockchainName,
+  Blockchains
+} from '../models/Blockchains'
+import {
+  SETTINGS_OPTIONS
+} from '../models/Settings'
 import ElectronHelpers from '../util/ElectronHelpers'
-import { localized } from '../localization/locales'
+import {
+  localized
+} from '../localization/locales'
 import LANG_KEYS from '../localization/keys'
 import StoreService from '../services/utility/StoreService'
 import AppsService from '../services/apps/AppsService'
-import { dateId } from '../util/DateHelpers'
+import {
+  dateId
+} from '../util/DateHelpers'
 import features from '../features'
 import PriceService from '../services/apis/PriceService'
 
@@ -24,8 +39,10 @@ import ElementUI from 'element-ui'
 
 import moment from 'dayjs'
 
-const { ipcRenderer } = window.require('electron')
-const { ebtRenderer } = require('electron-baidu-tongji')
+const {
+  remote
+} = window.require('electron')
+const NodeMachineId = remote ? remote.getGlobal('appShared').NodeMachineId : null;
 
 // import * as fundebug from 'fundebug-javascript'
 // import fundebugVue from 'fundebug-vue'
@@ -115,7 +132,9 @@ export default class VueInitializer {
             locale: (key, args) =>
               localized(key, args, StoreService.get().getters.language),
             newKeypair() {
-              this.$router.push({ name: RouteNames.NEW_KEYPAIR })
+              this.$router.push({
+                name: RouteNames.NEW_KEYPAIR
+              })
             },
             canOpenApp(applink) {
               const data = AppsService.getAppData(applink)
@@ -185,13 +204,13 @@ export default class VueInitializer {
                 )
               }
               if (commaOnly) return toComma(num)
-              return num > 999999999
-                ? toComma((num / 1000000000).toFixed(1)) + ' B'
-                : num > 999999
-                ? toComma((num / 1000000).toFixed(1)) + ' M'
-                : num > 999
-                ? toComma((num / 1000).toFixed(1)) + ' K'
-                : num
+              return num > 999999999 ?
+                toComma((num / 1000000000).toFixed(1)) + ' B' :
+                num > 999999 ?
+                toComma((num / 1000000).toFixed(1)) + ' M' :
+                num > 999 ?
+                toComma((num / 1000).toFixed(1)) + ' K' :
+                num
             },
             formatTime(milliseconds) {
               const formatTimeNumber = n => {
@@ -237,11 +256,12 @@ export default class VueInitializer {
   }
 
   setupRouting(routes, middleware) {
-    const router = new VueRouter({ routes })
-    // ebtRenderer(ipcRenderer, '2cacf7cb588a61cc6fd2adb2d351eccd', router)
-    // TP tongji
-    ebtRenderer(ipcRenderer, '2c72b28afab2ed22fb3c228d54869085', router)
+    const router = new VueRouter({
+      routes
+    })
     router.beforeEach((to, from, next) => {
+      // Google 统计
+      fetch(`https://www.google-analytics.com/collect?v=1&tid=UA-153243293-1&cid=${NodeMachineId.machineIdSync()}&dp=${to.path}&z=${+ new Date().getTime()}`);
       // StoreService.get().dispatch(Actions.SET_SEARCH_TERMS, '')
       return middleware(to, next, StoreService.get())
     })

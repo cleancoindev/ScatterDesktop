@@ -9,9 +9,9 @@ const fs = require('fs')
 
 const isDev = process.mainModule.filename.indexOf('app.asar') === -1
 // import { ipcMain } from 'electron'
-const { ebtMain } = require('electron-baidu-tongji')
+// const { ebtMain } = require('electron-baidu-tongji')
 
-ebtMain(ipcMain)
+// ebtMain(ipcMain)
 
 // console.log(process.mainModule)
 let icon = isDev
