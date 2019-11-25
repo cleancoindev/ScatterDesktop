@@ -106,14 +106,14 @@ const setupTray = () => {
     { label: '打开', type: 'normal', click: () => restoreInstance() },
     { label: '退出', type: 'normal', click: () => quit() }
   ])
-  tray.setToolTip('Scatter Desktop Companion')
+  tray.setToolTip('TokenPocket')
   tray.setContextMenu(contextMenu)
 
   tray.on('click', () => restoreInstance())
 }
 
 const createScatterInstance = () => {
-  app.setAsDefaultProtocolClient('scatter')
+  app.setAsDefaultProtocolClient('TokenPocket')
 
   const createMainWindow = (show, backgroundColor) =>
     new BrowserWindow({
