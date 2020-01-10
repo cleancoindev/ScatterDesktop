@@ -1,6 +1,6 @@
-# Scatter Desktop
+# TokenPocket Desktop
 
-## Installation
+#### 
 
 **None of these package are signed yet.** Make sure you only download 
 Scatter Desktop from this GitHub, and **NOWHERE ELSE**.
@@ -23,7 +23,5 @@ This runs best with `node v10.15.3` and `electron v5.0.1`
 - `npm run release-mac` or `npm run release-windows` or `npm run release-linux` ( you must build from the target machine )
 
 
-## Creating Apps for Scatter 
-### Check out the [Documentation](https://get-scatter.com/docs/examples-interaction-flow)
 
 

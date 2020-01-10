@@ -258,6 +258,7 @@
 				return !this.accountRequirements.length || !!this.validAccounts.length;
 			},
 			onlyIdentityLogin(){
+				console.log(this.fields)
 				return !this.fields.personal.length
 					&& !this.fields.location.length
 					&& !this.fields.accounts.length
