@@ -1,27 +1,40 @@
 # TokenPocket Desktop
 
-#### 
+#### 分支
 
-**None of these package are signed yet.** Make sure you only download 
-Scatter Desktop from this GitHub, and **NOWHERE ELSE**.
+- master
+- develop-fork-master
 
-#### [CLICK HERE AND GRAB THE LATEST RELEASE](https://github.com/GetScatter/ScatterDesktop/releases)
+#### 目录
+- electron.js 主进程文件
+- insert/trx.js 波场webview注入
+- src/plugins/defaults/ eos btc eth trx 底层逻辑
+- src/tp/ 主要业务开发目录
+- package.json version字段包版本修改
 
-### Running in development mode
+#### 开发
+``` bash
+  yarn install
+  # 开启webpack服务
+  yarn dev
+  # 开启electron主进程
+  yarn serve
+  # 打包出来的是带版本号的包
+  # 打包mac
+  yarn mac
+  # 打包windows
+  yarn win
+```
 
-This runs best with `node v10.15.3` and `electron v5.0.1`
+#### 发包
+- https://cloud.baidu.com/doc/BOS/s/Ejwvyqobd 百度云桌面下载地址
+- /tokenpocket 百度云BOS部署路径（AS SK找对应负责人，把打包的文件夹拖到这个目录下就行了）
+- 官网包每次用最新的包重新命名一次
+- mac-TokenPocket.pkg
+- win-TokenPocket.exe
 
-- clone the repo
-- run `yarn install` to install the dependencies. **Important: You can only use yarn to install right now as there's two versions of eosjs being pulled in and only yarn supports aliasing**.
-- run `npm start` to start the local server with hot-reloading
-- run `electron .` or `./node_modules/.bin/electron .` from the directory to start electron.
-
-
-### Building
-
-- `npm run build`
-- `npm run release-mac` or `npm run release-windows` or `npm run release-linux` ( you must build from the target machine )
-
-
-
-
+#### 下载地址
+- https://dapp.tokenpocket.pro/mac-TokenPocket.pkg (官网mac包)
+- https://dapp.tokenpocket.pro/mac-TokenPocket-1.3.5.pkg (版本号mac包)
+- https://dapp.tokenpocket.pro/win-TokenPocket.exe (官网下载windows包)
+- https://dapp.tokenpocket.pro/win-TokenPocket-1.3.5.exe (版本号windows包)
