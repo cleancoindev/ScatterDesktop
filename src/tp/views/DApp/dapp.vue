@@ -94,21 +94,27 @@ export default {
   watch: {},
   methods: {
     isSupport(platform) {
-      return Object.keys(platform).filter(data => platform[data] === 1).join(',').toUpperCase()
+      return Object.keys(platform)
+        .filter(data => platform[data] === 1)
+        .join(",")
+        .toUpperCase();
     },
 
     goGame(item) {
-      if (item.platform.trx === 1) {
-        if (this.currentAccount.blockchain() !== 'trx') {
+      let { trx, ...params } = item.platform;
+      let total = Object.values(params).reduce((prev, next) => {
+        return prev + next;
+      });
+      if (item.platform.trx === 1 && total == 0) {
+        if (this.currentAccount.blockchain() !== "trx") {
           PopupService.push(
             Popup.snackbarBadPassword(
-              this.$t(
-                'TP.NOTOFICATION.POPOUT.DAPP.SupportPlatform', 
-                { platform: this.isSupport(item.platform) }
-                )
-              )
+              this.$t("TP.NOTOFICATION.POPOUT.DAPP.SupportPlatform", {
+                platform: this.isSupport(item.platform)
+              })
             )
-          return false
+          );
+          return false;
         }
         ipc.send("goGame", {
           data: item,
